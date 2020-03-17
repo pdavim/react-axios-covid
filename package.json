@@ -2,7 +2,8 @@
   "name": "covid19",
   "version": "1.2.0",
   "engines": {
-    "node": "^6.11.1"
+    "node": "^6.11.1",
+    "npm": "^3.10.10"
   },
 
   "description": "",
@@ -36,7 +37,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
     "react-simple-maps": "^1.0.0-beta.0",
-    "react-slick": "^0.25.2"
+    "react-slick": "^0.25.2",
+    "webpack": "4.41.5"
   },
   "devDependencies": {
     "typescript": "3.3.3"
