@@ -4,15 +4,16 @@ const CoronaVirusDataPT = [
   },
   {
     whatis:
-      "O novo coronavÃ­rus, designado SARS-CoV-2, foi identificado pela primeira vez em dezembro de 2019 na China, na cidade de Wuhan. Este novo agente nunca tinha sido identificado anteriormente em seres humanos. A fonte da infeÃ§Ã£o Ã© ainda desconhecida. Ainda estÃ¡ em investigaÃ§Ã£o a via de transmissÃ£o. A transmissÃ£o pessoa a pessoa foi confirmada e jÃ¡ existe infeÃ§Ã£o em vÃ¡rios paÃ­ses e em pessoas que nÃ£o tinham visitado o mercado de Wuhan. A investigaÃ§Ã£o prossegue."
+      "O novo coronavÃ­rus, designado SARS-CoV-2, foi identificado pela primeira vez em dezembro de 2019 na China, na cidade de Wuhan. Este novo agente nunca tinha sido identificado anteriormente em seres humanos. A fonte da infecção é ainda desconhecida. Ainda está em investigação a via de transmissão. A transmissão pessoa a pessoa foi confirmada e já existe infecção em vários países e em pessoas que não tinham visitado o mercado de Wuhan. A investigação prossegue."
   },
   {
     sintoms: {
-      1: "Febre (T>37,5ÂºC)",
+      0: "Sintomas",
+      1: "Febre (T>37,5ºC)",
       2: "Tosse",
-      3: "Dificuldade respiratÃ³ria (Falta de ar)",
-      4: "A maioria das pessoas infetadas apresentam sintomas de infeÃ§Ã£o respiratÃ³ria aguda ligeiros a moderados",
-      5: "Em casos mais graves pode causar pneumonia grave com insuficiÃªncia respiratÃ³ria aguda, falÃªncia renal e de outros Ã³rgÃ£os, e eventual morte. Contudo, a maioria dos casos recupera sem sequelas."
+      3: "Dificuldade respiratória (Falta de ar)",
+      4: "A maioria das pessoas infetadas apresentam sintomas de infeção respiratória aguda ligeiros a moderados",
+      5: "Em casos mais graves pode causar pneumonia grave com insuficiência respiratória aguda, falência renal e de outros orgãos, e eventual morte. Contudo, a maioria dos casos recupera sem sequelas."
     }
   },
   {

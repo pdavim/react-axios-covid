@@ -1,10 +1,10 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { observer, inject } from "mobx-react";
-import axios from "axios";
+
 import Chart from "react-apexcharts";
 import { getCode } from "country-list";
 //Material UI
-import { Grid, Card, CardHeader } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 
 import Table from "@material-ui/core/Table";
@@ -20,9 +20,6 @@ import Paper from "@material-ui/core/Paper";
 //import MapChart from "./MapChart";
 //import api from "../../api/api";
 //import fetchUrlData from "../../functions/fetchUrlData";
-
-import CoronaVirusDataPT from "../../assets/data/coronaVirusData";
-import DeathCounter from "../DeathCounter";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -126,10 +123,9 @@ const CoronavirusData = inject("Store")(
 
     let countriesArray = [];
     let countriesIdArray = [];
-    let dataLength = props.Store;
+
     let data;
-    let isLoading;
-    let deathPerSecond;
+
     //console.log("dataLength ", typeof dataLength);
     //console.log("data ", props.Store.getCoronaVirusDataArray);
     if (!props.Store.getCoronaVirusDataArray) {
@@ -154,7 +150,7 @@ const CoronavirusData = inject("Store")(
           countriesIdArray.push(id);
           //console.log("x", props);
         }
-        isLoading = false;
+        //isLoading = false;
       };
 
       countriesIdFunction();
@@ -219,17 +215,6 @@ const CoronavirusData = inject("Store")(
     let criticalData = totalData.totalCritical;
     let nDeathsData = totalData.tNewDeaths;
     let nCases = totalData.tNewCases;
-
-    const deathCounter = () => {
-      const dailyMinutes = 24;
-      let a = props.Store.deathCounter;
-      let deathPerSecondData = nDeathsData / dailyMinutes;
-      a = deathPerSecondData;
-      deathPerSecond = a;
-      // console.log("death per second ", deathPerSecond);
-    };
-
-    deathCounter();
 
     // console.log("casesData ", casesData);
     // console.log("deathsData ", deathsData);
@@ -540,12 +525,12 @@ const CoronavirusData = inject("Store")(
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
-                  Daily Death / until now:
+                  Last Update:
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography className={classes.textContent}>
-                  <DeathCounter props={deathPerSecond} store={props} />
+                  {timeUpdated}
                 </Typography>
               </Grid>
             </Paper>

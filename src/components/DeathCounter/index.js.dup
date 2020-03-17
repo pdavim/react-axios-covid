@@ -1,91 +1,4 @@
-import React, { Fragment, useState } from "react";
-import { observer, inject } from "mobx-react";
-
-import { Grid, Card, CardHeader } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-
-const geoUrl =
-  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    paddingTop: 20,
-    //flexGrow: 1,
-    margin: 0,
-    maxWidth: "100%",
-    borderRadius: 7,
-    backgroundColor: theme.palette.secondary.dark
-    // height: "100%"
-  },
-  listOfCities: {
-    display: "flex",
-    paddingBottom: 20,
-    paddingLeft: 5,
-    paddingRight: 0
-  },
-  table: {
-    alignContent: "center",
-    alignItems: "center",
-    color: "white"
-  },
-  tableDeath: {
-    color: "red"
-  },
-  newCases: {
-    color: "orange",
-    fontWeight: 900
-  },
-  percentage: {
-    color: "blue",
-    fontWeight: 900
-  },
-  recoverd: {
-    color: "green",
-    fontWeight: 900
-  },
-  chartHeader: {
-    color: "white",
-    textAlign: "center",
-    fontWeight: 600,
-    fontSize: 18,
-    paddingBottom: 10,
-    paddingTop: 10
-  },
-  chart: {
-    color: "white"
-  },
-  text: {
-    color: "white",
-    textAlign: "left",
-    fontWeight: 400,
-    fontSize: 14
-  },
-  topGrid: {
-    paddingTop: 20,
-    paddingBottom: 20
-  },
-  paperCard: {
-    paddingTop: 20,
-    paddingBottom: 20,
-    paddingLeft: 10,
-    paddingRight: 10,
-    background: "rgb(255,255,255,0.05)",
-    marginLeft: 3,
-    marginRight: 3
-  },
-  textCard: {
-    color: "white",
-    fontWeight: 400,
-    fontSize: 14
-  },
-  textContent: {
-    color: "white",
-    textAlign: "left",
-    fontWeight: 900,
-    fontSize: 18
-  }
-}));
+import React, { Fragment } from "react";
 
 class DeathCounter extends React.Component {
   constructor(props) {
@@ -96,12 +9,11 @@ class DeathCounter extends React.Component {
 
       deathCountRound: 0
     };
-    this.calcTime = this.calcTime.bind(this);
   }
 
   // Update the count down every 1 second
 
-  calcTime() {
+  calcTime = () => {
     let l = 172;
 
     let time = new Date().toLocaleString();
@@ -125,9 +37,9 @@ class DeathCounter extends React.Component {
     this.setState({
       die: diedStore
     });
-  }
+  };
 
-  counterData(counter) {
+  counterData = counter => {
     setInterval(this.calcTime, 5000);
     let obj = counter;
     const isEmpty = obj => {
@@ -148,30 +60,16 @@ class DeathCounter extends React.Component {
       counter = parseFloat(obj).toFixed(2);
       return counter;
     }
-  }
-  classes = useStyles;
+  };
+
   render() {
     let h = this.counterData(this.state.die);
-    console.log("death counter ", this.props.store.Store.dieCalTimeStore);
+    //console.log("death counter ", this.props.store.Store.dieCalTimeStore);
 
     let number = this.props.store.Store.dieCalTimeStore;
-    let roundNumber = number.toFixed(2);
+    let roundNumber = number.toFixed(0);
 
-    return (
-      <Fragment>
-        <Grid item>
-          <Typography className={this.classes.textCard}>
-            Daily Death / until now:
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography className={this.classes.textCard}>{h}</Typography>
-          <Typography className={this.classes.textCard}>
-            {roundNumber}
-          </Typography>
-        </Grid>
-      </Fragment>
-    );
+    return <Fragment>{roundNumber}</Fragment>;
   }
 }
 

@@ -115,9 +115,9 @@ class Store {
         //  this.getCoronaVirusDataArray
         //  );
       })
-      .then(async r => {
-        let dataCities = await this.getCoronaVirusDataArray.data.countries_stat;
-        let dataCitiesLength = await dataCities.length;
+      .then(r => {
+        let dataCities = this.getCoronaVirusDataArray.data.countries_stat;
+        let dataCitiesLength = dataCities.length;
         let errorDataCountry = [];
         for (let i = 0; i < dataCitiesLength; i++) {
           // console.log("city name ", dataCities[i].country_name);
@@ -248,9 +248,7 @@ class Store {
     let currentDeath = mSeconds * l;
     let totalSeconds = 24 * 60 * 60;
 
-    this.dieStore = currentDeath / totalSeconds;
-
-    this.dieCalTimeStore = this.dieStore;
+    this.dieCalTimeStore = currentDeath / totalSeconds;
   };
 }
 

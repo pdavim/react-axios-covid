@@ -1,6 +1,6 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { observer, inject } from "mobx-react";
-import axios from "axios";
+
 import Chart from "react-apexcharts";
 import { getCode } from "country-list";
 //Material UI
@@ -21,14 +21,12 @@ import Paper from "@material-ui/core/Paper";
 //import api from "../../api/api";
 //import fetchUrlData from "../../functions/fetchUrlData";
 
-import CoronaVirusDataPT from "../../assets/data/coronaVirusData";
-
 const useStyles = makeStyles(theme => ({
   root: {
-    //paddingTop: 20,
+    paddingTop: 20,
     //flexGrow: 1,
-    marginLeft: 0,
-    //maxWidth: "350px",
+    margin: 0,
+    maxWidth: "100%",
     borderRadius: 7,
     backgroundColor: theme.palette.secondary.dark
     // height: "100%"
@@ -79,6 +77,26 @@ const useStyles = makeStyles(theme => ({
   topGrid: {
     paddingTop: 20,
     paddingBottom: 20
+  },
+  paperCard: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(255,255,255,0.05)",
+    marginLeft: 3,
+    marginRight: 3
+  },
+  textCard: {
+    color: "white",
+    fontWeight: 400,
+    fontSize: 14
+  },
+  textContent: {
+    color: "white",
+    textAlign: "left",
+    fontWeight: 900,
+    fontSize: 18
   }
 }));
 
@@ -99,38 +117,49 @@ const StyledTableRow = withStyles(theme => ({
     }
   }
 }))(TableRow);
-
 const CoronavirusData = inject("Store")(
   observer(props => {
-    console.log(
-      "coronavirus componet ",
-      props.Store.getCoronaVirusDataArray.data.countries_stat
-    );
+    //console.log("coronavirus componet ", props.Store.dieCalTimeStore);
+
     let countriesArray = [];
     let countriesIdArray = [];
-    let data = props.Store.getCoronaVirusDataArray.data.countries_stat;
-    const countriesFunction = () => {
-      for (let i = 0; i < data.length; i++) {
-        let country =
-          props.Store.getCoronaVirusDataArray.data.countries_stat[i]
-            .country_name;
-        countriesArray.push(country.toLocaleLowerCase());
-      }
-    };
 
-    const countriesIdFunction = () => {
-      for (let i = 0; i < countriesArray.length; i++) {
-        let id = getCode(countriesArray[i]);
-        countriesIdArray.push(id);
-        //console.log("x", props);
-      }
-    };
+    let data;
+
+    //console.log("dataLength ", typeof dataLength);
+    //console.log("data ", props.Store.getCoronaVirusDataArray);
+    if (!props.Store.getCoronaVirusDataArray) {
+      console.log("wait a little more for data");
+      return;
+    } else {
+      //console.log("Data Has Arrived");
+      data = props.Store.getCoronaVirusDataArray.data.countries_stat;
+
+      const countriesFunction = async () => {
+        for (let i = 0; i < data.length; i++) {
+          let country = await props.Store.getCoronaVirusDataArray.data
+            .countries_stat[i].country_name;
+          countriesArray.push(country.toLocaleLowerCase());
+        }
+      };
+
+      const countriesIdFunction = async () => {
+        await countriesFunction();
+        for (let i = 0; i < countriesArray.length; i++) {
+          let id = getCode(countriesArray[i]);
+          countriesIdArray.push(id);
+          //console.log("x", props);
+        }
+        //isLoading = false;
+      };
+
+      countriesIdFunction();
+    }
 
     //const { errorOnRequest, fetchCityWeather, getWeatherData } = props.Store;
 
-    countriesFunction();
     //console.log("countriesArray ", countriesArray);
-    countriesIdFunction();
+
     // console.log("countriesIdArray ", countriesIdArray);
 
     //console.log("x", CoronaVirusDataPT);
@@ -158,52 +187,52 @@ const CoronavirusData = inject("Store")(
       let totalCases = 0;
       let totalDeaths = 0;
       let totalCritical = 0;
+      let tNewDeaths = 0;
+      let tNewCases = 0;
       let i = 0;
-      //console.log("Data length", data);
+      // console.log("Data length", data);
 
       for (i = 0; i < data.length; i++) {
         let x = checkIfNumber(data[i].cases);
         let y = checkIfNumber(data[i].deaths);
         let z = checkIfNumber(data[i].serious_critical);
+        let newDeaths = checkIfNumber(data[i].new_deaths);
+        let newCases = checkIfNumber(data[i].new_cases);
         totalCases = totalCases + x;
         totalDeaths = totalDeaths + y;
         totalCritical = totalCritical + z;
+        tNewDeaths = tNewDeaths + newDeaths;
+        tNewCases = tNewCases + newCases;
         // console.log("data ", totalCases);
         //return { totalCases, totalDeaths };
       }
-      return { totalCases, totalDeaths, totalCritical };
+      return { totalCases, totalDeaths, totalCritical, tNewDeaths, tNewCases };
     };
     let totalData = totalCases();
     // console.log("totalCases ", totalData);
     let casesData = totalData.totalCases;
     let deathsData = totalData.totalDeaths;
     let criticalData = totalData.totalCritical;
+    let nDeathsData = totalData.tNewDeaths;
+    let nCases = totalData.tNewCases;
+
+    const deathCounter = () => {
+      const dailyMinutes = 24;
+
+      let deathPerSecondData = nDeathsData / dailyMinutes;
+      let a = deathPerSecondData;
+
+      // console.log("death per second ", deathPerSecond);
+    };
+
+    deathCounter();
+
     // console.log("casesData ", casesData);
     // console.log("deathsData ", deathsData);
 
     let totalPercentage = percentage(casesData, deathsData);
     let timeUpdated =
       props.Store.getCoronaVirusDataArray.data.statistic_taken_at;
-
-    axios({
-      method: "GET",
-      url: "https://countries-cities.p.rapidapi.com/location/country/GB",
-      headers: {
-        "content-type": "application/octet-stream",
-        "x-rapidapi-host": "countries-cities.p.rapidapi.com",
-        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
-      },
-      params: {
-        format: "json"
-      }
-    })
-      .then(response => {
-        //console.log("countries info", response.data);
-        //console.log("countries capital info", response.data.capital);
-      })
-      .catch(error => {
-        console.log(error);
-      });
 
     //CoronavirusData;
 
@@ -427,45 +456,98 @@ const CoronavirusData = inject("Store")(
     const donuntSeriesCritical = [p, r];
     const classes = useStyles();
     return (
-      <Grid container className={classes.root}>
-        <Grid container className={classes.topGrid}>
-          <Grid item xs={12}>
-            <Typography className={classes.chartHeader}>
-              Coronaviros COVID19 Data
-            </Typography>
+      <Grid container spacing={2} className={classes.root}>
+        <Grid container>
+          <Grid item xs={4}>
+            <Paper className={classes.paperCard}>
+              <Grid item>
+                <Typography className={classes.textCard}>
+                  World Cases:
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography className={classes.textContent}>
+                  {totalData.totalCases}
+                </Typography>
+              </Grid>
+            </Paper>
           </Grid>
-          <Grid item xs={12}>
-            MapChart props=props
-          </Grid>
-          <Grid item xs={3}>
-            <Typography className={classes.text}>
-              World Cases:
-              <br />
-              {totalData.totalCases}
-            </Typography>
-          </Grid>
-          <Grid item xs={3}>
-            <Typography className={classes.text}>
-              World Deaths:
-              <br />
-              {totalData.totalDeaths}
-            </Typography>
+          <Grid item xs={4}>
+            <Paper className={classes.paperCard}>
+              <Grid item>
+                <Typography className={classes.textCard}>
+                  World Deaths:
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography className={classes.textContent}>
+                  {totalData.totalDeaths}
+                </Typography>
+              </Grid>
+            </Paper>
           </Grid>
 
-          <Grid item xs={3}>
-            <Typography className={classes.text}>
-              World Death %:
-              <br />
-              {totalPercentage}
-            </Typography>
+          <Grid item xs={4}>
+            <Paper className={classes.paperCard}>
+              <Grid item>
+                <Typography className={classes.textCard}>
+                  World Death %:
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography className={classes.textContent}>
+                  {totalPercentage}
+                </Typography>
+              </Grid>
+            </Paper>
           </Grid>
-          <Grid item xs={3}>
-            <Typography className={classes.text}>
-              Last Updated:
-              <br /> {timeUpdated}
-            </Typography>
+
+          <Grid item xs={4}>
+            <Paper className={classes.paperCard}>
+              <Grid item>
+                <Typography className={classes.textCard}>
+                  Daily Death:
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography className={classes.textContent}>
+                  {nDeathsData}
+                </Typography>
+              </Grid>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={4}>
+            <Paper className={classes.paperCard}>
+              <Grid item>
+                <Typography className={classes.textCard}>
+                  Daily New Cases:
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography className={classes.textContent}>
+                  {nCases}
+                </Typography>
+              </Grid>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={4}>
+            <Paper className={classes.paperCard}>
+              <Grid item>
+                <Typography className={classes.textCard}>
+                  Last Update:
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography className={classes.textContent}>
+                  {timeUpdated}
+                </Typography>
+              </Grid>
+            </Paper>
           </Grid>
         </Grid>
+
         <Grid container className={classes.topGrid}>
           <Grid item xs={4} className={classes.chart}>
             <Typography className={classes.chartHeader}>
@@ -517,7 +599,7 @@ const CoronavirusData = inject("Store")(
             >
               <TableHead>
                 <TableRow>
-                  <StyledTableCell>Nº</StyledTableCell>
+                  <StyledTableCell>NÂº</StyledTableCell>
                   <StyledTableCell>Country</StyledTableCell>
                   <StyledTableCell align="right">Cases</StyledTableCell>
                   <StyledTableCell align="right">Deaths</StyledTableCell>
@@ -564,8 +646,34 @@ const CoronavirusData = inject("Store")(
               </TableBody>
             </Table>
           </TableContainer>
-          <Grid item>
-            <p>C/D % - Cases / Death %</p>
+          <Grid container>
+            <Grid item xs={4}>
+              <Paper className={classes.paperCard}>
+                <Grid item>
+                  <Typography className={classes.textCard}>
+                    Last Updated:
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography className={classes.textContent}>
+                    {timeUpdated}
+                  </Typography>
+                </Grid>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={4}>
+              <Paper className={classes.paperCard}>
+                <Grid item>
+                  <Typography className={classes.textCard}>Legenda:</Typography>
+                </Grid>
+                <Grid item>
+                  <Typography className={classes.textContent}>
+                    C/D % - Cases / Death %
+                  </Typography>
+                </Grid>
+              </Paper>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

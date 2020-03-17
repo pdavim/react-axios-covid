@@ -20,16 +20,6 @@ const MapChart = inject("Store")(
 
     //console.log("citiesMarkers ", citiesMarkers);
 
-    function handleZoomIn() {
-      if (zoom >= 4) return;
-      setZoom(zoom * 2);
-    }
-
-    function handleZoomOut() {
-      if (zoom <= 1) return;
-      setZoom(zoom / 2);
-    }
-
     function handleZoomEnd(position) {
       setZoom(position.zoom);
     }

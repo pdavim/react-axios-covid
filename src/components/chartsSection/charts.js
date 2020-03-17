@@ -268,10 +268,12 @@ const AboutText = () => {
     <>
       <h3>CONVID 19</h3>
       <p>Welcome </p>
-      {CoronaVirusDataPT[1].whatis}
-      {CoronaVirusDataPT.map((data, i) => (
-        <p key={i}>{data.whatis}</p>
-      ))}
+      <p>{CoronaVirusDataPT[1].whatis}</p>
+      <br />
+      <p>{CoronaVirusDataPT[3].transmition}</p>
+      <br />
+      <p> {CoronaVirusDataPT[2].sintoms[1]}</p>
+      <p> {CoronaVirusDataPT[4].incumbationPeriod}</p>
     </>
   );
 };
