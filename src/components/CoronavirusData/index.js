@@ -238,26 +238,6 @@ const CoronavirusData = inject("Store")(
     let timeUpdated =
       props.Store.getCoronaVirusDataArray.data.statistic_taken_at;
 
-    axios({
-      method: "GET",
-      url: "https://countries-cities.p.rapidapi.com/location/country/GB",
-      headers: {
-        "content-type": "application/octet-stream",
-        "x-rapidapi-host": "countries-cities.p.rapidapi.com",
-        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
-      },
-      params: {
-        format: "json"
-      }
-    })
-      .then(response => {
-        //console.log("countries info", response.data);
-        //console.log("countries capital info", response.data.capital);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
     //CoronavirusData;
 
     const optionsDonut = {
