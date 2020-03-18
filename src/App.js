@@ -3,6 +3,7 @@ import React from "react";
 import { Provider } from "mobx-react";
 import { observer, inject } from "mobx-react";
 import { BrowserRouter as Router } from "react-router-dom";
+import { YMInitializer } from "react-yandex-metrika";
 
 //IMPORT MATERIA UI COMPONENTS
 
@@ -177,6 +178,7 @@ const App = inject()(
           <Router>
             <Grid container spacing={2} className={classes.root}>
               <Grid item xs={12}>
+                <YMInitializer accounts={[61101091]} />
                 <Charts
                   theme={themeA}
                   props={stores.Store}
