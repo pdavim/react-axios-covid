@@ -166,7 +166,8 @@ class Store {
                 let capital = rp.data[0].capital;
                 let coord = [lat, lon];
                 this.citiesDataArrayObs.push({
-                  markerOffset: -15,
+                  markerOffset: -5,
+                  xmarkerOffset: -5,
                   name: dataCities[i].country_name,
                   coordinates: coord,
                   region: region,

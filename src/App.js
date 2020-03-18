@@ -132,11 +132,15 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
     flexGrow: 1,
-    height: window.height,
+    height: "100%",
     background: "#0D2C54",
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 30
+  },
+  rootItem: {
+    minHeight: "600px",
+    maxHeight: "100%"
   }
 }));
 
@@ -177,7 +181,7 @@ const App = inject()(
         <ThemeProvider theme={themeA}>
           <Router>
             <Grid container spacing={2} className={classes.root}>
-              <Grid item xs={12}>
+              <Grid item xs={12} className={classes.rootItem}>
                 <YMInitializer accounts={[61101091]} />
                 <Charts
                   theme={themeA}

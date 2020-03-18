@@ -13,7 +13,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-
+import Modal from "@material-ui/core/Modal";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 
@@ -83,9 +83,9 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: 20,
     paddingLeft: 10,
     paddingRight: 10,
-    background: "rgb(255,255,255,0.05)",
-    marginLeft: 3,
-    marginRight: 3
+    background: "rgb(255,255,255,0.07)",
+    marginLeft: 1,
+    marginRight: 1
   },
   textCard: {
     color: "white",
@@ -97,6 +97,14 @@ const useStyles = makeStyles(theme => ({
     textAlign: "left",
     fontWeight: 900,
     fontSize: 18
+  },
+  paper: {
+    position: "absolute",
+    // width: 100,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5]
+    // padding: theme.spacing(2, 4, 3)
   }
 }));
 
@@ -117,6 +125,22 @@ const StyledTableRow = withStyles(theme => ({
     }
   }
 }))(TableRow);
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`
+  };
+}
+
 const CoronavirusData = inject("Store")(
   observer(props => {
     //console.log("coronavirus componet ", props.Store.dieCalTimeStore);
@@ -444,10 +468,21 @@ const CoronavirusData = inject("Store")(
     const donuntSeries = [p, q];
     const donuntSeriesCritical = [p, r];
     const classes = useStyles();
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleOpen = () => {
+      console.log(open);
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setOpen(false);
+    };
     return (
       <Grid container spacing={2} className={classes.root}>
         <Grid container>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -461,7 +496,7 @@ const CoronavirusData = inject("Store")(
               </Grid>
             </Paper>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -476,7 +511,7 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -491,7 +526,7 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -506,7 +541,7 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -521,7 +556,7 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -538,7 +573,7 @@ const CoronavirusData = inject("Store")(
         </Grid>
 
         <Grid container className={classes.topGrid}>
-          <Grid item xs={4} className={classes.chart}>
+          <Grid xs={12} sm={6} md={4} className={classes.chart}>
             <Typography className={classes.chartHeader}>
               Cases & Deaths
               <br />
@@ -551,7 +586,7 @@ const CoronavirusData = inject("Store")(
               className={classes.chart}
             />
           </Grid>
-          <Grid item xs={4} className={classes.chart}>
+          <Grid item xs={12} sm={6} md={4} className={classes.chart}>
             <Typography className={classes.chartHeader}>
               Critical Cases & Deaths
               <br />
@@ -565,7 +600,7 @@ const CoronavirusData = inject("Store")(
             />
           </Grid>
 
-          <Grid item xs={4} className={classes.chart}>
+          <Grid item xs={12} sm={6} md={4} className={classes.chart}>
             <Typography className={classes.chartHeader}>
               Cases & Deaths
               <br />
@@ -588,7 +623,7 @@ const CoronavirusData = inject("Store")(
             >
               <TableHead>
                 <TableRow>
-                  <StyledTableCell>NÂº</StyledTableCell>
+                  <StyledTableCell>Nº</StyledTableCell>
                   <StyledTableCell>Country</StyledTableCell>
                   <StyledTableCell align="right">Cases</StyledTableCell>
                   <StyledTableCell align="right">Deaths</StyledTableCell>
@@ -630,13 +665,33 @@ const CoronavirusData = inject("Store")(
                     <TableCell align="right" className={classes.percentage}>
                       {percentage(dt.cases, dt.deaths)}
                     </TableCell>
+                    <TableCell align="right" className={classes.percentage}>
+                      <button type="button" onClick={handleOpen}>
+                        Open Modal
+                      </button>
+                      <Modal
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                        //open={open}
+                        //onClose={handleClose}
+                      >
+                        <div className={classes.paper}>
+                          <h2 id="simple-modal-title">Text in a modal</h2>
+                          <p id="simple-modal-description">
+                            Duis mollis, est non commodo luctus, nisi erat
+                            porttitor ligula.
+                          </p>
+                          <CoronavirusData />
+                        </div>
+                      </Modal>
+                    </TableCell>
                   </StyledTableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
           <Grid container>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={6}>
               <Paper className={classes.paperCard}>
                 <Grid item>
                   <Typography className={classes.textCard}>
@@ -651,7 +706,7 @@ const CoronavirusData = inject("Store")(
               </Paper>
             </Grid>
 
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={6}>
               <Paper className={classes.paperCard}>
                 <Grid item>
                   <Typography className={classes.textCard}>Legenda:</Typography>
