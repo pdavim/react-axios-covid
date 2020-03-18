@@ -259,7 +259,7 @@ const ContactText = () => (
     <p>App development by Pedro Davim</p>
     <p>pdavim@pdavim.com</p>
 
-    <form name="contact" method="POST" data-netlify="true">
+    <form name="contact" method="POST" data-netlify="true" netlify>
       <p>
         <label>
           Your Name: <input type="text" name="name" />
