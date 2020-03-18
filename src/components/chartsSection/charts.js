@@ -17,7 +17,7 @@ import MapChart from "../MapChart";
 import CoronavirusData from "../CoronavirusData";
 import "./style.scss";
 import CoronaVirusDataPT from "../../assets/data/coronaVirusData";
-import ContactForm from "../ContactForm";
+
 const useStyles = makeStyles(theme => ({
   root: {
     //display: "flex",
@@ -258,7 +258,6 @@ const ContactText = () => (
     <h3>Contact</h3>
     <p>App development by Pedro Davim</p>
     <p>pdavim@pdavim.com</p>
-    <ContactForm />
   </div>
 );
 
