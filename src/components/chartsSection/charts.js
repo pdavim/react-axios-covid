@@ -17,7 +17,7 @@ import MapChart from "../MapChart";
 import CoronavirusData from "../CoronavirusData";
 import "./style.scss";
 import CoronaVirusDataPT from "../../assets/data/coronaVirusData";
-
+import ContactForm from "../ContactForm";
 const useStyles = makeStyles(theme => ({
   root: {
     //display: "flex",
@@ -258,28 +258,7 @@ const ContactText = () => (
     <h3>Contact</h3>
     <p>App development by Pedro Davim</p>
     <p>pdavim@pdavim.com</p>
-
-    <form name="contact" method="POST" data-netlify="true" netlify>
-      <p>
-        <label>
-          Your Name: <input type="text" name="name" />
-        </label>
-      </p>
-      <p>
-        <label>
-          Your Email: <input type="email" name="email" />
-        </label>
-      </p>
-
-      <p>
-        <label>
-          Message: <textarea name="message" />
-        </label>
-      </p>
-      <p>
-        <button type="submit">Send</button>
-      </p>
-    </form>
+    <ContactForm />
   </div>
 );
 
