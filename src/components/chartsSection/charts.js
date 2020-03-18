@@ -157,7 +157,7 @@ const Charts = inject("Store")(
           <Grid item xs={12}>
             <AppBar position="static" className={classes.appBar}>
               <Toolbar>
-                <Grid item xs={1} className={classes.imageGrid}>
+                <Grid item xs={2} sm={1} className={classes.imageGrid}>
                   <Link to="/">
                     <img
                       src={covid19logo_grey}
@@ -267,7 +267,7 @@ const Charts = inject("Store")(
                     </NavLink>
                   </Button>
                 </Grid>
-                <Grid item xs={11} className={classes.titleGridMobile}>
+                <Grid item xs={10} className={classes.titleGridMobile}>
                   <PopupState variant="popover" popupId="demo-popup-menu">
                     {popupState => (
                       <React.Fragment className={classes.fragmentridMobile}>

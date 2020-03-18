@@ -482,7 +482,7 @@ const CoronavirusData = inject("Store")(
     return (
       <Grid container spacing={2} className={classes.root}>
         <Grid container>
-          <Grid item xs={12} sm={4}>
+          <Grid xs={12} sm={6} md={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -496,7 +496,7 @@ const CoronavirusData = inject("Store")(
               </Grid>
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -511,7 +511,7 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
 
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -526,7 +526,7 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
 
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -541,7 +541,7 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
 
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
@@ -556,7 +556,7 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
 
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Paper className={classes.paperCard}>
               <Grid item>
                 <Typography className={classes.textCard}>
