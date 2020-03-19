@@ -1,7 +1,8 @@
-import { observable, action, decorate } from "mobx";
+import { observable, action, decorate, computed } from "mobx";
 //import { action,observable } from "mobx-react";
-
+import { readString, CSVReader, readRemoteFile } from "react-papaparse";
 import axios from "axios";
+import CornovirusData from "../assets/data/coronaVirusData";
 
 class Store {
   fetchCity = {
@@ -24,7 +25,14 @@ class Store {
   currentDeathCount;
   dieCalTimeStore = 0;
   dieStore = 0;
-
+  virusInfoData = CornovirusData;
+  whcCornovirusDataConfirmed;
+  whcCornovirusDataConfirmedArrayObj;
+  whcCornovirusDataDeathArrayObj;
+  whcCornovirusDataDeath;
+  whcCornovirusDataRecoverdArrayObj;
+  whcCornovirusDataRecoverd;
+  objectCSSEGISandData;
   //for test porpuses
   test = "hello world";
 
@@ -85,9 +93,10 @@ class Store {
 
   //("get all data")
   getData = async () => {
+    await this.extData();
     await this.getCityCoordinates();
-    this.isLoading = false;
     this.storeCounterData();
+    this.isLoading = false;
   };
 
   //("update weather data")
@@ -251,11 +260,114 @@ class Store {
 
     this.dieCalTimeStore = currentDeath / totalSeconds;
   };
+  csvJSON = csv => {
+    var lines = csv.split("\n");
+
+    var result = [];
+
+    var headers = lines[0].split(",");
+
+    for (var i = 1; i < lines.length; i++) {
+      var obj = {};
+      var currentline = lines[i].split(",");
+
+      for (var j = 0; j < headers.length; j++) {
+        obj[headers[j]] = currentline[j];
+      }
+
+      result.push(obj);
+    }
+
+    //return result; //JavaScript object
+    return JSON.stringify(result); //JSON
+  };
+
+  extData = () => {
+    //all data from CSSE COVID-19 Dataset
+    //https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
+    //
+
+    let csvurlConfirmed =
+      "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
+    let csvurlDeaths =
+      "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv";
+    let csvurlRecoverd =
+      "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
+
+    let location = "Portugal";
+    let locationSearchArrayDeath = [];
+    let locationSearchArrayConfirmed = [];
+    let locationSearchArrayRecoverd = [];
+    //var csv is the CSV file with headers
+    //Conifirmed Cases
+    axios.get(csvurlConfirmed).then(res => {
+      this.whcCornovirusDataConfirmed = res.data;
+      let papaCsv = readString(this.whcCornovirusDataConfirmed, {});
+      //  console.log("Confirmed papaCsv ", papaCsv);
+      this.whcCornovirusDataConfirmedArrayObj = papaCsv;
+      let array = this.whcCornovirusDataConfirmedArrayObj.data;
+
+      for (let i = 0; i < array.length; i++) {
+        let arrayContry = array[i][1];
+        //console.log("ares ", arrayContry);
+        if (arrayContry === location) {
+          locationSearchArrayConfirmed.push(array[i]);
+          //  console.log("IT WAS FOUND", arrayContry, array[i]);
+        }
+      }
+    });
+
+    //Deaths
+    axios.get(csvurlDeaths).then(res => {
+      this.whcCornovirusDataDeath = res.data;
+      let papaCsv = readString(this.whcCornovirusDataDeath, {});
+      //  console.log("Death papaCsv ", papaCsv.data);
+      this.whcCornovirusDataDeathArrayObj = papaCsv;
+      let array = this.whcCornovirusDataDeathArrayObj.data;
+      //let ares = array.filter("portugal");
+      for (let i = 0; i < array.length; i++) {
+        let arrayContry = array[i][1];
+        //console.log("ares ", arrayContry);
+        if (arrayContry === location) {
+          locationSearchArrayDeath.push(array[i]);
+          //  console.log("IT WAS FOUND", arrayContry, array[i]);
+        }
+      }
+    });
+    //Recoverd
+    axios.get(csvurlRecoverd).then(res => {
+      this.whcCornovirusDataRecoverd = res.data;
+      let papaCsv = readString(this.whcCornovirusDataRecoverd, {});
+      //  console.log("Death papaCsv ", papaCsv.data);
+      this.whcCornovirusDataRecoverdArrayObj = papaCsv;
+      let array = this.whcCornovirusDataRecoverdArrayObj.data;
+      //let ares = array.filter("portugal");
+      for (let i = 0; i < array.length; i++) {
+        let arrayContry = array[i][1];
+        //console.log("ares ", arrayContry);
+        if (arrayContry === location) {
+          locationSearchArrayRecoverd.push(array[i]);
+          // console.log("IT WAS FOUND", arrayContry, array[i]);
+        }
+      }
+    });
+    // console.log("data City ", locationSearchArrayDeath);
+    // console.log("data City ", locationSearchArrayRecoverd);
+    this.objectCSSEGISandData = [
+      { confirmed: locationSearchArrayConfirmed },
+      { recoverd: locationSearchArrayRecoverd },
+      { death: locationSearchArrayDeath }
+    ];
+    console.log("data City ", this.objectCSSEGISandData);
+  };
 }
 
 //("get counter")
 
 decorate(Store, {
+  storeCounterData: action,
+  calcTime: action,
+  extData: action,
   isLoading: observable,
   loadingChart: observable,
   loadingMap: observable,
@@ -264,7 +376,12 @@ decorate(Store, {
   deathPerSecondStore: observable,
   currentDeathCount: observable,
   dieStore: observable,
-  storeCounterData: action,
+  virusInfoData: observable,
+  whcCornovirusDataConfirmed: observable,
+  whcCornovirusDataConfirmedArrayObj: observable,
+  whcCornovirusDataRecoverdArrayObj: observable,
+  whcCornovirusDataRecoverd: observable,
+  objectCSSEGISandData: observable,
 
   activeStation: observable,
 

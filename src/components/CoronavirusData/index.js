@@ -144,7 +144,7 @@ function getModalStyle() {
 const CoronavirusData = inject("Store")(
   observer(props => {
     //console.log("coronavirus componet ", props.Store.dieCalTimeStore);
-
+    console.log("CoronavirusData props ", props);
     let countriesArray = [];
     let countriesIdArray = [];
 

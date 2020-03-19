@@ -22,11 +22,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 
 import MapChart from "../MapChart";
-
 import CoronavirusData from "../CoronavirusData";
+import AboutC from "../AboutC";
+
 import "./style.scss";
-import CoronaVirusDataPT from "../../assets/data/coronaVirusData";
 import covid19logo_grey from "../../assets/images/covid19logo_grey.png";
+
 const useStyles = makeStyles(theme => ({
   root: {
     //display: "flex",
@@ -147,7 +148,6 @@ const Charts = inject("Store")(
   observer(props => {
     // console.log("Charts props ", props.Store.historialWeatherData);
     //console.log("Charts props ", this.props.props.Store.historialWeatherData);
-    //console.log("Charts props ", props);
 
     // console.log("Array Max Temp ", array);
     const classes = useStyles();
@@ -337,11 +337,15 @@ const Map = inject("Store")(
 );
 
 // About Page
-const About = () => (
-  <Fragment>
-    <h1>About</h1>
-    <AboutText />
-  </Fragment>
+const About = inject("Store")(
+  observer(props => {
+    let classes = useStyles();
+    return (
+      <Grid item xs={12} className={classes.mapGridItem}>
+        <AboutC />
+      </Grid>
+    );
+  })
 );
 
 // Contact Page
@@ -413,23 +417,6 @@ const ContactText = () => (
     <p>pdavim@pdavim.com</p>
   </div>
 );
-
-const AboutText = () => {
-  console.log(CoronaVirusDataPT);
-
-  return (
-    <>
-      <h3>CONVID 19</h3>
-      <p>Welcome </p>
-      <p>{CoronaVirusDataPT[1].whatis}</p>
-      <br />
-      <p>{CoronaVirusDataPT[3].transmition}</p>
-      <br />
-      <p> {CoronaVirusDataPT[2].sintoms[1]}</p>
-      <p> {CoronaVirusDataPT[4].incumbationPeriod}</p>
-    </>
-  );
-};
 
 const NoMatch = () => {
   return (
