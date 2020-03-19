@@ -101,9 +101,9 @@ const MapChart = inject("Store")(
                   >
                   <Tooltip title={name}>
                     <circle
-                      r={3}
-                      fill="#F00"
-                      stroke="#fff"
+                      r={16}
+                      fill="rgb(255,25,25,0.1)"
+                      stroke="rgb(255,25,25,0.3)"
                       strokeWidth={2}
                       onClick={handleClick}
                       aria-describedby={id}
