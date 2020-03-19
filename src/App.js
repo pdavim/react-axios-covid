@@ -14,7 +14,7 @@ import { ThemeProvider, makeStyles } from "@material-ui/styles";
 
 //IMPORT CUSTOM COMPONENTS
 
-import Charts from "./components/chartsSection/charts";
+import Main from "./components/Main";
 
 //IMPORT FUNCTIONS
 
@@ -183,7 +183,7 @@ const App = inject()(
             <Grid container spacing={2} className={classes.root}>
               <Grid item xs={12} className={classes.rootItem}>
                 <YMInitializer accounts={[61101091]} />
-                <Charts
+                <Main
                   theme={themeA}
                   props={stores.Store}
                   // updateWeather={updateWeather}

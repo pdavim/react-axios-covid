@@ -14,7 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles(theme => ({
   root: {},
   geographicRoot: {
-    height: "600px",
+    height: "100%",
     maxWidth: "100%",
     alignItems: "center"
   },

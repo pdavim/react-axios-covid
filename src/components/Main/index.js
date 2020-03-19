@@ -13,7 +13,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
-import WbSunnyIcon from "@material-ui/icons/WbSunny";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -25,7 +25,7 @@ import MapChart from "../MapChart";
 import CoronavirusData from "../CoronavirusData";
 import AboutC from "../AboutC";
 
-import "./style.scss";
+//import "./style.scss";
 import covid19logo_grey from "../../assets/images/covid19logo_grey.png";
 
 const useStyles = makeStyles(theme => ({
@@ -144,7 +144,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Charts = inject("Store")(
+const Main = inject("Store")(
   observer(props => {
     // console.log("Charts props ", props.Store.historialWeatherData);
     //console.log("Charts props ", this.props.props.Store.historialWeatherData);
@@ -322,7 +322,7 @@ const Charts = inject("Store")(
   })
 );
 
-export default Charts;
+export default Main;
 
 // About Page
 const Map = inject("Store")(
