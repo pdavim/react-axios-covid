@@ -78,14 +78,98 @@ const useStyles = makeStyles(theme => ({
     paddingTop: 20,
     paddingBottom: 20
   },
+  paperGrid: {
+    //padding: 1
+  },
   paperCard: {
     paddingTop: 20,
     paddingBottom: 20,
     paddingLeft: 10,
     paddingRight: 10,
-    background: "rgb(255,255,255,0.07)",
+    background: "rgb(255,255,255,0.1)",
     marginLeft: 1,
-    marginRight: 1
+    marginRight: 1,
+    height: 50
+  },
+  paperCard2: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(255,25,25,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard3: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(243,186,45,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard4: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(125,11,159,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard5: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(25,25,255,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard6: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(25,25,25,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard7: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(25,255,25,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard8: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(204,102,102,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard9: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(150,150,150,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
   },
   textCard: {
     color: "white",
@@ -211,34 +295,78 @@ const CoronavirusData = inject("Store")(
       let totalCases = 0;
       let totalDeaths = 0;
       let totalCritical = 0;
+
       let tNewDeaths = 0;
       let tNewCases = 0;
+      let tRecovers = 0;
+      let tActiveCases = 0;
+      let tTotalCasesPer1mPopulation = 0;
+
       let i = 0;
-      // console.log("Data length", data);
+      //console.log("Data length", data);
 
       for (i = 0; i < data.length; i++) {
+        //total cases
         let x = checkIfNumber(data[i].cases);
-        let y = checkIfNumber(data[i].deaths);
-        let z = checkIfNumber(data[i].serious_critical);
-        let newDeaths = checkIfNumber(data[i].new_deaths);
-        let newCases = checkIfNumber(data[i].new_cases);
+
         totalCases = totalCases + x;
+        //total deaths
+        let y = checkIfNumber(data[i].deaths);
         totalDeaths = totalDeaths + y;
+
+        // total critical
+        let z = checkIfNumber(data[i].serious_critical);
         totalCritical = totalCritical + z;
+
+        //Total recovered
+        //let w = checkIfNumber(data[i].total_recovered);
+        let totalRecover = checkIfNumber(data[i].total_recovered);
+        tRecovers = tRecovers + totalRecover;
+
+        //new deaths
+        let newDeaths = checkIfNumber(data[i].new_deaths);
         tNewDeaths = tNewDeaths + newDeaths;
+
+        //new cases
+        let newCases = checkIfNumber(data[i].new_cases);
         tNewCases = tNewCases + newCases;
-        // console.log("data ", totalCases);
-        //return { totalCases, totalDeaths };
+
+        //active_cases
+        let activeCases = checkIfNumber(data[i].active_cases);
+        tActiveCases = tActiveCases + activeCases;
+
+        // total total_cases_per_1m_population
+        let totalCasesPer1mPopulation = checkIfNumber(
+          data[i].total_cases_per_1m_population
+        );
+        tTotalCasesPer1mPopulation =
+          tTotalCasesPer1mPopulation + totalCasesPer1mPopulation;
       }
-      return { totalCases, totalDeaths, totalCritical, tNewDeaths, tNewCases };
+      return {
+        totalCases,
+        totalDeaths,
+        totalCritical,
+        tNewDeaths,
+        tNewCases,
+        tRecovers,
+        tActiveCases,
+        tTotalCasesPer1mPopulation
+      };
     };
     let totalData = totalCases();
-    // console.log("totalCases ", totalData);
+    console.log("totalCases ", totalData);
+    let dataData = props.Store.getCoronaVirusDataArray.data.countries_stat;
+    let dataDataLength = dataData.length;
     let casesData = totalData.totalCases;
     let deathsData = totalData.totalDeaths;
     let criticalData = totalData.totalCritical;
     let nDeathsData = totalData.tNewDeaths;
     let nCases = totalData.tNewCases;
+    let nTotalRecovers = totalData.tRecovers;
+    let nActiveCases = totalData.tActiveCases;
+    let nTotalCasesPer1mPopulation = (
+      totalData.tTotalCasesPer1mPopulation / dataDataLength
+    ).toFixed(2);
 
     // console.log("casesData ", casesData);
     // console.log("deathsData ", deathsData);
@@ -480,96 +608,130 @@ const CoronavirusData = inject("Store")(
       setOpen(false);
     };
     return (
-      <Grid container spacing={2} className={classes.root}>
-        <Grid container>
-          <Grid xs={12} sm={6} md={4}>
-            <Paper className={classes.paperCard}>
-              <Grid item>
-                <Typography className={classes.textCard}>
-                  World Cases:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography className={classes.textContent}>
-                  {totalData.totalCases}
-                </Typography>
-              </Grid>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper className={classes.paperCard}>
-              <Grid item>
-                <Typography className={classes.textCard}>
-                  World Deaths:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography className={classes.textContent}>
-                  {totalData.totalDeaths}
-                </Typography>
-              </Grid>
-            </Paper>
-          </Grid>
+      <Grid container className={classes.root} spacing={1}>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard}>
+            <Grid item>
+              <Typography className={classes.textCard}>World Cases:</Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {totalData.totalCases}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper className={classes.paperCard}>
-              <Grid item>
-                <Typography className={classes.textCard}>
-                  World Death %:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography className={classes.textContent}>
-                  {totalPercentage}
-                </Typography>
-              </Grid>
-            </Paper>
-          </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard2}>
+            <Grid item>
+              <Typography className={classes.textCard}>
+                World Deaths:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {totalData.totalDeaths}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper className={classes.paperCard}>
-              <Grid item>
-                <Typography className={classes.textCard}>
-                  Daily Death:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography className={classes.textContent}>
-                  {nDeathsData}
-                </Typography>
-              </Grid>
-            </Paper>
-          </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard3}>
+            <Grid item>
+              <Typography className={classes.textCard}>
+                World Death %:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {totalPercentage}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper className={classes.paperCard}>
-              <Grid item>
-                <Typography className={classes.textCard}>
-                  Daily New Cases:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography className={classes.textContent}>
-                  {nCases}
-                </Typography>
-              </Grid>
-            </Paper>
-          </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard4}>
+            <Grid item>
+              <Typography className={classes.textCard}>Daily Death:</Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {nDeathsData}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper className={classes.paperCard}>
-              <Grid item>
-                <Typography className={classes.textCard}>
-                  Last Update:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography className={classes.textContent}>
-                  {timeUpdated}
-                </Typography>
-              </Grid>
-            </Paper>
-          </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard5}>
+            <Grid item>
+              <Typography className={classes.textCard}>
+                Daily New Cases:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>{nCases}</Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard7}>
+            <Grid item>
+              <Typography className={classes.textCard}>
+                Total Recoverd:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {nTotalRecovers}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard8}>
+            <Grid item>
+              <Typography className={classes.textCard}>
+                Active Cases:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {nActiveCases}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard9}>
+            <Grid item>
+              <Typography className={classes.textCard}>
+                Cases per 1 milion:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {nTotalCasesPer1mPopulation}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} sm={12} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard6}>
+            <Grid item>
+              <Typography className={classes.textCard}>Last Update:</Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {timeUpdated}
+              </Typography>
+            </Grid>
+          </Paper>
         </Grid>
 
         <Grid container className={classes.topGrid}>

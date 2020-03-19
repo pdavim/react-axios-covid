@@ -122,12 +122,14 @@ const useStyles = makeStyles(theme => ({
   mapGridItem: {
     height: "10%"
   },
-  fragmentridMobile: {
-    alignContent: "right",
-    alignItems: "right",
+  fragmentridmobile: {
+    direction: "row",
     paddingLeft: 40,
     display: "flex",
-    width: "100%"
+    width: "100%",
+    // paddingTop: 10,
+    alignContent: "center",
+    alignItems: "center"
   },
   palette: {
     primary: "white",
@@ -141,6 +143,26 @@ const useStyles = makeStyles(theme => ({
   },
   imageGrid: {
     //paddingRight: "20px"
+    [theme.breakpoints.down("xs")]: {
+      display: "none"
+    }
+  },
+  imageGridMobile: {
+    paddingRight: "20px",
+    paddingTop: "10px",
+    alignContent: "center",
+    alignItems: "center",
+
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      alignContent: "center",
+      alignItems: "center"
+    }
+  },
+  buttonMenuMobile: {
+    //paddingTop: 0,
+    //paddingBottom: 0,
+    marging: 0
   }
 }));
 
@@ -149,15 +171,15 @@ const Main = inject("Store")(
     // console.log("Charts props ", props.Store.historialWeatherData);
     //console.log("Charts props ", this.props.props.Store.historialWeatherData);
 
-    // console.log("Array Max Temp ", array);
+    console.log("Array Max Temp ", props);
     const classes = useStyles();
     return (
       <Router>
         <Grid container className={classes.root} spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={12} md={12}>
             <AppBar position="static" className={classes.appBar}>
               <Toolbar>
-                <Grid item xs={2} sm={1} className={classes.imageGrid}>
+                <Grid item xs={2} sm={1} md={1} className={classes.imageGrid}>
                   <Link to="/">
                     <img
                       src={covid19logo_grey}
@@ -177,14 +199,20 @@ const Main = inject("Store")(
                     color: "white"
                   }}
                 >
-                  <Grid item sm={2} xs={0}>
+                  <Grid item sm={2} md={2}>
                     <Typography variant="h6" className={classes.title}>
                       COVID19
                     </Typography>
                   </Grid>
                 </NavLink>
 
-                <Grid item className={classes.buttomRouter} xs={11} sm={9}>
+                <Grid
+                  item
+                  className={classes.buttomRouter}
+                  xs={11}
+                  sm={9}
+                  md={9}
+                >
                   <Button
                     //color={colorText}
                     className={classes.buttomRouter}
@@ -267,33 +295,101 @@ const Main = inject("Store")(
                     </NavLink>
                   </Button>
                 </Grid>
-                <Grid item xs={10} className={classes.titleGridMobile}>
+                <Grid item xs={10} md={10} className={classes.titleGridMobile}>
                   <PopupState variant="popover" popupId="demo-popup-menu">
                     {popupState => (
-                      <React.Fragment className={classes.fragmentridMobile}>
-                        <Button
-                          variant="contained"
-                          color="inherit"
-                          {...bindTrigger(popupState)}
-                          fragmentridMobile
+                      <Fragment>
+                        <Grid
+                          item
+                          xs={2}
+                          sm={1}
+                          md={1}
+                          className={classes.imageGridMobile}
                         >
-                          Open Menu
-                        </Button>
-                        <Menu {...bindMenu(popupState)}>
-                          <MenuItem onClick={popupState.close}>
-                            <Link to="/">Home</Link>
-                          </MenuItem>
-                          <MenuItem onClick={popupState.close}>
-                            <Link to="/map">Map</Link>
-                          </MenuItem>
-                          <MenuItem onClick={popupState.close}>
-                            <Link to="/contact">Contact</Link>
-                          </MenuItem>
-                          <MenuItem onClick={popupState.close}>
-                            <Link to="/about">About</Link>
-                          </MenuItem>
-                        </Menu>
-                      </React.Fragment>
+                          <Link to="/">
+                            <img
+                              src={covid19logo_grey}
+                              alt=""
+                              className={classes.image}
+                            />
+                          </Link>
+                        </Grid>
+                        <Grid
+                          className={classes.fragmentridmobile}
+                          xs={10}
+                          sm={11}
+                          md={11}
+                          item
+                        >
+                          <Button
+                            variant="outlined"
+                            color="inherit"
+                            {...bindTrigger(popupState)}
+                            className={classes.buttonMenuMobile}
+                          >
+                            Open Menu
+                          </Button>
+                          <Menu {...bindMenu(popupState)}>
+                            <MenuItem onClick={popupState.close}>
+                              <NavLink
+                                exact
+                                style={{
+                                  color: "#00905F",
+                                  fontWeight: "bold"
+                                }}
+                                activeStyle={{
+                                  fontWeight: "bold",
+                                  color: "#0F2D53"
+                                }}
+                                to="/"
+                              >
+                                Home
+                              </NavLink>
+                            </MenuItem>
+                            <MenuItem onClick={popupState.close}>
+                              <NavLink
+                                style={{
+                                  color: "#00905F",
+                                  fontWeight: "bold"
+                                }}
+                                activeStyle={{
+                                  fontWeight: "bold",
+                                  color: "#0F2D53"
+                                }}
+                                to="/map"
+                              >
+                                Map
+                              </NavLink>
+                            </MenuItem>
+                            <MenuItem
+                              style={{
+                                color: "#00905F",
+                                fontWeight: "bold"
+                              }}
+                              activeStyle={{
+                                fontWeight: "bold",
+                                color: "#0F2D53"
+                              }}
+                              onClick={popupState.close}
+                            >
+                              <NavLink to="/contact">Contact</NavLink>
+                            </MenuItem>
+                            <MenuItem
+                              style={{
+                                color: "#00905F",
+                                fontWeight: "bold"
+                              }}
+                              activeStyle={{
+                                fontWeight: "bold",
+                                color: "#0F2D53"
+                              }}
+                              onClick={popupState.close}
+                            >
+                              <NavLink to="/about">About</NavLink>
+                            </MenuItem>
+                          </Menu>
+                        </Grid>
+                      </Fragment>
                     )}
                   </PopupState>
                 </Grid>
@@ -301,7 +397,7 @@ const Main = inject("Store")(
             </AppBar>
           </Grid>
           <Grid container spacing={2} className={classes.mapGridItem}>
-            <Grid item xs={12} className={classes.mapGridItem}>
+            <Grid item xs={12} md={12} sm={12} className={classes.mapGridItem}>
               <Switch>
                 <Route path="/" exact component={Coronavirus} />
 
@@ -379,14 +475,14 @@ const Coronavirus = inject("Store")(
                 alignItems="center"
                 className="loadingGridRoot"
               >
-                <Grid item className={classes.loadingGridItem} xs={12}>
+                <Grid item className={classes.loadingGridItem} xs={12} md={12}>
                   <LinearProgress color="secondary" />
                   <p className="propText">{l.name}</p>
                 </Grid>
               </Grid>
             </>
           ) : props.Store.isLoading === false ? (
-            <Grid item className={classes.cornovirusGridItem} xs={12}>
+            <Grid item xs={12} md={12} className={classes.cornovirusGridItem}>
               <CoronavirusData props={props} />
             </Grid>
           ) : (
@@ -397,7 +493,7 @@ const Coronavirus = inject("Store")(
                 alignItems="center"
                 className="loadingGridRoot"
               >
-                <Grid item className={classes.loadingGridItem} xs={12}>
+                <Grid item className={classes.loadingGridItem} xs={12} md={12}>
                   <LinearProgress color="secondary" />
                   <p className="propText">{l.name}</p>
                 </Grid>
@@ -415,6 +511,7 @@ const ContactText = () => (
     <h3>Contact</h3>
     <p>App development by Pedro Davim</p>
     <p>pdavim@pdavim.com</p>
+    <a href="https://pdavim.com">PDAVIM.COM</a>
   </div>
 );
 
