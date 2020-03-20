@@ -83,11 +83,14 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 0
   },
   gridRoot: {},
+  buttomRouterGrid: {
+    display: "flex",
+    maxWidth: "500px"
+  },
   buttomRouter: {
-    marginRight: 2,
-    marginLeft: 2,
-    color: "secondary",
-    width: "100px",
+    //display: "flex",
+    //alignItens: "flex-end",
+    maxWidth: "70px",
     [theme.breakpoints.down("xs")]: {
       display: "none"
     }
@@ -207,93 +210,122 @@ const Main = inject("Store")(
                 </NavLink>
 
                 <Grid
-                  item
-                  className={classes.buttomRouter}
-                  xs={11}
-                  sm={9}
-                  md={9}
+                  container
+                  spacing={1}
+                  className={classes.buttomRouterGrid}
                 >
-                  <Button
-                    //color={colorText}
-                    className={classes.buttomRouter}
-                    variant="contained"
-                    color="inherit"
-                  >
-                    <NavLink
-                      to="/"
-                      exact
-                      style={{
-                        color: "#00905F",
-                        fontWeight: "bold"
-                      }}
-                      activeStyle={{
-                        fontWeight: "bold",
-                        color: "#0F2D53"
-                      }}
+                  <Grid item xs={2}>
+                    <Button
+                      //fullWidth={true}
+                      size="small"
+                      disableElevation={true}
+                      disableFocusRipple={true}
+                      disableRipple={true}
+                      //color={colorText}
+                      className={classes.buttomRouter}
+                      variant="text"
+                      //color="inherit"
                     >
-                      Home
-                    </NavLink>
-                  </Button>
-
-                  <Button
-                    color="inherit"
-                    className={classes.buttomRouter}
-                    variant="contained"
-                  >
-                    <NavLink
-                      to="/map"
-                      style={{
-                        color: "#00905F",
-                        fontWeight: "bold"
-                      }}
-                      activeStyle={{
-                        fontWeight: "bold",
-                        color: "#0F2D53"
-                      }}
+                      <NavLink
+                        to="/"
+                        exact
+                        style={{
+                          color: "#fff",
+                          fontWeight: "500",
+                          fontSize: 16
+                        }}
+                        activeStyle={{
+                          fontWeight: "900",
+                          color: "#24A34E",
+                          fontSize: 16
+                        }}
+                      >
+                        Home
+                      </NavLink>
+                    </Button>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button
+                      disableRipple={true}
+                      size="small"
+                      disableElevation={true}
+                      disableFocusRipple={true}
+                      //color={colorText}
+                      className={classes.buttomRouter}
+                      variant="text"
                     >
-                      Map
-                    </NavLink>
-                  </Button>
-
-                  <Button
-                    color="inherit"
-                    className={classes.buttomRouter}
-                    variant="contained"
-                  >
-                    <NavLink
-                      to="/about"
-                      style={{
-                        color: "#00905F",
-                        fontWeight: "bold"
-                      }}
-                      activeStyle={{
-                        fontWeight: "bold",
-                        color: "#0F2D53"
-                      }}
+                      <NavLink
+                        to="/map"
+                        style={{
+                          color: "#fff",
+                          fontWeight: "500",
+                          fontSize: 16
+                        }}
+                        activeStyle={{
+                          fontWeight: "900",
+                          color: "#24A34E",
+                          fontSize: 16
+                        }}
+                      >
+                        Map
+                      </NavLink>
+                    </Button>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button
+                      disableRipple={true}
+                      size="small"
+                      disableElevation={true}
+                      disableFocusRipple={true}
+                      //color={colorText}
+                      className={classes.buttomRouter}
+                      variant="text"
                     >
-                      About
-                    </NavLink>
-                  </Button>
-
-                  <Button
-                    color="inherit"
-                    variant="contained"
-                    className={classes.buttomRouter}
-                  >
-                    <NavLink
-                      to="/contact"
-                      style={{
-                        color: "#00905F",
-                        fontWeight: "bold"
-                      }}
-                      activeStyle={{
-                        fontWeight: "bold",
-                        color: "#0F2D53"
-                      }}
+                      <NavLink
+                        to="/about"
+                        style={{
+                          color: "#fff",
+                          fontWeight: "500",
+                          fontSize: 16
+                        }}
+                        activeStyle={{
+                          fontWeight: "900",
+                          color: "#24A34E",
+                          fontSize: 16
+                        }}
+                      >
+                        About
+                      </NavLink>
+                    </Button>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button
+                      // fullWidth={true}
+                      size="small"
+                      disableElevation={true}
+                      disableFocusRipple={true}
+                      disableRipple={true}
+                      //color={colorText}
+                      className={classes.buttomRouter}
+                      variant="text"
                     >
-                      Contact
-                    </NavLink>
-                  </Button>
+                      <NavLink
+                        to="/contact"
+                        style={{
+                          color: "#fff",
+                          fontWeight: "500",
+                          fontSize: 16
+                        }}
+                        activeStyle={{
+                          fontWeight: "900",
+                          color: "#24A34E",
+                          fontSize: 16
+                        }}
+                      >
+                        Contact
+                      </NavLink>
+                    </Button>
+                  </Grid>
                 </Grid>
                 <Grid item xs={10} md={10} className={classes.titleGridMobile}>
                   <PopupState variant="popover" popupId="demo-popup-menu">
