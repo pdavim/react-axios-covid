@@ -3,6 +3,7 @@ import { observable, action, decorate, computed } from "mobx";
 import { readString, CSVReader, readRemoteFile } from "react-papaparse";
 import axios from "axios";
 import CornovirusData from "../assets/data/coronaVirusData";
+import { isArray } from "util";
 
 class Store {
   fetchCity = {
@@ -232,8 +233,8 @@ class Store {
         this.dieStore = 0;
         return;
       } else {
-        // console.log("HAS DATA");
-        //console.log(obj + 1);
+        //console.log("HAS DATA");
+        // console.log(obj + 1);
         this.dieStore = obj + 1;
         let a = this.dieStore;
         return a;
@@ -285,7 +286,7 @@ class Store {
     return JSON.stringify(result); //JSON
   };
 
-  extData = () => {
+  extData = async () => {
     //all data from CSSE COVID-19 Dataset
     //https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
     //
@@ -301,71 +302,87 @@ class Store {
     let locationSearchArrayDeath = [];
     let locationSearchArrayConfirmed = [];
     let locationSearchArrayRecoverd = [];
+
     //var csv is the CSV file with headers
     //Conifirmed Cases
-    axios.get(csvurlConfirmed).then(res => {
-      this.whcCornovirusDataConfirmed = res.data;
-      let papaCsv = readString(this.whcCornovirusDataConfirmed, {});
-      //  console.log("Confirmed papaCsv ", papaCsv);
-      this.whcCornovirusDataConfirmedArrayObj = papaCsv;
-      let array = this.whcCornovirusDataConfirmedArrayObj.data;
-
-      for (let i = 0; i < array.length; i++) {
-        let arrayContry = array[i][1];
-        //console.log("ares ", arrayContry);
-        if (arrayContry === location) {
-          locationSearchArrayConfirmed.push(array[i]);
-          //  console.log("IT WAS FOUND", arrayContry, array[i]);
+    let confirmedPerCountry = axios
+      .get(csvurlConfirmed)
+      .then(res => {
+        let data = res.data;
+        let papaCsv = readString(data, {});
+        let array = papaCsv.data;
+        for (let i = 0; i < array.length; i++) {
+          let arrayContry = array[i][1];
+          if (arrayContry === location) {
+            locationSearchArrayConfirmed.push(array[i]);
+          }
         }
-      }
-    });
+        return locationSearchArrayConfirmed;
+      })
+      .then(res => {
+        console.log("locationSearchArrayConfirmed ", res);
+      });
 
     //Deaths
-    axios.get(csvurlDeaths).then(res => {
-      this.whcCornovirusDataDeath = res.data;
-      let papaCsv = readString(this.whcCornovirusDataDeath, {});
-      //  console.log("Death papaCsv ", papaCsv.data);
-      this.whcCornovirusDataDeathArrayObj = papaCsv;
-      let array = this.whcCornovirusDataDeathArrayObj.data;
-      //let ares = array.filter("portugal");
-      for (let i = 0; i < array.length; i++) {
-        let arrayContry = array[i][1];
-        //console.log("ares ", arrayContry);
-        if (arrayContry === location) {
-          locationSearchArrayDeath.push(array[i]);
-          //  console.log("IT WAS FOUND", arrayContry, array[i]);
+    let deathPerCountry = axios
+      .get(csvurlDeaths)
+      .then(res => {
+        let data = res.data;
+        let papaCsv = readString(data, {});
+
+        let array = papaCsv.data;
+        for (let i = 0; i < array.length; i++) {
+          let arrayContry = array[i][1];
+          if (arrayContry === location) {
+            locationSearchArrayDeath.push(array[i]);
+          }
         }
-      }
-    });
+        return locationSearchArrayDeath;
+      })
+      .then(res => {
+        console.log("locationSearchArrayDeath ", res);
+      });
     //Recoverd
-    axios.get(csvurlRecoverd).then(res => {
-      this.whcCornovirusDataRecoverd = res.data;
-      let papaCsv = readString(this.whcCornovirusDataRecoverd, {});
-      //  console.log("Death papaCsv ", papaCsv.data);
-      this.whcCornovirusDataRecoverdArrayObj = papaCsv;
-      let array = this.whcCornovirusDataRecoverdArrayObj.data;
-      //let ares = array.filter("portugal");
-      for (let i = 0; i < array.length; i++) {
-        let arrayContry = array[i][1];
-        //console.log("ares ", arrayContry);
-        if (arrayContry === location) {
-          locationSearchArrayRecoverd.push(array[i]);
-          // console.log("IT WAS FOUND", arrayContry, array[i]);
+    let recoverdPerCountry = axios
+      .get(csvurlRecoverd)
+      .then(res => {
+        let data = res.data;
+        let papaCsv = readString(data, {});
+        let array = papaCsv.data;
+        for (let i = 0; i < array.length; i++) {
+          let arrayContry = array[i][1];
+          if (arrayContry === location) {
+            locationSearchArrayRecoverd.push(array[i]);
+          }
         }
-      }
-    });
-    // console.log("data City ", locationSearchArrayDeath);
-    // console.log("data City ", locationSearchArrayRecoverd);
-    this.objectCSSEGISandData = [
-      { confirmed: locationSearchArrayConfirmed },
-      { recoverd: locationSearchArrayRecoverd },
-      { death: locationSearchArrayDeath }
-    ];
-    console.log("data City ", this.objectCSSEGISandData);
+        return locationSearchArrayRecoverd;
+      })
+      .then(resp => {
+        console.log("RecoverdPerCountry ", resp);
+      });
+
+    console.log("data City ", locationSearchArrayDeath);
+    console.log("data City ", locationSearchArrayRecoverd);
+    if (
+      recoverdPerCountry !== isArray ||
+      !deathPerCountry ||
+      !confirmedPerCountry
+    ) {
+      console.log("no data", recoverdPerCountry);
+      return;
+    } else {
+      console.log("data has arrived");
+      this.objectCSSEGISandData = [
+        recoverdPerCountry,
+        deathPerCountry,
+        confirmedPerCountry
+      ];
+      console.log("data Country ", this.objectCSSEGISandData);
+    }
   };
 
   userLanguage = () => {
-    userLang = navigator.language || navigator.userLanguage;
+    let userLang = navigator.language || navigator.userLanguage;
 
     console.log("coronavirus componet ", userLang);
   };

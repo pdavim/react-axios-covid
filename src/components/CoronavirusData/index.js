@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { observer, inject } from "mobx-react";
 import Chart from "react-apexcharts";
 import { getCode } from "country-list";
@@ -323,7 +323,7 @@ const CoronavirusData = inject("Store")(
             </Grid>
             <Grid item>
               <Typography className={classes.textContent}>
-                {totalData.totalCases}
+                {totalData.totalCases}/
               </Typography>
             </Grid>
           </Paper>
@@ -478,9 +478,9 @@ const CoronavirusData = inject("Store")(
               <Grid item>
                 <Typography className={classes.textChartTitle}>
                   Global Data
-                  <Typography className={classes.textChartTitlept}>
-                    Totais Mundiais
-                  </Typography>
+                </Typography>
+                <Typography className={classes.textChartTitlept}>
+                  Totais Mundiais
                 </Typography>
               </Grid>
             </Paper>
