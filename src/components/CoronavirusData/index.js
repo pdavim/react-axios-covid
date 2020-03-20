@@ -1,25 +1,23 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { observer, inject } from "mobx-react";
-
 import Chart from "react-apexcharts";
 import { getCode } from "country-list";
-//Material UI
+
+//import Material UI
 import { Grid } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Modal from "@material-ui/core/Modal";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 
-//import MapChart from "./MapChart";
-//import api from "../../api/api";
-//import fetchUrlData from "../../functions/fetchUrlData";
+//import functions
+import percentage from "../../functions/percentage";
+import totalCases from "../../functions/totalCases";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -66,7 +64,15 @@ const useStyles = makeStyles(theme => ({
     paddingTop: 10
   },
   chart: {
-    color: "white"
+    //backgroundColor: "rgb(255,255,255,0.1)",
+    color: "white",
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginLeft: 1,
+    marginRight: 1,
+    borderRadius: 8
   },
   text: {
     color: "white",
@@ -80,6 +86,17 @@ const useStyles = makeStyles(theme => ({
   },
   paperGrid: {
     //padding: 1
+  },
+  paperCardCharts: {
+    background: "rgb(32,32,32,0.6)",
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginLeft: 1,
+    marginRight: 1
+
+    //height: 50
   },
   paperCard: {
     paddingTop: 20,
@@ -181,6 +198,16 @@ const useStyles = makeStyles(theme => ({
     marginRight: 1,
     height: 50
   },
+  paperCard11: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(15,15,15,0.4)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
   textCard: {
     color: "white",
     fontWeight: 400,
@@ -199,38 +226,31 @@ const useStyles = makeStyles(theme => ({
     border: "2px solid #000",
     boxShadow: theme.shadows[5]
     // padding: theme.spacing(2, 4, 3)
+  },
+  textChartTitle: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: 900,
+    fontSize: 18,
+    textTransform: "Capitalize"
+  },
+  textChartTitlept: {
+    textAlign: "center",
+    color: "#E1E1E1",
+    fontSize: 18,
+    fontWeight: 700,
+    textTransform: "Capitalize",
+    fontStyle: "italic"
   }
 }));
 
-const StyledTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: "rgb(0,0,0,0.1)",
-    color: theme.palette.secondary.dark
-  },
-  body: {
-    fontSize: 14
-  }
-}))(TableCell);
-
-const StyledTableRow = withStyles(theme => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.background.default
-    }
-  }
-}))(TableRow);
-
 const CoronavirusData = inject("Store")(
   observer(props => {
-    //console.log("coronavirus componet ", props.Store.dieCalTimeStore);
     console.log("CoronavirusData props ", props);
     let countriesArray = [];
     let countriesIdArray = [];
-
     let data;
 
-    //console.log("dataLength ", typeof dataLength);
-    //console.log("data ", props.Store.getCoronaVirusDataArray);
     if (!props.Store.getCoronaVirusDataArray) {
       console.log("wait a little more for data");
       return;
@@ -251,104 +271,13 @@ const CoronavirusData = inject("Store")(
         for (let i = 0; i < countriesArray.length; i++) {
           let id = getCode(countriesArray[i]);
           countriesIdArray.push(id);
-          //console.log("x", props);
         }
-        //isLoading = false;
       };
 
       countriesIdFunction();
     }
 
-    //const { errorOnRequest, fetchCityWeather, getWeatherData } = props.Store;
-
-    //console.log("countriesArray ", countriesArray);
-
-    // console.log("countriesIdArray ", countriesIdArray);
-
-    //console.log("x", CoronaVirusDataPT);
-
-    // let data = props.Store.getCoronaVirusDataArray.data.countries_stat;
-
-    const percentage = (a, b) => {
-      let f = checkIfNumber(a);
-      let g = checkIfNumber(b);
-      let c = (g * 100) / f;
-      let h = c.toFixed(2);
-      return h;
-    };
-
-    const checkIfNumber = e => {
-      if (typeof e === "number") {
-        return e;
-      } else {
-        let b = parseFloat(e.replace(/,/g, ""));
-        return b;
-      }
-    };
-
-    const totalCases = () => {
-      let totalCases = 0;
-      let totalDeaths = 0;
-      let totalCritical = 0;
-
-      let tNewDeaths = 0;
-      let tNewCases = 0;
-      let tRecovers = 0;
-      let tActiveCases = 0;
-      let tTotalCasesPer1mPopulation = 0;
-
-      let i = 0;
-      //console.log("Data length", data);
-
-      for (i = 0; i < data.length; i++) {
-        //total cases
-        let x = checkIfNumber(data[i].cases);
-
-        totalCases = totalCases + x;
-        //total deaths
-        let y = checkIfNumber(data[i].deaths);
-        totalDeaths = totalDeaths + y;
-
-        // total critical
-        let z = checkIfNumber(data[i].serious_critical);
-        totalCritical = totalCritical + z;
-
-        //Total recovered
-        //let w = checkIfNumber(data[i].total_recovered);
-        let totalRecover = checkIfNumber(data[i].total_recovered);
-        tRecovers = tRecovers + totalRecover;
-
-        //new deaths
-        let newDeaths = checkIfNumber(data[i].new_deaths);
-        tNewDeaths = tNewDeaths + newDeaths;
-
-        //new cases
-        let newCases = checkIfNumber(data[i].new_cases);
-        tNewCases = tNewCases + newCases;
-
-        //active_cases
-        let activeCases = checkIfNumber(data[i].active_cases);
-        tActiveCases = tActiveCases + activeCases;
-
-        // total total_cases_per_1m_population
-        let totalCasesPer1mPopulation = checkIfNumber(
-          data[i].total_cases_per_1m_population
-        );
-        tTotalCasesPer1mPopulation =
-          tTotalCasesPer1mPopulation + totalCasesPer1mPopulation;
-      }
-      return {
-        totalCases,
-        totalDeaths,
-        totalCritical,
-        tNewDeaths,
-        tNewCases,
-        tRecovers,
-        tActiveCases,
-        tTotalCasesPer1mPopulation
-      };
-    };
-    let totalData = totalCases();
+    let totalData = totalCases(data);
     console.log("totalCases ", totalData);
     let dataData = props.Store.getCoronaVirusDataArray.data.countries_stat;
     let dataDataLength = dataData.length;
@@ -359,6 +288,7 @@ const CoronavirusData = inject("Store")(
     let nCases = totalData.tNewCases;
     let nTotalRecovers = totalData.tRecovers;
     let nActiveCases = totalData.tActiveCases;
+    let nTotalCountries = data.length;
     let nTotalCasesPer1mPopulation = (
       totalData.tTotalCasesPer1mPopulation / dataDataLength
     ).toFixed(2);
@@ -372,255 +302,12 @@ const CoronavirusData = inject("Store")(
 
     //CoronavirusData;
 
-    const optionsDonut = {
-      chart: {
-        id: "donut"
-      },
-      fill: {
-        colors: ["#d50000", "#F8BC36"]
-      },
-      legend: {
-        show: false
-      },
-
-      plotOptions: {
-        pie: {
-          expandOnClick: true,
-          customScale: 1,
-          donut: {
-            size: "55%",
-
-            labels: {
-              show: true,
-              fill: ["#d50000", "#F8BC36"],
-              name: {
-                show: true,
-                fontSize: "16px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                color: "white",
-                offsetY: -10
-              },
-              value: {
-                show: true,
-                fontSize: "18px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 900,
-                color: "red",
-                offsetY: 16,
-                formatter: function(val) {
-                  return val;
-                }
-              },
-
-              total: {
-                show: false,
-                showAlways: false,
-                label: "Total",
-                fontSize: "16px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                color: "#373d3f",
-                formatter: function(w) {
-                  return w.globals.seriesTotals.reduce((a, b) => {
-                    return a + b;
-                  }, 0);
-                }
-              }
-            }
-          }
-        }
-      },
-
-      labels: ["Dead", "Total Cases"]
-    };
-
-    const optionsDonutCritical = {
-      chart: {
-        id: "donut"
-      },
-      fill: {
-        colors: ["#d50000", "#ed562c"]
-      },
-      legend: {
-        show: false
-      },
-      plotOptions: {
-        pie: {
-          expandOnClick: true,
-          customScale: 1,
-          donut: {
-            size: "55%",
-            labels: {
-              show: true,
-              name: {
-                show: true,
-                fontSize: "16px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                color: "white",
-                offsetY: -10
-              },
-              value: {
-                show: true,
-                fontSize: "18px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 900,
-                color: "red",
-                offsetY: 16,
-                formatter: function(val) {
-                  return val;
-                }
-              },
-
-              total: {
-                show: false,
-                showAlways: false,
-                label: "Total",
-                fontSize: "16px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                color: "#373d3f",
-                formatter: function(w) {
-                  return w.globals.seriesTotals.reduce((a, b) => {
-                    return a + b;
-                  }, 0);
-                }
-              }
-            }
-          }
-        }
-      },
-
-      labels: ["Dead", "Critical Cases"]
-    };
-
-    const optionsDonutCasesCritical = {
-      chart: {
-        id: "donut"
-      },
-      fill: {
-        colors: ["#F8BC36", "#ed562c"]
-      },
-      legend: {
-        show: false
-      },
-      plotOptions: {
-        pie: {
-          expandOnClick: true,
-          customScale: 1,
-          donut: {
-            size: "55%",
-            labels: {
-              show: true,
-              name: {
-                show: true,
-                fontSize: "16px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                color: "white",
-                offsetY: -10
-              },
-              value: {
-                show: true,
-                fontSize: "18px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 900,
-                color: "red",
-                offsetY: 16,
-                formatter: function(val) {
-                  return val;
-                }
-              },
-
-              total: {
-                show: false,
-                showAlways: false,
-                label: "Total",
-                fontSize: "16px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                color: "#373d3f",
-                formatter: function(w) {
-                  return w.globals.seriesTotals.reduce((a, b) => {
-                    return a + b;
-                  }, 0);
-                }
-              }
-            }
-          }
-        }
-      },
-
-      labels: ["Total Cases", "Critical Cases"]
-    };
-
-    const optionsDonutSeries = {
-      chart: {
-        id: "donut"
-      },
-      fill: {
-        colors: ["#F8BC36", "#ed562c", "#d50000"]
-      },
-      legend: {
-        show: false
-      },
-      plotOptions: {
-        pie: {
-          expandOnClick: true,
-          customScale: 1,
-          donut: {
-            size: "55%",
-            labels: {
-              show: true,
-              name: {
-                show: true,
-                fontSize: "16px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                color: "white",
-                offsetY: -10
-              },
-              value: {
-                show: true,
-                fontSize: "18px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 900,
-                color: "red",
-                offsetY: 16,
-                formatter: function(val) {
-                  return val;
-                }
-              },
-
-              total: {
-                show: false,
-                showAlways: false,
-                label: "Total",
-                fontSize: "16px",
-                fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                color: "#373d3f",
-                formatter: function(w) {
-                  return w.globals.seriesTotals.reduce((a, b) => {
-                    return a + b;
-                  }, 0);
-                }
-              }
-            }
-          }
-        }
-      },
-
-      labels: ["Total Cases", "Critical Cases", "Dead"]
-    };
-
     let p = parseFloat(deathsData);
     let q = parseFloat(totalData.totalCases);
     let r = parseFloat(criticalData);
 
     const seriesDonut = [q, r, p];
-    const donuntSeries = [p, q];
+    const donuntSeries = [q, p];
     const donuntSeriesCritical = [p, r];
     const donuntSeriesCasesCritical = [q, r];
     const classes = useStyles();
@@ -760,6 +447,20 @@ const CoronavirusData = inject("Store")(
           <Paper className={classes.paperCard10}>
             <Grid item>
               <Typography className={classes.textCard}>
+                Num. of Countries / Num. de Países:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {nTotalCountries}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard11}>
+            <Grid item>
+              <Typography className={classes.textCard}>
                 Last Update / última Actualização:
               </Typography>
             </Grid>
@@ -771,59 +472,88 @@ const CoronavirusData = inject("Store")(
           </Paper>
         </Grid>
 
-        <Grid container className={classes.topGrid} spacing={2}>
-          <Grid item xs={12} sm={6} md={3} className={classes.chart}>
-            <Typography className={classes.chartHeader}>
-              Cases & Deaths
-              <br />
-              from coronavirus
-            </Typography>
-            <Chart
-              options={optionsDonut}
-              type="donut"
-              series={donuntSeries}
-              className={classes.chart}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} className={classes.chart}>
-            <Typography className={classes.chartHeader}>
-              Critical & Deaths Cases
-              <br />
-              from coronavirus
-            </Typography>
-            <Chart
-              options={optionsDonutCritical}
-              type="donut"
-              series={donuntSeriesCritical}
-              className={classes.chart}
-            />
+        <Grid container className={classes.topGrid} spacing={1}>
+          <Grid item xs={12} sm={12} md={12}>
+            <Paper className={classes.paperCardCharts}>
+              <Grid item>
+                <Typography className={classes.textChartTitle}>
+                  Global Data
+                  <Typography className={classes.textChartTitlept}>
+                    Totais Mundiais
+                  </Typography>
+                </Typography>
+              </Grid>
+            </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Typography className={classes.chartHeader}>
-              Critical & Total Cases
-              <br />
-              from coronavirus
-            </Typography>
-            <Chart
-              options={optionsDonutCasesCritical}
-              type="donut"
-              series={donuntSeriesCasesCritical}
-              className={classes.chart}
-            />
+            <Paper className={classes.paperCardCharts}>
+              <Grid item className={classes.chart}>
+                <Typography className={classes.chartHeader}>
+                  Cases/Deaths
+                  <br />
+                  Casos/Mortes
+                </Typography>
+
+                <Chart
+                  options={optionsDonut}
+                  type="donut"
+                  series={donuntSeries}
+                  //className={classes.chart}
+                />
+              </Grid>
+            </Paper>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <Typography className={classes.chartHeader}>
-              Critical, Death & Total Cases
-              <br />
-              from coronavirus
-            </Typography>
-            <Chart
-              options={optionsDonutSeries}
-              type="donut"
-              series={seriesDonut}
-              // className={classes.chart}
-            />
+            <Paper className={classes.paperCardCharts}>
+              <Grid item className={classes.chart}>
+                <Typography className={classes.chartHeader}>
+                  Critical/Deaths
+                  <br />
+                  Criticos/Mortes
+                </Typography>
+                <Chart
+                  options={optionsDonutCritical}
+                  type="donut"
+                  series={donuntSeriesCritical}
+                  //className={classes.chart}
+                />
+              </Grid>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper className={classes.paperCardCharts}>
+              <Grid item className={classes.chart}>
+                <Typography className={classes.chartHeader}>
+                  Critical/Cases
+                  <br />
+                  Criticos/Casos
+                </Typography>
+                <Chart
+                  options={optionsDonutCasesCritical}
+                  type="donut"
+                  series={donuntSeriesCasesCritical}
+                  //className={classes.chart}
+                />
+              </Grid>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper className={classes.paperCardCharts}>
+              <Grid item className={classes.chart}>
+                <Typography className={classes.chartHeader}>
+                  Critical/Death/Cases
+                  <br />
+                  Criticos/Mortes/Casos
+                </Typography>
+                <Chart
+                  options={optionsDonutSeries}
+                  type="donut"
+                  series={seriesDonut}
+                  // className={classes.chart}
+                />
+              </Grid>
+            </Paper>
           </Grid>
         </Grid>
         <Grid item className={classes.table} xs={12}>
@@ -918,3 +648,266 @@ const CoronavirusData = inject("Store")(
 );
 
 export default CoronavirusData;
+
+//Table Stylling Material UI
+const StyledTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: "rgb(0,0,0,0.1)",
+    color: theme.palette.secondary.dark
+  },
+  body: {
+    fontSize: 14
+  }
+}))(TableCell);
+
+const StyledTableRow = withStyles(theme => ({
+  root: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.background.default
+    }
+  }
+}))(TableRow);
+
+// Charts Stylling ApexCharts
+const optionsDonut = {
+  chart: {
+    id: "donut"
+  },
+  fill: {
+    colors: ["#EB5736", "#d50000"]
+  },
+  legend: {
+    show: false
+  },
+
+  plotOptions: {
+    pie: {
+      expandOnClick: true,
+      customScale: 1,
+      donut: {
+        size: "55%",
+
+        labels: {
+          show: true,
+          fill: ["#d50000", "#F8BC36"],
+          name: {
+            show: true,
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            color: "white",
+            offsetY: -10
+          },
+          value: {
+            show: true,
+            fontSize: "18px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 900,
+            color: "red",
+            offsetY: 16,
+            formatter: function(val) {
+              return val;
+            }
+          },
+
+          total: {
+            show: false,
+            showAlways: false,
+            label: "Total",
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            color: "#373d3f",
+            formatter: function(w) {
+              return w.globals.seriesTotals.reduce((a, b) => {
+                return a + b;
+              }, 0);
+            }
+          }
+        }
+      }
+    }
+  },
+
+  labels: ["Total Cases", "Dead"]
+};
+
+const optionsDonutCritical = {
+  chart: {
+    id: "donut"
+  },
+  fill: {
+    colors: ["#d50000", "#552946"]
+  },
+  legend: {
+    show: false
+  },
+  plotOptions: {
+    pie: {
+      expandOnClick: true,
+      customScale: 1,
+      donut: {
+        size: "55%",
+        labels: {
+          show: true,
+          name: {
+            show: true,
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            color: "white",
+            offsetY: -10
+          },
+          value: {
+            show: true,
+            fontSize: "18px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 900,
+            color: "red",
+            offsetY: 16,
+            formatter: function(val) {
+              return val;
+            }
+          },
+
+          total: {
+            show: false,
+            showAlways: false,
+            label: "Total",
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            color: "#373d3f",
+            formatter: function(w) {
+              return w.globals.seriesTotals.reduce((a, b) => {
+                return a + b;
+              }, 0);
+            }
+          }
+        }
+      }
+    }
+  },
+
+  labels: ["Dead", "Critical Cases"]
+};
+
+const optionsDonutCasesCritical = {
+  chart: {
+    id: "donut"
+  },
+  fill: {
+    colors: ["#EB5736", "#552946"]
+  },
+  legend: {
+    show: false
+  },
+  plotOptions: {
+    pie: {
+      expandOnClick: true,
+      customScale: 1,
+      donut: {
+        size: "55%",
+        labels: {
+          show: true,
+          name: {
+            show: true,
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            color: "white",
+            offsetY: -10
+          },
+          value: {
+            show: true,
+            fontSize: "18px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 900,
+            color: "red",
+            offsetY: 16,
+            formatter: function(val) {
+              return val;
+            }
+          },
+
+          total: {
+            show: false,
+            showAlways: false,
+            label: "Total",
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            color: "#373d3f",
+            formatter: function(w) {
+              return w.globals.seriesTotals.reduce((a, b) => {
+                return a + b;
+              }, 0);
+            }
+          }
+        }
+      }
+    }
+  },
+
+  labels: ["Total Cases", "Critical Cases"]
+};
+
+const optionsDonutSeries = {
+  chart: {
+    id: "donut"
+  },
+  fill: {
+    colors: ["#EB5736", "#562846", "#d50000"]
+  },
+  legend: {
+    show: false
+  },
+  plotOptions: {
+    pie: {
+      expandOnClick: true,
+      customScale: 1,
+      donut: {
+        size: "55%",
+        labels: {
+          show: true,
+          name: {
+            show: true,
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            color: "white",
+            offsetY: -10
+          },
+          value: {
+            show: true,
+            fontSize: "18px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 900,
+            color: "red",
+            offsetY: 16,
+            formatter: function(val) {
+              return val;
+            }
+          },
+
+          total: {
+            show: false,
+            showAlways: false,
+            label: "Total",
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            color: "#373d3f",
+            formatter: function(w) {
+              return w.globals.seriesTotals.reduce((a, b) => {
+                return a + b;
+              }, 0);
+            }
+          }
+        }
+      }
+    }
+  },
+
+  labels: ["Total Cases", "Critical Cases", "Dead"]
+};

@@ -33,6 +33,7 @@ class Store {
   whcCornovirusDataRecoverdArrayObj;
   whcCornovirusDataRecoverd;
   objectCSSEGISandData;
+  userLang;
   //for test porpuses
   test = "hello world";
 
@@ -93,11 +94,13 @@ class Store {
 
   //("get all data")
   getData = async () => {
-    await this.extData();
+    this.extData();
     await this.getCityCoordinates();
     this.storeCounterData();
     this.isLoading = false;
   };
+
+  //("user browser language")
 
   //("update weather data")
   updateWeather = () => {
@@ -360,11 +363,17 @@ class Store {
     ];
     console.log("data City ", this.objectCSSEGISandData);
   };
+
+  userLanguage = () => {
+    userLang = navigator.language || navigator.userLanguage;
+
+    console.log("coronavirus componet ", userLang);
+  };
 }
 
-//("get counter")
-
 decorate(Store, {
+  userLanguage: action,
+  userLang: observable,
   storeCounterData: action,
   calcTime: action,
   extData: action,
