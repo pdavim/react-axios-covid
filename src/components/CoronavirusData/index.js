@@ -136,7 +136,7 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: 20,
     paddingLeft: 10,
     paddingRight: 10,
-    background: "rgb(25,25,25,0.3)",
+    background: "rgb(50,204,100,0.3)",
     marginLeft: 1,
     marginRight: 1,
     height: 50
@@ -162,6 +162,16 @@ const useStyles = makeStyles(theme => ({
     height: 50
   },
   paperCard9: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(255,0,150,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard10: {
     paddingTop: 20,
     paddingBottom: 20,
     paddingLeft: 10,
@@ -209,21 +219,6 @@ const StyledTableRow = withStyles(theme => ({
     }
   }
 }))(TableRow);
-
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`
-  };
-}
 
 const CoronavirusData = inject("Store")(
   observer(props => {
@@ -381,18 +376,28 @@ const CoronavirusData = inject("Store")(
       chart: {
         id: "donut"
       },
+      fill: {
+        colors: ["#d50000", "#F8BC36"]
+      },
+      legend: {
+        show: false
+      },
+
       plotOptions: {
         pie: {
           expandOnClick: true,
-          size: 200,
+          customScale: 1,
           donut: {
+            size: "55%",
+
             labels: {
               show: true,
+              fill: ["#d50000", "#F8BC36"],
               name: {
                 show: true,
-                fontSize: "22px",
+                fontSize: "16px",
                 fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 600,
+                fontWeight: 400,
                 color: "white",
                 offsetY: -10
               },
@@ -400,7 +405,7 @@ const CoronavirusData = inject("Store")(
                 show: true,
                 fontSize: "18px",
                 fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
+                fontWeight: 900,
                 color: "red",
                 offsetY: 16,
                 formatter: function(val) {
@@ -412,9 +417,9 @@ const CoronavirusData = inject("Store")(
                 show: false,
                 showAlways: false,
                 label: "Total",
-                fontSize: "22px",
+                fontSize: "16px",
                 fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 600,
+                fontWeight: 400,
                 color: "#373d3f",
                 formatter: function(w) {
                   return w.globals.seriesTotals.reduce((a, b) => {
@@ -427,25 +432,32 @@ const CoronavirusData = inject("Store")(
         }
       },
 
-      labels: ["% Death", "Total Cases"]
+      labels: ["Dead", "Total Cases"]
     };
 
     const optionsDonutCritical = {
       chart: {
         id: "donut"
       },
+      fill: {
+        colors: ["#d50000", "#ed562c"]
+      },
+      legend: {
+        show: false
+      },
       plotOptions: {
         pie: {
           expandOnClick: true,
-          size: 200,
+          customScale: 1,
           donut: {
+            size: "55%",
             labels: {
               show: true,
               name: {
                 show: true,
-                fontSize: "22px",
+                fontSize: "16px",
                 fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 600,
+                fontWeight: 400,
                 color: "white",
                 offsetY: -10
               },
@@ -453,7 +465,7 @@ const CoronavirusData = inject("Store")(
                 show: true,
                 fontSize: "18px",
                 fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 400,
+                fontWeight: 900,
                 color: "red",
                 offsetY: 16,
                 formatter: function(val) {
@@ -465,9 +477,9 @@ const CoronavirusData = inject("Store")(
                 show: false,
                 showAlways: false,
                 label: "Total",
-                fontSize: "22px",
+                fontSize: "16px",
                 fontFamily: "Helvetica, Arial, sans-serif",
-                fontWeight: 600,
+                fontWeight: 400,
                 color: "#373d3f",
                 formatter: function(w) {
                   return w.globals.seriesTotals.reduce((a, b) => {
@@ -480,139 +492,147 @@ const CoronavirusData = inject("Store")(
         }
       },
 
-      labels: ["% Death", "Critical Cases"]
+      labels: ["Dead", "Critical Cases"]
     };
 
-    const options = {
+    const optionsDonutCasesCritical = {
       chart: {
-        id: "basic-bar"
+        id: "donut"
+      },
+      fill: {
+        colors: ["#F8BC36", "#ed562c"]
+      },
+      legend: {
+        show: false
+      },
+      plotOptions: {
+        pie: {
+          expandOnClick: true,
+          customScale: 1,
+          donut: {
+            size: "55%",
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: "16px",
+                fontFamily: "Helvetica, Arial, sans-serif",
+                fontWeight: 400,
+                color: "white",
+                offsetY: -10
+              },
+              value: {
+                show: true,
+                fontSize: "18px",
+                fontFamily: "Helvetica, Arial, sans-serif",
+                fontWeight: 900,
+                color: "red",
+                offsetY: 16,
+                formatter: function(val) {
+                  return val;
+                }
+              },
+
+              total: {
+                show: false,
+                showAlways: false,
+                label: "Total",
+                fontSize: "16px",
+                fontFamily: "Helvetica, Arial, sans-serif",
+                fontWeight: 400,
+                color: "#373d3f",
+                formatter: function(w) {
+                  return w.globals.seriesTotals.reduce((a, b) => {
+                    return a + b;
+                  }, 0);
+                }
+              }
+            }
+          }
+        }
       },
 
-      theme: {
-        //mode: "dark",
-        palette: "palette1",
-        monochrome: {
-          enabled: false,
-          color: "black",
-          shadeTo: "light",
-          shadeIntensity: 0.65
-        }
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: "#ccc"
-          }
-        }
-      },
-      colors: ["#546E7A", "#E91E63"],
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          endingShape: "flat",
-          columnWidth: "40%",
-          barHeight: "70%",
-          distributed: false,
-          colors: {
-            ranges: [
-              {
-                from: 0,
-                to: 0,
-                color: undefined
-              }
-            ],
-            backgroundBarColors: [],
-            backgroundBarOpacity: 1
-          },
-          dataLabels: {
-            position: "top",
-            maxItems: 100,
-            hideOverflowingLabels: true,
-            orientation: "horizontal"
-          }
-        }
-      },
-      tooltip: {
-        enabled: true,
-        enabledOnSeries: undefined,
-        shared: true,
-        followCursor: false,
-        intersect: false,
-        inverseOrder: false,
-        custom: undefined,
-        fillSeriesColor: false,
-        theme: true,
-        style: {
-          fontSize: "12px",
-          fontFamily: undefined
-        },
-        onDatasetHover: {
-          highlightDataSeries: true
-        },
-        x: {
-          show: true,
-          format: "dd MMM",
-          formatter: undefined
-        },
-        y: {
-          formatter: undefined,
-          title: {
-            formatter: seriesName => seriesName
-          }
-        },
-        z: {
-          formatter: undefined,
-          title: "Size: "
-        },
-        marker: {
-          show: true
-        },
-        items: {
-          display: "flex"
-        },
-        fixed: {
-          enabled: false,
-          position: "topRight",
-          offsetX: 0,
-          offsetY: 0
-        }
-      }
+      labels: ["Total Cases", "Critical Cases"]
     };
-    const series = [
-      {
-        name: ["Cases", "Critical", "Deaths"],
-        data: [
-          parseFloat(totalData.totalCases),
-          parseFloat(criticalData),
-          parseFloat(deathsData)
-        ]
-      }
-    ];
+
+    const optionsDonutSeries = {
+      chart: {
+        id: "donut"
+      },
+      fill: {
+        colors: ["#F8BC36", "#ed562c", "#d50000"]
+      },
+      legend: {
+        show: false
+      },
+      plotOptions: {
+        pie: {
+          expandOnClick: true,
+          customScale: 1,
+          donut: {
+            size: "55%",
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: "16px",
+                fontFamily: "Helvetica, Arial, sans-serif",
+                fontWeight: 400,
+                color: "white",
+                offsetY: -10
+              },
+              value: {
+                show: true,
+                fontSize: "18px",
+                fontFamily: "Helvetica, Arial, sans-serif",
+                fontWeight: 900,
+                color: "red",
+                offsetY: 16,
+                formatter: function(val) {
+                  return val;
+                }
+              },
+
+              total: {
+                show: false,
+                showAlways: false,
+                label: "Total",
+                fontSize: "16px",
+                fontFamily: "Helvetica, Arial, sans-serif",
+                fontWeight: 400,
+                color: "#373d3f",
+                formatter: function(w) {
+                  return w.globals.seriesTotals.reduce((a, b) => {
+                    return a + b;
+                  }, 0);
+                }
+              }
+            }
+          }
+        }
+      },
+
+      labels: ["Total Cases", "Critical Cases", "Dead"]
+    };
 
     let p = parseFloat(deathsData);
     let q = parseFloat(totalData.totalCases);
     let r = parseFloat(criticalData);
 
+    const seriesDonut = [q, r, p];
     const donuntSeries = [p, q];
     const donuntSeriesCritical = [p, r];
+    const donuntSeriesCasesCritical = [q, r];
     const classes = useStyles();
 
-    const [open, setOpen] = React.useState(false);
-
-    const handleOpen = () => {
-      console.log(open);
-      setOpen(true);
-    };
-
-    const handleClose = () => {
-      setOpen(false);
-    };
     return (
       <Grid container className={classes.root} spacing={1}>
         <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
           <Paper className={classes.paperCard}>
             <Grid item>
-              <Typography className={classes.textCard}>World Cases:</Typography>
+              <Typography className={classes.textCard}>
+                World Cases / Total de Casos:
+              </Typography>
             </Grid>
             <Grid item>
               <Typography className={classes.textContent}>
@@ -626,7 +646,7 @@ const CoronavirusData = inject("Store")(
           <Paper className={classes.paperCard2}>
             <Grid item>
               <Typography className={classes.textCard}>
-                World Deaths:
+                World Deaths / Total de Mortes:
               </Typography>
             </Grid>
             <Grid item>
@@ -641,12 +661,12 @@ const CoronavirusData = inject("Store")(
           <Paper className={classes.paperCard3}>
             <Grid item>
               <Typography className={classes.textCard}>
-                World Death %:
+                World Death % / Total de Mortes %:
               </Typography>
             </Grid>
             <Grid item>
               <Typography className={classes.textContent}>
-                {totalPercentage}
+                {totalPercentage}%
               </Typography>
             </Grid>
           </Paper>
@@ -655,7 +675,9 @@ const CoronavirusData = inject("Store")(
         <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
           <Paper className={classes.paperCard4}>
             <Grid item>
-              <Typography className={classes.textCard}>Daily Death:</Typography>
+              <Typography className={classes.textCard}>
+                Daily Death / Mortes Diárias:
+              </Typography>
             </Grid>
             <Grid item>
               <Typography className={classes.textContent}>
@@ -669,7 +691,7 @@ const CoronavirusData = inject("Store")(
           <Paper className={classes.paperCard5}>
             <Grid item>
               <Typography className={classes.textCard}>
-                Daily New Cases:
+                Daily New Cases / Novos Casos Dia:
               </Typography>
             </Grid>
             <Grid item>
@@ -682,7 +704,7 @@ const CoronavirusData = inject("Store")(
           <Paper className={classes.paperCard7}>
             <Grid item>
               <Typography className={classes.textCard}>
-                Total Recoverd:
+                Total Recoverd / Total Recuperados:
               </Typography>
             </Grid>
             <Grid item>
@@ -696,7 +718,7 @@ const CoronavirusData = inject("Store")(
           <Paper className={classes.paperCard8}>
             <Grid item>
               <Typography className={classes.textCard}>
-                Active Cases:
+                Active Cases / Casos Activos:
               </Typography>
             </Grid>
             <Grid item>
@@ -710,7 +732,7 @@ const CoronavirusData = inject("Store")(
           <Paper className={classes.paperCard9}>
             <Grid item>
               <Typography className={classes.textCard}>
-                Cases per 1 milion:
+                Cases per 1 milion / Casos por 1 milhão:
               </Typography>
             </Grid>
             <Grid item>
@@ -720,11 +742,26 @@ const CoronavirusData = inject("Store")(
             </Grid>
           </Paper>
         </Grid>
-
-        <Grid item xs={12} sm={12} md={4} className={classes.paperGrid}>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
           <Paper className={classes.paperCard6}>
             <Grid item>
-              <Typography className={classes.textCard}>Last Update:</Typography>
+              <Typography className={classes.textCard}>
+                Critical Cases / Casos Criticos:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.textContent}>
+                {criticalData}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Paper className={classes.paperCard10}>
+            <Grid item>
+              <Typography className={classes.textCard}>
+                Last Update / última Actualização:
+              </Typography>
             </Grid>
             <Grid item>
               <Typography className={classes.textContent}>
@@ -734,8 +771,8 @@ const CoronavirusData = inject("Store")(
           </Paper>
         </Grid>
 
-        <Grid container className={classes.topGrid}>
-          <Grid xs={12} sm={6} md={4} className={classes.chart}>
+        <Grid container className={classes.topGrid} spacing={2}>
+          <Grid item xs={12} sm={6} md={3} className={classes.chart}>
             <Typography className={classes.chartHeader}>
               Cases & Deaths
               <br />
@@ -748,9 +785,9 @@ const CoronavirusData = inject("Store")(
               className={classes.chart}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} className={classes.chart}>
+          <Grid item xs={12} sm={6} md={3} className={classes.chart}>
             <Typography className={classes.chartHeader}>
-              Critical Cases & Deaths
+              Critical & Deaths Cases
               <br />
               from coronavirus
             </Typography>
@@ -761,18 +798,31 @@ const CoronavirusData = inject("Store")(
               className={classes.chart}
             />
           </Grid>
-
-          <Grid item xs={12} sm={6} md={4} className={classes.chart}>
+          <Grid item xs={12} sm={6} md={3}>
             <Typography className={classes.chartHeader}>
-              Cases & Deaths
+              Critical & Total Cases
               <br />
               from coronavirus
             </Typography>
             <Chart
-              options={options}
-              type="bar"
-              series={series}
+              options={optionsDonutCasesCritical}
+              type="donut"
+              series={donuntSeriesCasesCritical}
               className={classes.chart}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Typography className={classes.chartHeader}>
+              Critical, Death & Total Cases
+              <br />
+              from coronavirus
+            </Typography>
+            <Chart
+              options={optionsDonutSeries}
+              type="donut"
+              series={seriesDonut}
+              // className={classes.chart}
             />
           </Grid>
         </Grid>
@@ -827,32 +877,12 @@ const CoronavirusData = inject("Store")(
                     <TableCell align="right" className={classes.percentage}>
                       {percentage(dt.cases, dt.deaths)}
                     </TableCell>
-                    <TableCell align="right" className={classes.percentage}>
-                      <button type="button" onClick={handleOpen}>
-                        Open Modal
-                      </button>
-                      <Modal
-                        aria-labelledby="simple-modal-title"
-                        aria-describedby="simple-modal-description"
-                        //open={open}
-                        //onClose={handleClose}
-                      >
-                        <div className={classes.paper}>
-                          <h2 id="simple-modal-title">Text in a modal</h2>
-                          <p id="simple-modal-description">
-                            Duis mollis, est non commodo luctus, nisi erat
-                            porttitor ligula.
-                          </p>
-                          <CoronavirusData />
-                        </div>
-                      </Modal>
-                    </TableCell>
                   </StyledTableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paperCard}>
                 <Grid item>
