@@ -6,14 +6,15 @@ import { getCode } from "country-list";
 //import Material UI
 import { Grid } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
+import TablePagination from "@material-ui/core/TablePagination";
 
 //import functions
 import percentage from "../../functions/percentage";
@@ -42,6 +43,9 @@ const useStyles = makeStyles(theme => ({
   },
   tableDeath: {
     color: "red"
+  },
+  tableContainer: {
+    maxHeight: 440
   },
   newCases: {
     color: "orange",
@@ -250,7 +254,8 @@ const CoronavirusData = inject("Store")(
     let countriesArray = [];
     let countriesIdArray = [];
     let data;
-
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     if (!props.Store.getCoronaVirusDataArray) {
       console.log("wait a little more for data");
       return;
@@ -276,6 +281,22 @@ const CoronavirusData = inject("Store")(
 
       countriesIdFunction();
     }
+
+    console.log("number of pages ", data.length);
+    let row = data.length;
+    console.log("number of pages ", row);
+    console.log(typeof row);
+    console.log(typeof page);
+    console.log(typeof rowsPerPage);
+    console.log(typeof setRowsPerPage);
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = event => {
+      setRowsPerPage(+event.target.value);
+      setPage(0);
+    };
 
     let totalData = totalCases(data);
     console.log("totalCases ", totalData);
@@ -557,11 +578,16 @@ const CoronavirusData = inject("Store")(
           </Grid>
         </Grid>
         <Grid item className={classes.table} xs={12}>
-          <TableContainer component={Paper}>
+          <TableContainer
+            component={Paper}
+            className={classes.tableContainer}
+            aria-label="sticky table"
+          >
             <Table
               className={classes.table}
               size="small"
               aria-label="a dense table"
+              stickyHeader
             >
               <TableHead>
                 <TableRow>
@@ -581,37 +607,53 @@ const CoronavirusData = inject("Store")(
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((dt, i) => (
-                  <StyledTableRow key={i}>
-                    <TableCell component="th" scope="row">
-                      {i + 1}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {dt.country_name}
-                    </TableCell>
+                {data
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((dt, i) => (
+                    <StyledTableRow key={i} hover role="checkbox">
+                      <TableCell component="th" scope="row">
+                        {i + 1}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {dt.country_name}
+                      </TableCell>
 
-                    <TableCell align="right">{dt.cases}</TableCell>
-                    <TableCell align="right" className={classes.tableDeath}>
-                      {dt.deaths}
-                    </TableCell>
-                    <TableCell align="right" className={classes.recoverd}>
-                      {dt.total_recovered}
-                    </TableCell>
-                    <TableCell align="right" className={classes.tableDeath}>
-                      {dt.new_deaths}
-                    </TableCell>
-                    <TableCell align="right" className={classes.newCases}>
-                      {dt.new_cases}
-                    </TableCell>
-                    <TableCell align="right">{dt.serious_critical}</TableCell>
-                    <TableCell align="right" className={classes.percentage}>
-                      {percentage(dt.cases, dt.deaths)}
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
+                      <TableCell align="right">{dt.cases}</TableCell>
+                      <TableCell align="right" className={classes.tableDeath}>
+                        {dt.deaths}
+                      </TableCell>
+                      <TableCell align="right" className={classes.recoverd}>
+                        {dt.total_recovered}
+                      </TableCell>
+                      <TableCell align="right" className={classes.tableDeath}>
+                        {dt.new_deaths}
+                      </TableCell>
+                      <TableCell align="right" className={classes.newCases}>
+                        {dt.new_cases}
+                      </TableCell>
+                      <TableCell align="right">{dt.serious_critical}</TableCell>
+                      <TableCell align="right" className={classes.percentage}>
+                        {percentage(dt.cases, dt.deaths)}
+                      </TableCell>
+                    </StyledTableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
+
+          {row.length === 0 ? (
+            <p>loading pages</p>
+          ) : (
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={row.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+          )}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paperCard}>
