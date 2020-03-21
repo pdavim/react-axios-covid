@@ -1,5 +1,6 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
+import PropTypes from "prop-types";
 import Chart from "react-apexcharts";
 import { getCode } from "country-list";
 
@@ -15,10 +16,24 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
+import TableFooter from "@material-ui/core/TableFooter";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
 
 //import functions
 import percentage from "../../functions/percentage";
 import totalCases from "../../functions/totalCases";
+
+const tableHeaderTtextTitle = [
+  "nº",
+  "Country",
+  "Cases",
+  "Deaths",
+  "Total Recoverd",
+  "New Deaths",
+  "New Cases",
+  "Critical Cases",
+  "C/D %"
+];
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -254,6 +269,7 @@ const CoronavirusData = inject("Store")(
     let countriesArray = [];
     let countriesIdArray = [];
     let data;
+
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
     if (!props.Store.getCoronaVirusDataArray) {
@@ -282,13 +298,13 @@ const CoronavirusData = inject("Store")(
       countriesIdFunction();
     }
 
-    console.log("number of pages ", data.length);
     let row = data.length;
-    console.log("number of pages ", row);
-    console.log(typeof row);
-    console.log(typeof page);
-    console.log(typeof rowsPerPage);
-    console.log(typeof setRowsPerPage);
+    //console.log("number of pages ", data.length);
+    //console.log("number of pages ", row);
+    //console.log(typeof row);
+    //console.log(typeof page);
+    //console.log(typeof rowsPerPage);
+    //console.log(typeof setRowsPerPage);
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
     };
@@ -577,96 +593,106 @@ const CoronavirusData = inject("Store")(
             </Paper>
           </Grid>
         </Grid>
-        <Grid item className={classes.table} xs={12}>
-          <TableContainer
-            component={Paper}
-            className={classes.tableContainer}
-            aria-label="sticky table"
-          >
-            <Table
-              className={classes.table}
-              size="small"
-              aria-label="a dense table"
-              stickyHeader
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Paper className={classes.paperCardCharts}>
+              <Typography className={classes.textChartTitle}>
+                Data per Country
+              </Typography>
+              <Typography className={classes.textChartTitlept}>
+                Dados por país
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid item className={classes.table} xs={12}>
+            <TableContainer
+              component={Paper}
+              className={classes.tableContainer}
+              aria-label="sticky table"
             >
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell>Nº</StyledTableCell>
-                  <StyledTableCell>Country</StyledTableCell>
-                  <StyledTableCell align="right">Cases</StyledTableCell>
-                  <StyledTableCell align="right">Deaths</StyledTableCell>
-                  <StyledTableCell align="right">
-                    Total Recoverd
-                  </StyledTableCell>
-                  <StyledTableCell align="right">New Deaths</StyledTableCell>
-                  <StyledTableCell align="right">New Cases</StyledTableCell>
-                  <StyledTableCell align="right">
-                    Critical Cases
-                  </StyledTableCell>
-                  <StyledTableCell align="right">C/D %</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((dt, i) => (
-                    <StyledTableRow key={i} hover role="checkbox">
-                      <TableCell component="th" scope="row">
-                        {i + 1}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {dt.country_name}
-                      </TableCell>
+              <Table
+                className={classes.table}
+                size="small"
+                aria-label="a dense table"
+                stickyHeader
+              >
+                <TableHead>
+                  <TableRow>
+                    {tableHeaderTtextTitle.map((headCell, i) => (
+                      <StyledTableCell
+                        key={i}
+                        padding={headCell.disablePadding ? "none" : "default"}
+                      >
+                        <TableSortLabel>{headCell}</TableSortLabel>
+                      </StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data
 
-                      <TableCell align="right">{dt.cases}</TableCell>
-                      <TableCell align="right" className={classes.tableDeath}>
-                        {dt.deaths}
-                      </TableCell>
-                      <TableCell align="right" className={classes.recoverd}>
-                        {dt.total_recovered}
-                      </TableCell>
-                      <TableCell align="right" className={classes.tableDeath}>
-                        {dt.new_deaths}
-                      </TableCell>
-                      <TableCell align="right" className={classes.newCases}>
-                        {dt.new_cases}
-                      </TableCell>
-                      <TableCell align="right">{dt.serious_critical}</TableCell>
-                      <TableCell align="right" className={classes.percentage}>
-                        {percentage(dt.cases, dt.deaths)}
-                      </TableCell>
-                    </StyledTableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((dt, i) => (
+                      <StyledTableRow key={i} hover role="checkbox">
+                        <TableCell component="th" scope="row">
+                          {i + 1}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {dt.country_name}
+                        </TableCell>
 
-          {row.length === 0 ? (
-            <p>loading pages</p>
-          ) : (
-            <TablePagination
-              rowsPerPageOptions={[25, 50, 100, 200]}
-              component="div"
-              count={row.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
-          )}
-          <Grid container spacing={2}>
+                        <TableCell align="right">{dt.cases}</TableCell>
+                        <TableCell align="right" className={classes.tableDeath}>
+                          {dt.deaths}
+                        </TableCell>
+                        <TableCell align="right" className={classes.recoverd}>
+                          {dt.total_recovered}
+                        </TableCell>
+                        <TableCell align="right" className={classes.tableDeath}>
+                          {dt.new_deaths}
+                        </TableCell>
+                        <TableCell align="right" className={classes.newCases}>
+                          {dt.new_cases}
+                        </TableCell>
+                        <TableCell align="right">
+                          {dt.serious_critical}
+                        </TableCell>
+                        <TableCell align="right" className={classes.percentage}>
+                          {percentage(dt.cases, dt.deaths)}
+                        </TableCell>
+                      </StyledTableRow>
+                    ))}
+                </TableBody>
+              </Table>
+              {data.length === 0 ? (
+                <p>loading pages</p>
+              ) : (
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      rowsPerPageOptions={[10, 25, 50, 100, 200]}
+                      component="div"
+                      count={data.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onChangePage={handleChangePage}
+                      onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                  </TableRow>
+                </TableFooter>
+              )}
+            </TableContainer>
+          </Grid>
+          <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paperCard}>
-                <Grid item>
-                  <Typography className={classes.textCard}>
-                    Last Updated:
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography className={classes.textContent}>
-                    {timeUpdated}
-                  </Typography>
-                </Grid>
+                <Typography className={classes.textCard}>
+                  Last Updated:
+                </Typography>
+
+                <Typography className={classes.textContent}>
+                  {timeUpdated}
+                </Typography>
               </Paper>
             </Grid>
 
@@ -691,6 +717,15 @@ const CoronavirusData = inject("Store")(
 
 export default CoronavirusData;
 
+CoronavirusData.propTypes = {
+  classes: PropTypes.object.isRequired,
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired
+};
 //Table Stylling Material UI
 const StyledTableCell = withStyles(theme => ({
   head: {
