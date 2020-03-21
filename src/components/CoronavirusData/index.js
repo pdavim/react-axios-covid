@@ -255,7 +255,7 @@ const CoronavirusData = inject("Store")(
     let countriesIdArray = [];
     let data;
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState(25);
     if (!props.Store.getCoronaVirusDataArray) {
       console.log("wait a little more for data");
       return;
@@ -645,7 +645,7 @@ const CoronavirusData = inject("Store")(
             <p>loading pages</p>
           ) : (
             <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
+              rowsPerPageOptions={[25, 50, 100, 200]}
               component="div"
               count={row.length}
               rowsPerPage={rowsPerPage}
@@ -694,8 +694,9 @@ export default CoronavirusData;
 //Table Stylling Material UI
 const StyledTableCell = withStyles(theme => ({
   head: {
-    backgroundColor: "rgb(0,0,0,0.1)",
-    color: theme.palette.secondary.dark
+    backgroundColor: "rgb(225,225,225)",
+    color: theme.palette.secondary.dark,
+    fontWeight: 700
   },
   body: {
     fontSize: 14
