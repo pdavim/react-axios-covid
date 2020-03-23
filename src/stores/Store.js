@@ -42,6 +42,8 @@ class Store {
   headersArrayCountry = [];
   singleCountryDataStore = [];
   getSingleCountryInfo = [];
+  generalCountryCovidData = [];
+  generalCountryCovidDataDate;
   //for test porpuses
   test = "hello world";
 
@@ -84,6 +86,7 @@ class Store {
   //dayOrNight
   dayOrNightData;
 
+  //Countries coord
   citiesDataArrayObs = [];
 
   //CornovirusData
@@ -129,33 +132,36 @@ class Store {
     })
       .then(response => {
         // console.log("Cornovirus response ", response);
-        this.getCoronaVirusDataArray = response;
+        // this.getCoronaVirusDataArray = response;
         //console.log(
         // "Cornovirus getCoronaVirusDataArray ",
         //  this.getCoronaVirusDataArray
         //  );
+        return response;
       })
       .then(r => {
-        let dataCities = this.getCoronaVirusDataArray.data.countries_stat;
+        console.log("r", r);
+        this.getCoronaVirusDataArray = r;
+        this.generalCountryCovidData = this.getCoronaVirusDataArray.data.countries_stat;
+        this.generalCountryCovidDataDate = r.data.statistic_taken_at;
+        let dataCities = r.data.countries_stat;
         let dataCitiesLength = dataCities.length;
         let errorDataCountry = [];
         for (let i = 0; i < dataCitiesLength; i++) {
           // console.log("city name ", dataCities[i].country_name);
 
-          let country = dataCities[i].country_name;
-
           if (
-            country === "S. Korea" ||
-            country === "Diamond Princess" ||
-            country === "Czechia" ||
-            country === "Faeroe Islands" ||
-            country === "North Macedonia" ||
-            country === "Channel Islands" ||
-            country === "Vatican City" ||
-            country === "St. Vincent Grenadines"
+            dataCities[i].country_name === "S. Korea" ||
+            dataCities[i].country_name === "Diamond Princess" ||
+            dataCities[i].country_name === "Czechia" ||
+            dataCities[i].country_name === "Faeroe Islands" ||
+            dataCities[i].country_name === "North Macedonia" ||
+            dataCities[i].country_name === "Channel Islands" ||
+            dataCities[i].country_name === "Vatican City" ||
+            dataCities[i].country_name === "St. Vincent Grenadines"
           ) {
             // console.log(country);
-            errorDataCountry.push(country);
+            errorDataCountry.push(dataCities[i].country_name);
           } else {
             axios({
               method: "GET",
@@ -247,24 +253,24 @@ class Store {
       })
       .then(res => {
         this.singleCountryDataStore = res;
-        this.getSingleCountryInfo();
-        console.log("portugal data ", res[0]);
+        this.getSingleCountryInfoF();
+        console.log("Country data ", res);
       });
   };
 
   //Get single contry info coord/population
-  getSingleCountryInfo = () => {
+  getSingleCountryInfoF = () => {
     let array = this.citiesDataArrayObs;
     let arraySingle = [];
     let arrayResLengthInfo = array.length;
-    //console.log("array single ", array);
+    console.log("array single ", array);
     for (let i = 0; i < arrayResLengthInfo; i++) {
       if (this.citiesDataArrayObs[i].name === "Portugal") {
         arraySingle.push(this.citiesDataArrayObs[i]);
       }
     }
     this.getSingleCountryInfo = arraySingle;
-    return this.getSingleCountryInfo;
+    //return this.getSingleCountryInfo;
   };
 
   //("get City Coordinates")
@@ -509,6 +515,8 @@ decorate(Store, {
   loadingSingularPage: observable,
   singleCountryDataStore: observable,
   getSingleCountryInfo: observable,
+  generalCountryCovidData: observable,
+  generalCountryCovidDataDate: observable,
 
   activeStation: observable,
 

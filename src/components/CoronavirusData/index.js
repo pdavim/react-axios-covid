@@ -265,40 +265,8 @@ const useStyles = makeStyles(theme => ({
 
 const CoronavirusData = inject("Store")(
   observer(props => {
-    // console.log("CoronavirusData props ", props);
-    let countriesArray = [];
-    let countriesIdArray = [];
-    let data;
-
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
-    if (!props.Store.getCoronaVirusDataArray) {
-      console.log("wait a little more for data");
-      return;
-    } else {
-      //console.log("Data Has Arrived");
-      data = props.Store.getCoronaVirusDataArray.data.countries_stat;
-
-      const countriesFunction = async () => {
-        for (let i = 0; i < data.length; i++) {
-          let country = await props.Store.getCoronaVirusDataArray.data
-            .countries_stat[i].country_name;
-          countriesArray.push(country.toLocaleLowerCase());
-        }
-      };
-
-      const countriesIdFunction = async () => {
-        await countriesFunction();
-        for (let i = 0; i < countriesArray.length; i++) {
-          let id = getCode(countriesArray[i]);
-          countriesIdArray.push(id);
-        }
-      };
-
-      countriesIdFunction();
-    }
-
-    let row = data.length;
 
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -309,9 +277,9 @@ const CoronavirusData = inject("Store")(
       setPage(0);
     };
 
-    let totalData = totalCases(data);
-    //console.log("totalCases ", totalData);
-    let dataData = props.Store.getCoronaVirusDataArray.data.countries_stat;
+    let dataData = props.props.Store.generalCountryCovidData;
+    let totalData = totalCases(dataData);
+
     let dataDataLength = dataData.length;
     let casesData = totalData.totalCases;
     let deathsData = totalData.totalDeaths;
@@ -320,19 +288,13 @@ const CoronavirusData = inject("Store")(
     let nCases = totalData.tNewCases;
     let nTotalRecovers = totalData.tRecovers;
     let nActiveCases = totalData.tActiveCases;
-    let nTotalCountries = data.length;
+    let nTotalCountries = dataData.length;
     let nTotalCasesPer1mPopulation = (
       totalData.tTotalCasesPer1mPopulation / dataDataLength
     ).toFixed(2);
 
-    // console.log("casesData ", casesData);
-    // console.log("deathsData ", deathsData);
-
     let totalPercentage = percentage(casesData, deathsData);
-    let timeUpdated =
-      props.Store.getCoronaVirusDataArray.data.statistic_taken_at;
-
-    //CoronavirusData;
+    let timeUpdated = props.Store.generalCountryCovidDataDate;
 
     let p = parseFloat(deathsData);
     let q = parseFloat(totalData.totalCases);
@@ -624,7 +586,7 @@ const CoronavirusData = inject("Store")(
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data
+                  {dataData
 
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((dt, i) => (
@@ -659,7 +621,7 @@ const CoronavirusData = inject("Store")(
                     ))}
                 </TableBody>
               </Table>
-              {data.length === 0 ? (
+              {dataData.length === 0 ? (
                 <p>loading pages</p>
               ) : (
                 <TableFooter>
@@ -667,7 +629,7 @@ const CoronavirusData = inject("Store")(
                     <TablePagination
                       rowsPerPageOptions={[10, 25, 50, 100, 200]}
                       component="div"
-                      count={data.length}
+                      count={dataData.length}
                       rowsPerPage={rowsPerPage}
                       page={page}
                       onChangePage={handleChangePage}
