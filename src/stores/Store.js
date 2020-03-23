@@ -40,6 +40,8 @@ class Store {
   locationSearchArrayConfirmed = [];
   locationSearchArrayRecoverd = [];
   headersArrayCountry = [];
+  singleCountryDataStore = [];
+  getSingleCountryInfo = [];
   //for test porpuses
   test = "hello world";
 
@@ -210,6 +212,61 @@ class Store {
       });
   };
 
+  getSingluarCountryData = async () => {
+    await axios({
+      method: "GET",
+      url:
+        "https://coronavirus-monitor.p.rapidapi.com/coronavirus/cases_by_country.php",
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "coronavirus-monitor.p.rapidapi.com",
+        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
+      }
+    })
+      .then(response => {
+        // console.log("Cornovirus response ", response);
+        this.getCoronaVirusDataArray = response.data;
+        //console.log("Cornovirus response ", this.getCoronaVirusDataArray);
+        //console.log(
+        // "Cornovirus getCoronaVirusDataArray ",
+        //  this.getCoronaVirusDataArray
+        //  );
+        return this.getCoronaVirusDataArray;
+      })
+      .then(resp => {
+        //  console.log("resp store ", resp.countries_stat);
+        let arrayData = [];
+        let arrayRes = resp.countries_stat;
+        let arrayResLength = arrayRes.length;
+        for (let i = 0; i < arrayResLength; i++) {
+          if (resp.countries_stat[i].country_name === "Portugal") {
+            arrayData.push(resp.countries_stat[i]);
+          }
+        }
+        return arrayData;
+      })
+      .then(res => {
+        this.singleCountryDataStore = res;
+        this.getSingleCountryInfo();
+        console.log("portugal data ", res[0]);
+      });
+  };
+
+  //Get single contry info coord/population
+  getSingleCountryInfo = () => {
+    let array = this.citiesDataArrayObs;
+    let arraySingle = [];
+    let arrayResLengthInfo = array.length;
+    //console.log("array single ", array);
+    for (let i = 0; i < arrayResLengthInfo; i++) {
+      if (this.citiesDataArrayObs[i].name === "Portugal") {
+        arraySingle.push(this.citiesDataArrayObs[i]);
+      }
+    }
+    this.getSingleCountryInfo = arraySingle;
+    return this.getSingleCountryInfo;
+  };
+
   //("get City Coordinates")
   getCityCoordinates = async () => {
     this.isLoading = true;
@@ -313,13 +370,13 @@ class Store {
         let data = res.data;
         let papaCsv = readString(data, {});
         let array = papaCsv.data;
-        console.log("headers country ", array[0]);
+        // console.log("headers country ", array[0]);
         this.headersArrayCountry.push(array[0]);
 
         return this.headersArrayCountry;
       })
       .then(res => {
-        console.log("headersArrayCountry ", res);
+        // console.log("headersArrayCountry ", res);
       });
 
     //Conifirmed Cases
@@ -338,7 +395,7 @@ class Store {
         return this.locationSearchArrayConfirmed;
       })
       .then(res => {
-        console.log("locationSearchArrayConfirmed ", res);
+        // console.log("locationSearchArrayConfirmed ", res);
       });
 
     //Deaths
@@ -358,7 +415,7 @@ class Store {
         return this.locationSearchArrayDeath;
       })
       .then(res => {
-        console.log("locationSearchArrayDeath ", res);
+        // console.log("locationSearchArrayDeath ", res);
       });
     //Recoverd
     const recoverdPerCountry = axios
@@ -376,11 +433,11 @@ class Store {
         return this.locationSearchArrayRecoverd;
       })
       .then(resp => {
-        console.log("RecoverdPerCountry ", resp);
+        // console.log("RecoverdPerCountry ", resp);
       });
 
-    console.log("data City ", this.locationSearchArrayDeath);
-    console.log("data City ", this.locationSearchArrayRecoverd);
+    // console.log("data City ", this.locationSearchArrayDeath);
+    //console.log("data City ", this.locationSearchArrayRecoverd);
     const getDataArray = async () => {
       this.loadingSingularPage = true;
       await recoverdPerCountry;
@@ -388,10 +445,12 @@ class Store {
       await confirmedPerCountry;
       await headersCountry;
       await createDataArray();
+      await this.getSingluarCountryData();
+
       this.loadingSingularPage = false;
       return;
     };
-    console.log(getDataArray);
+    // console.log(getDataArray);
     const createDataArray = async () => {
       if (
         !recoverdPerCountry.length ||
@@ -422,7 +481,9 @@ class Store {
 }
 
 decorate(Store, {
+  getSingluarCountryData: action,
   userLanguage: action,
+  getSingleCountryInfo: action,
   userLang: observable,
   storeCounterData: action,
   calcTime: action,
@@ -446,6 +507,8 @@ decorate(Store, {
   locationSearchArrayRecoverd: observable,
   headersArrayCountry: observable,
   loadingSingularPage: observable,
+  singleCountryDataStore: observable,
+  getSingleCountryInfo: observable,
 
   activeStation: observable,
 

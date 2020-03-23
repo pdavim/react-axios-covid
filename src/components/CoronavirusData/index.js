@@ -265,7 +265,7 @@ const useStyles = makeStyles(theme => ({
 
 const CoronavirusData = inject("Store")(
   observer(props => {
-    console.log("CoronavirusData props ", props);
+    // console.log("CoronavirusData props ", props);
     let countriesArray = [];
     let countriesIdArray = [];
     let data;
@@ -310,7 +310,7 @@ const CoronavirusData = inject("Store")(
     };
 
     let totalData = totalCases(data);
-    console.log("totalCases ", totalData);
+    //console.log("totalCases ", totalData);
     let dataData = props.Store.getCoronaVirusDataArray.data.countries_stat;
     let dataDataLength = dataData.length;
     let casesData = totalData.totalCases;
