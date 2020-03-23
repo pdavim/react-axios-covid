@@ -18,6 +18,7 @@ class Store {
     loading: true
   };
 
+  loadingSingularPage;
   loadingChart;
   loadingMap;
   loadingHistorical;
@@ -35,6 +36,10 @@ class Store {
   whcCornovirusDataRecoverd;
   objectCSSEGISandData;
   userLang;
+  locationSearchArrayDeath = [];
+  locationSearchArrayConfirmed = [];
+  locationSearchArrayRecoverd = [];
+  headersArrayCountry = [];
   //for test porpuses
   test = "hello world";
 
@@ -299,13 +304,26 @@ class Store {
       "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
 
     let location = "Portugal";
-    let locationSearchArrayDeath = [];
-    let locationSearchArrayConfirmed = [];
-    let locationSearchArrayRecoverd = [];
 
     //var csv is the CSV file with headers
+    //headers from arrays
+    let headersCountry = axios
+      .get(csvurlConfirmed)
+      .then(res => {
+        let data = res.data;
+        let papaCsv = readString(data, {});
+        let array = papaCsv.data;
+        console.log("headers country ", array[0]);
+        this.headersArrayCountry.push(array[0]);
+
+        return this.headersArrayCountry;
+      })
+      .then(res => {
+        console.log("headersArrayCountry ", res);
+      });
+
     //Conifirmed Cases
-    let confirmedPerCountry = axios
+    const confirmedPerCountry = axios
       .get(csvurlConfirmed)
       .then(res => {
         let data = res.data;
@@ -314,17 +332,17 @@ class Store {
         for (let i = 0; i < array.length; i++) {
           let arrayContry = array[i][1];
           if (arrayContry === location) {
-            locationSearchArrayConfirmed.push(array[i]);
+            this.locationSearchArrayConfirmed.push(array[i]);
           }
         }
-        return locationSearchArrayConfirmed;
+        return this.locationSearchArrayConfirmed;
       })
       .then(res => {
         console.log("locationSearchArrayConfirmed ", res);
       });
 
     //Deaths
-    let deathPerCountry = axios
+    const deathPerCountry = axios
       .get(csvurlDeaths)
       .then(res => {
         let data = res.data;
@@ -334,16 +352,16 @@ class Store {
         for (let i = 0; i < array.length; i++) {
           let arrayContry = array[i][1];
           if (arrayContry === location) {
-            locationSearchArrayDeath.push(array[i]);
+            this.locationSearchArrayDeath.push(array[i]);
           }
         }
-        return locationSearchArrayDeath;
+        return this.locationSearchArrayDeath;
       })
       .then(res => {
         console.log("locationSearchArrayDeath ", res);
       });
     //Recoverd
-    let recoverdPerCountry = axios
+    const recoverdPerCountry = axios
       .get(csvurlRecoverd)
       .then(res => {
         let data = res.data;
@@ -352,33 +370,48 @@ class Store {
         for (let i = 0; i < array.length; i++) {
           let arrayContry = array[i][1];
           if (arrayContry === location) {
-            locationSearchArrayRecoverd.push(array[i]);
+            this.locationSearchArrayRecoverd.push(array[i]);
           }
         }
-        return locationSearchArrayRecoverd;
+        return this.locationSearchArrayRecoverd;
       })
       .then(resp => {
         console.log("RecoverdPerCountry ", resp);
       });
 
-    console.log("data City ", locationSearchArrayDeath);
-    console.log("data City ", locationSearchArrayRecoverd);
-    if (
-      recoverdPerCountry !== isArray ||
-      !deathPerCountry ||
-      !confirmedPerCountry
-    ) {
-      console.log("no data", recoverdPerCountry);
+    console.log("data City ", this.locationSearchArrayDeath);
+    console.log("data City ", this.locationSearchArrayRecoverd);
+    const getDataArray = async () => {
+      this.loadingSingularPage = true;
+      await recoverdPerCountry;
+      await deathPerCountry;
+      await confirmedPerCountry;
+      await headersCountry;
+      await createDataArray();
+      this.loadingSingularPage = false;
       return;
-    } else {
-      console.log("data has arrived");
-      this.objectCSSEGISandData = [
-        recoverdPerCountry,
-        deathPerCountry,
-        confirmedPerCountry
-      ];
-      console.log("data Country ", this.objectCSSEGISandData);
-    }
+    };
+    console.log(getDataArray);
+    const createDataArray = async () => {
+      if (
+        !recoverdPerCountry.length ||
+        !deathPerCountry.length ||
+        !confirmedPerCountry.length
+      ) {
+        console.log("no data", recoverdPerCountry);
+        return;
+      } else {
+        console.log("data has arrived");
+        this.objectCSSEGISandData = [
+          await recoverdPerCountry,
+          await deathPerCountry,
+          await confirmedPerCountry,
+          await headersCountry
+        ];
+        //  console.log("data Country ", this.objectCSSEGISandData);
+      }
+    };
+    getDataArray();
   };
 
   userLanguage = () => {
@@ -408,6 +441,11 @@ decorate(Store, {
   whcCornovirusDataRecoverdArrayObj: observable,
   whcCornovirusDataRecoverd: observable,
   objectCSSEGISandData: observable,
+  locationSearchArrayDeath: observable,
+  locationSearchArrayConfirmed: observable,
+  locationSearchArrayRecoverd: observable,
+  headersArrayCountry: observable,
+  loadingSingularPage: observable,
 
   activeStation: observable,
 

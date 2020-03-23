@@ -299,12 +299,7 @@ const CoronavirusData = inject("Store")(
     }
 
     let row = data.length;
-    //console.log("number of pages ", data.length);
-    //console.log("number of pages ", row);
-    //console.log(typeof row);
-    //console.log(typeof page);
-    //console.log(typeof rowsPerPage);
-    //console.log(typeof setRowsPerPage);
+
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
     };
@@ -360,7 +355,7 @@ const CoronavirusData = inject("Store")(
             </Grid>
             <Grid item>
               <Typography className={classes.textContent}>
-                {totalData.totalCases}/
+                {totalData.totalCases}
               </Typography>
             </Grid>
           </Paper>

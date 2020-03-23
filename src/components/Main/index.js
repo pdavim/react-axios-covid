@@ -8,12 +8,11 @@ import {
 } from "react-router-dom";
 import { observer, inject } from "mobx-react";
 
+//Import Material UI
 import LinearProgress from "@material-ui/core/LinearProgress";
-
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
-
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -21,10 +20,12 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 
+//Import Componets
 import MapChart from "../MapChart";
 import CoronavirusData from "../CoronavirusData";
 import AboutC from "../AboutC";
-
+import ContactText from "../ContactText";
+import SingularCountryPage from "../SingularCountryPage";
 //import "./style.scss";
 import covid19logo_grey from "../../assets/images/covid19logo_grey.png";
 
@@ -147,7 +148,7 @@ const useStyles = makeStyles(theme => ({
   imageGrid: {
     //paddingRight: "20px"
     [theme.breakpoints.down("xs")]: {
-      display: "none"
+      display: "true"
     }
   },
   imageGridMobile: {
@@ -282,6 +283,33 @@ const Main = inject("Store")(
                       variant="text"
                     >
                       <NavLink
+                        to="/singularcountry"
+                        style={{
+                          color: "#fff",
+                          fontWeight: "500",
+                          fontSize: 16
+                        }}
+                        activeStyle={{
+                          fontWeight: "900",
+                          color: "#24A34E",
+                          fontSize: 16
+                        }}
+                      >
+                        Portugal
+                      </NavLink>
+                    </Button>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button
+                      disableRipple={true}
+                      size="small"
+                      disableElevation={true}
+                      disableFocusRipple={true}
+                      //color={colorText}
+                      className={classes.buttomRouter}
+                      variant="text"
+                    >
+                      <NavLink
                         to="/about"
                         style={{
                           color: "#fff",
@@ -332,21 +360,6 @@ const Main = inject("Store")(
                     {popupState => (
                       <Fragment>
                         <Grid
-                          item
-                          xs={2}
-                          sm={1}
-                          md={1}
-                          className={classes.imageGridMobile}
-                        >
-                          <Link to="/">
-                            <img
-                              src={covid19logo_grey}
-                              alt=""
-                              className={classes.image}
-                            />
-                          </Link>
-                        </Grid>
-                        <Grid
                           className={classes.fragmentridmobile}
                           xs={10}
                           sm={11}
@@ -359,7 +372,7 @@ const Main = inject("Store")(
                             {...bindTrigger(popupState)}
                             className={classes.buttonMenuMobile}
                           >
-                            Open Menu
+                            Menu
                           </Button>
                           <Menu {...bindMenu(popupState)}>
                             <MenuItem onClick={popupState.close}>
@@ -391,6 +404,21 @@ const Main = inject("Store")(
                                 to="/map"
                               >
                                 Map
+                              </NavLink>
+                            </MenuItem>
+                            <MenuItem onClick={popupState.close}>
+                              <NavLink
+                                style={{
+                                  color: "#00905F",
+                                  fontWeight: "bold"
+                                }}
+                                activeStyle={{
+                                  fontWeight: "bold",
+                                  color: "#0F2D53"
+                                }}
+                                to="/singularcountry"
+                              >
+                                Portugal
                               </NavLink>
                             </MenuItem>
                             <MenuItem
@@ -434,6 +462,7 @@ const Main = inject("Store")(
                 <Route path="/" exact component={Coronavirus} />
 
                 <Route path="/map" component={Map} />
+                <Route path="/singularcountry" component={SingularCountry} />
                 <Route path="/about" component={About} />
 
                 <Route path="/contact" component={Contact} />
@@ -481,6 +510,29 @@ const Contact = () => (
   <Fragment>
     <ContactText />
   </Fragment>
+);
+
+const SingularCountry = inject("Store")(
+  observer(props => {
+    let arrayLoading = props.Store.headersArrayCountry;
+    let isLoadingArray = arrayLoading.length;
+    console.log(props);
+    console.log(arrayLoading);
+    return (
+      <Fragment>
+        {props.Store.loadingSingularPage === true ? (
+          <h1>is loading</h1>
+        ) : (
+          <SingularCountryPage
+            headers={props.Store.headersArrayCountry}
+            dead={props.Store.locationSearchArrayDeath}
+            recovered={props.Store.locationSearchArrayRecoverd}
+            confirmed={props.Store.locationSearchArrayConfirmed}
+          />
+        )}
+      </Fragment>
+    );
+  })
 );
 
 const Coronavirus = inject("Store")(
@@ -538,13 +590,13 @@ const Coronavirus = inject("Store")(
   })
 );
 
-const ContactText = () => (
-  <div>
-    <h3>Contact</h3>
-    <p>App development by Pedro Davim</p>
-    <p>pdavim@pdavim.com</p>
+const ContactTextA = () => (
+  <Grid>
+    <Typography>Contact</Typography>
+    <Typography>App development by Pedro Davim</Typography>
+    <Typography>pdavim@pdavim.com</Typography>
     <a href="https://pdavim.com">PDAVIM.COM</a>
-  </div>
+  </Grid>
 );
 
 const NoMatch = () => {
