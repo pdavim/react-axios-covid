@@ -45,7 +45,6 @@ class Store {
   generalCountryCovidData = [];
   generalCountryCovidDataDate;
   portugalCovidNationalDataInfo;
-  singleLocationCountry = "Portugal";
   //for test porpuses
   test = "hello world";
 
@@ -76,12 +75,10 @@ class Store {
   //("get all data")
   getData = async () => {
     this.isLoading = true;
-    this.userLanguage();
+    this.extData();
     await this.getCityCoordinates();
     this.storeCounterData();
     this.getNationaldata();
-    this.getSingleCountryInfoF();
-    await this.extData();
 
     this.isLoading = false;
   };
@@ -89,8 +86,8 @@ class Store {
   //("user browser language")
 
   //("update weather data")
-  updateWeather = async () => {
-    await this.getData();
+  updateWeather = () => {
+    this.getData();
   };
 
   //(get national data
@@ -117,7 +114,7 @@ class Store {
         return response;
       })
       .then(r => {
-        //console.log("r", r);
+        // console.log("r", r);
         this.getCoronaVirusDataArray = r;
         this.generalCountryCovidData = this.getCoronaVirusDataArray.data.countries_stat;
         this.generalCountryCovidDataDate = r.data.statistic_taken_at;
@@ -135,8 +132,7 @@ class Store {
             dataCities[i].country_name === "North Macedonia" ||
             dataCities[i].country_name === "Channel Islands" ||
             dataCities[i].country_name === "Vatican City" ||
-            dataCities[i].country_name === "St. Vincent Grenadines" ||
-            dataCities[i].country_name === "British Virgin Islands"
+            dataCities[i].country_name === "St. Vincent Grenadines"
           ) {
             // console.log(country);
             errorDataCountry.push(dataCities[i].country_name);
@@ -154,10 +150,7 @@ class Store {
               }
             })
               .catch(function(error) {
-                console.log(
-                  "Show error notification!",
-                  dataCities[i].country_name
-                );
+                console.log("Show error notification!");
                 return Promise.reject(error);
               })
               .then(rp => {
@@ -226,18 +219,18 @@ class Store {
             arrayData.push(resp.countries_stat[i]);
           }
         }
-        this.getSingleCountryInfoF();
         return arrayData;
       })
       .then(res => {
         this.singleCountryDataStore = res;
+        this.getSingleCountryInfoF();
         // console.log("Country data ", res);
       });
   };
 
   //Get single contry info coord/population
   getSingleCountryInfoF = async () => {
-    this.getCoronaVirusData();
+    await this.getCoronaVirusData();
     let array = this.citiesDataArrayObs;
 
     // console.log("array single ", array);
@@ -309,8 +302,6 @@ class Store {
 
     this.dieCalTimeStore = currentDeath / totalSeconds;
   };
-
-  //action
   csvJSON = csv => {
     var lines = csv.split("\n");
 
@@ -333,7 +324,6 @@ class Store {
     return JSON.stringify(result); //JSON
   };
 
-  //action single data country get
   extData = async () => {
     //all data from CSSE COVID-19 Dataset
     //https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
@@ -346,77 +336,118 @@ class Store {
     let csvurlRecoverd =
       "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
 
-    this.loadingSingularPage = true;
-    await this.deathPerCountry(csvurlDeaths, this.singleLocationCountry);
-    await this.recoverdPerCountry(csvurlRecoverd, this.singleLocationCountry);
-    await this.confirmedPerCountry(csvurlConfirmed, this.singleLocationCountry);
-    await this.headersCountry(csvurlConfirmed);
-    await this.getSingluarCountryData();
-    this.loadingSingularPage = false;
-  };
+    let location = "Portugal";
 
-  //var csv is the CSV file with headers
-  //Actions headers from arrays
-  headersCountry = async csvurlConfirmed => {
-    await axios.get(csvurlConfirmed).then(res => {
-      let data = res.data;
-      let papaCsv = readString(data, {});
-      let array = papaCsv.data;
-      // console.log("headers country ", array[0]);
-      this.headersArrayCountry.push(array[0]);
+    //var csv is the CSV file with headers
+    //headers from arrays
+    let headersCountry = axios
+      .get(csvurlConfirmed)
+      .then(res => {
+        let data = res.data;
+        let papaCsv = readString(data, {});
+        let array = papaCsv.data;
+        // console.log("headers country ", array[0]);
+        this.headersArrayCountry.push(array[0]);
 
-      return this.headersArrayCountry;
-    });
-  };
+        return this.headersArrayCountry;
+      })
+      .then(res => {
+        // console.log("headersArrayCountry ", res);
+      });
 
-  //action Deaths
-  deathPerCountry = async (csvurlDeaths, location) => {
-    await axios.get(csvurlDeaths).then(res => {
-      let data = res.data;
-      let papaCsv = readString(data, {});
-
-      let array = papaCsv.data;
-      for (let i = 0; i < array.length; i++) {
-        let arrayContry = array[i][1];
-        if (arrayContry === location) {
-          this.locationSearchArrayDeath.push(array[i]);
+    //Conifirmed Cases
+    const confirmedPerCountry = axios
+      .get(csvurlConfirmed)
+      .then(res => {
+        let data = res.data;
+        let papaCsv = readString(data, {});
+        let array = papaCsv.data;
+        for (let i = 0; i < array.length; i++) {
+          let arrayContry = array[i][1];
+          if (arrayContry === location) {
+            this.locationSearchArrayConfirmed.push(array[i]);
+          }
         }
-      }
-      return this.locationSearchArrayDeath;
-    });
-  };
+        return this.locationSearchArrayConfirmed;
+      })
+      .then(res => {
+        // console.log("locationSearchArrayConfirmed ", res);
+      });
 
-  //action
-  //Conifirmed Cases
-  confirmedPerCountry = async (csvurlConfirmed, location) => {
-    await axios.get(csvurlConfirmed).then(res => {
-      let data = res.data;
-      let papaCsv = readString(data, {});
-      let array = papaCsv.data;
-      for (let i = 0; i < array.length; i++) {
-        let arrayContry = array[i][1];
-        if (arrayContry === location) {
-          this.locationSearchArrayConfirmed.push(array[i]);
-        }
-      }
-      return this.locationSearchArrayConfirmed;
-    });
-  };
+    //Deaths
+    const deathPerCountry = axios
+      .get(csvurlDeaths)
+      .then(res => {
+        let data = res.data;
+        let papaCsv = readString(data, {});
 
-  // action Recoverd
-  recoverdPerCountry = async (csvurlRecoverd, location) => {
-    await axios.get(csvurlRecoverd).then(res => {
-      let data = res.data;
-      let papaCsv = readString(data, {});
-      let array = papaCsv.data;
-      for (let i = 0; i < array.length; i++) {
-        let arrayContry = array[i][1];
-        if (arrayContry === location) {
-          this.locationSearchArrayRecoverd.push(array[i]);
+        let array = papaCsv.data;
+        for (let i = 0; i < array.length; i++) {
+          let arrayContry = array[i][1];
+          if (arrayContry === location) {
+            this.locationSearchArrayDeath.push(array[i]);
+          }
         }
+        return this.locationSearchArrayDeath;
+      })
+      .then(res => {
+        // console.log("locationSearchArrayDeath ", res);
+      });
+    //Recoverd
+    const recoverdPerCountry = axios
+      .get(csvurlRecoverd)
+      .then(res => {
+        let data = res.data;
+        let papaCsv = readString(data, {});
+        let array = papaCsv.data;
+        for (let i = 0; i < array.length; i++) {
+          let arrayContry = array[i][1];
+          if (arrayContry === location) {
+            this.locationSearchArrayRecoverd.push(array[i]);
+          }
+        }
+        return this.locationSearchArrayRecoverd;
+      })
+      .then(resp => {
+        // console.log("RecoverdPerCountry ", resp);
+      });
+
+    // console.log("data City ", this.locationSearchArrayDeath);
+    //console.log("data City ", this.locationSearchArrayRecoverd);
+    const getDataArray = async () => {
+      this.loadingSingularPage = true;
+      await recoverdPerCountry;
+      await deathPerCountry;
+      await confirmedPerCountry;
+      await headersCountry;
+      await createDataArray();
+      await this.getSingluarCountryData();
+      this.userLanguage();
+
+      this.loadingSingularPage = false;
+      return;
+    };
+    // console.log(getDataArray);
+    const createDataArray = async () => {
+      if (
+        !recoverdPerCountry.length ||
+        !deathPerCountry.length ||
+        !confirmedPerCountry.length
+      ) {
+        console.log("no data", recoverdPerCountry);
+        return;
+      } else {
+        console.log("data has arrived");
+        this.objectCSSEGISandData = [
+          await recoverdPerCountry,
+          await deathPerCountry,
+          await confirmedPerCountry,
+          await headersCountry
+        ];
+        //  console.log("data Country ", this.objectCSSEGISandData);
       }
-      return this.locationSearchArrayRecoverd;
-    });
+    };
+    getDataArray();
   };
 
   userLanguage = () => {
@@ -430,18 +461,12 @@ decorate(Store, {
   getSingluarCountryData: action,
   userLanguage: action,
   getSingleCountryInfo: action,
-  headersCountry: action,
-  getData: action,
   userLang: observable,
-  recoverdPerCountry: action,
-  confirmedPerCountry: action,
-  deathPerCountry: action,
-  updateWeather: action,
+
   storeCounterData: action,
   getSingleCountryInfoF: action,
   calcTime: action,
   extData: action,
-  singleLocationCountry: observable,
   isLoading: observable,
   loadingChart: observable,
   loadingMap: observable,

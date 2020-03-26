@@ -70,9 +70,9 @@ const useStyles = makeStyles(theme => ({
   },
 
   appBar: {
-    //display: "flex",
+    display: "flex",
     minHeight: 60,
-    padding: 0,
+    paddingLeft: 20,
     margin: 0,
     //width: "100%",
     //position: "relative",
@@ -175,14 +175,14 @@ const Main = inject("Store")(
     // console.log("Charts props ", props.Store.historialWeatherData);
     //console.log("Charts props ", this.props.props.Store.historialWeatherData);
 
-    console.log("Array Max Temp ", props);
+    console.log("Main ", props);
     const classes = useStyles();
     return (
       <Router>
         <Grid container className={classes.root} spacing={2}>
           <Grid item xs={12} md={12}>
-            <AppBar position="static" className={classes.appBar}>
-              <Toolbar>
+            <AppBar position="static">
+              <Toolbar className={classes.appBar}>
                 <Grid item xs={2} sm={1} md={1} className={classes.imageGrid}>
                   <Link to="/">
                     <img
@@ -515,7 +515,7 @@ const Contact = () => (
 const SingularCountry = inject("Store")(
   observer(props => {
     let arrayLoading = props.Store.headersArrayCountry;
-    let isLoadingArray = arrayLoading.length;
+    //let isLoadingArray = arrayLoading.length;
     console.log(props);
     console.log(arrayLoading);
     return (
@@ -567,7 +567,7 @@ const Coronavirus = inject("Store")(
             </>
           ) : props.Store.isLoading === false ? (
             <Grid item xs={12} md={12} className={classes.cornovirusGridItem}>
-              <CoronavirusData props={props} />
+              <CoronavirusData />
             </Grid>
           ) : (
             <>
@@ -588,15 +588,6 @@ const Coronavirus = inject("Store")(
       </>
     );
   })
-);
-
-const ContactTextA = () => (
-  <Grid>
-    <Typography>Contact</Typography>
-    <Typography>App development by Pedro Davim</Typography>
-    <Typography>pdavim@pdavim.com</Typography>
-    <a href="https://pdavim.com">PDAVIM.COM</a>
-  </Grid>
 );
 
 const NoMatch = () => {

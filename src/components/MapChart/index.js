@@ -71,10 +71,10 @@ const MapChart = inject("Store")(
             >
             <Geographies geography={geoUrl} className={classes.geographicRoot}>
               {({ geographies }) =>
-                geographies.map(geo => (
+                geographies.map((geo, i) => (
                   <Geography
                     className={classes.geographicRoot}
-                    key={geo.rsmKey}
+                    key={i}
                     geography={geo}
                     fill="#EAEAEC"
                     stroke="#D6D6DA"
@@ -90,10 +90,11 @@ const MapChart = inject("Store")(
                 xmarkerOffset,
                 region,
                 capital,
-                population
+                population,
+                i
               }) => (
                 <Marker
-                  key={name}
+                  key={i}
                   coordinates={coordinates}
                   //onClick={handleOpen}
                   className={classes.geographicRoot}
