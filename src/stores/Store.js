@@ -1,4 +1,4 @@
-import { observable, action, decorate, autorun } from "mobx";
+import { observable, action, decorate, autorun, computed } from "mobx";
 //import { action,observable } from "mobx-react";
 import { readString } from "react-papaparse";
 import axios from "axios";

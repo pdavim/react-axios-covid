@@ -19,6 +19,7 @@ import Typography from "@material-ui/core/Typography";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
 
 //Import Componets
 import MapChart from "../MapChart";
@@ -86,6 +87,7 @@ const useStyles = makeStyles(theme => ({
   gridRoot: {},
   buttomRouterGrid: {
     display: "flex",
+    //flexDirection="row",
     maxWidth: "500px"
   },
   buttomRouter: {
@@ -214,6 +216,7 @@ const Main = inject("Store")(
                   container
                   spacing={1}
                   className={classes.buttomRouterGrid}
+                  flexDirection="row"
                 >
                   <Grid item xs={2}>
                     <Button
