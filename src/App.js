@@ -145,7 +145,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App = inject()(
-  observer(() => {
+  observer(props => {
     //  console.log(stores);
 
     const updateWeather = () => {
@@ -153,7 +153,7 @@ const App = inject()(
 
       //console.log("isLoading", stores);
       appState.getData(appState.cityName);
-      setInterval(appState.storeCounterData(), 1000);
+      //setInterval(appState.storeCounterData(), 1000);
     };
 
     // Accepts a Date object or date string that is recognized by the Date.parse() method
@@ -163,12 +163,9 @@ const App = inject()(
     // console.log("appState ", appState);
     updateWeather();
     //let k = console.log("my k is = ", stores.Store.dieCalTimeStore);
-    let n = () => {
-      stores.Store.storeCounterData();
-      // console.log("my k is = ", stores.Store.dieCalTimeStore);
-    };
-    setInterval(n, 5000);
-    setInterval(stores.Store.storeCounterData, 5000);
+
+    //setInterval(n, 5000);
+    // setInterval(stores.Store.storeCounterData, 5000);
 
     // console.log("appstate ", appState);
     //console.log("Store", stores);

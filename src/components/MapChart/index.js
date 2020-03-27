@@ -28,20 +28,6 @@ const INITIAL_VIEW_STATE = {
   bearing: 0
 };
 
-const deck = new Deck({
-  views: [
-    new MapView({
-      id: "mini-map",
-      x: "80%",
-      y: "80%",
-      height: "15%",
-      width: "15%",
-      clear: true,
-      controller: true
-    })
-  ]
-});
-
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -240,7 +226,7 @@ const MapChart = inject("Store")(
         <Grid item xs={12}>
           <h1>Map</h1>
         </Grid>
-        <Grid id="mapId" item xs={6} />
+        /
         <Grid item xs={6}>
           <DeckGL
             width="100%"
@@ -255,7 +241,7 @@ const MapChart = inject("Store")(
             <StaticMap
               reuseMaps
               mapStyle={mapStyle}
-              container="mapId"
+              // container="mapId"
               preventStyleDiffing={true}
               mapboxApiAccessToken={MAPBOX_TOKEN}
             />

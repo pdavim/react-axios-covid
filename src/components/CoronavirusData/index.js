@@ -2,7 +2,6 @@ import React from "react";
 import { observer, inject } from "mobx-react";
 import PropTypes from "prop-types";
 import Chart from "react-apexcharts";
-import { getCode } from "country-list";
 
 //import Material UI
 import { Grid } from "@material-ui/core";
@@ -621,24 +620,24 @@ const CoronavirusData = inject("Store")(
                       </StyledTableRow>
                     ))}
                 </TableBody>
+                {dataData.length === 0 ? (
+                  <p>loading pages</p>
+                ) : (
+                  <TableFooter>
+                    <TableRow>
+                      <TablePagination
+                        rowsPerPageOptions={[10, 25, 50, 100, 200]}
+                        //component="div"
+                        count={dataData.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                      />
+                    </TableRow>
+                  </TableFooter>
+                )}
               </Table>
-              {dataData.length === 0 ? (
-                <p>loading pages</p>
-              ) : (
-                <TableFooter>
-                  <TableRow>
-                    <TablePagination
-                      rowsPerPageOptions={[10, 25, 50, 100, 200]}
-                      component="div"
-                      count={dataData.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onChangePage={handleChangePage}
-                      onChangeRowsPerPage={handleChangeRowsPerPage}
-                    />
-                  </TableRow>
-                </TableFooter>
-              )}
             </TableContainer>
           </Grid>
           <Grid container spacing={1}>

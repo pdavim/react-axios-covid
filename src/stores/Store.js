@@ -81,7 +81,7 @@ class Store {
   raindaysChartData;
 
   //Loading
-  isLoading;
+  isLoading = true;
   isLoadingTopSection;
 
   //dayOrNight
@@ -113,14 +113,15 @@ class Store {
   mapChartArrayData = [];
   //("get all data")
   getData = async () => {
-    this.isLoading = true;
+    //this.isLoading = true;
+    await this.getAllCountryCornovirusData();
     await this.getCoronaVirusData();
     await this.getLastUpdateDate();
-    await this.getSingluarCountryData();
-    this.mapchartData();
-    this.extData();
-    this.storeCounterData();
     this.isLoading = false;
+    await this.getSingluarCountryData();
+    await this.extData();
+    await this.mapchartData();
+    this.storeCounterData();
   };
 
   //("user browser language")
@@ -129,12 +130,12 @@ class Store {
     this.getData();
   };
 
-  mapchartData = () => {
+  mapchartData = async () => {
     let data = this.citiesDataArrayObs;
     let dataLength = data.length;
 
     for (let i = 0; i < dataLength; i++) {
-      let a = this.citiesDataArrayObs[i].coordinates;
+      let a = await this.citiesDataArrayObs[i].coordinates;
       let weight = 45;
       let finalData = [a[0], a[1], weight];
       this.mapChartArrayData.push(finalData);
@@ -149,8 +150,8 @@ class Store {
   };
 
   //getAllCountryCornovirusData
-  getAllCountryCornovirusData = async () => {
-    let get = await axios({
+  getAllCountryCornovirusData = () => {
+    let get = axios({
       method: "GET",
       url:
         "https://coronavirus-monitor.p.rapidapi.com/coronavirus/cases_by_country.php",
@@ -214,7 +215,7 @@ class Store {
 
   //("get cornovirus data")
   getCoronaVirusData = async () => {
-    await this.getAllCountryCornovirusData();
+    //await this.getAllCountryCornovirusData();
     let array = this.getAllCountryCornovirusDataObs.data.countries_stat;
     let countryNameWithCornovirusLenth = array.length;
     console.log(
@@ -240,7 +241,7 @@ class Store {
         // console.log(country);
         this.errorDataCountry.push(country);
       } else {
-        await this.getAllCountryGeneralData(country);
+        this.getAllCountryGeneralData(country);
       }
     }
     console.log(

@@ -520,8 +520,8 @@ const SingularCountry = inject("Store")(
   observer(props => {
     let arrayLoading = props.Store.headersArrayCountry;
     let isLoadingArray = arrayLoading.length;
-    console.log(props);
-    console.log(arrayLoading);
+    //console.log(props);
+    //console.log(arrayLoading);
     return (
       <Fragment>
         <SingularCountryPage
@@ -588,15 +588,6 @@ const Coronavirus = inject("Store")(
       </>
     );
   })
-);
-
-const ContactTextA = () => (
-  <Grid>
-    <Typography>Contact</Typography>
-    <Typography>App development by Pedro Davim</Typography>
-    <Typography>pdavim@pdavim.com</Typography>
-    <a href="https://pdavim.com">PDAVIM.COM</a>
-  </Grid>
 );
 
 const NoMatch = () => {
