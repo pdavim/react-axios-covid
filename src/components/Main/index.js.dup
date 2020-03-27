@@ -167,10 +167,6 @@ const useStyles = makeStyles(theme => ({
     //paddingTop: 0,
     //paddingBottom: 0,
     marging: 0
-  },
-  mapdiv: {
-    marginTop: 50,
-    paddingBottom: 100
   }
 }));
 
@@ -471,7 +467,9 @@ const Main = inject("Store")(
 
                 <Route path="/contact" component={Contact} />
 
-                <Route path="*" component={Coronavirus} />
+                <Route path="*">
+                  <NoMatch />
+                </Route>
               </Switch>
             </Grid>
           </Grid>
@@ -489,9 +487,7 @@ const Map = inject("Store")(
     let classes = useStyles();
     return (
       <Grid item xs={12} className={classes.mapGridItem}>
-        <div className={classes.mapdiv}>
-          <MapChart props={props} />
-        </div>
+        <MapChart props={props} />
       </Grid>
     );
   })

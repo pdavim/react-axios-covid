@@ -265,10 +265,9 @@ const useStyles = makeStyles(theme => ({
 
 const CoronavirusData = inject("Store")(
   observer(props => {
+    console.log("CoronavirusData page", props);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
-
-    // console.log("CoronavirusData props", props);
 
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -279,7 +278,8 @@ const CoronavirusData = inject("Store")(
       setPage(0);
     };
 
-    let dataData = props.Store.generalCountryCovidData;
+    let dataData =
+      props.Store.getAllCountryCornovirusDataObs.data.countries_stat;
     let totalData = totalCases(dataData);
 
     let dataDataLength = dataData.length;
@@ -296,7 +296,6 @@ const CoronavirusData = inject("Store")(
     ).toFixed(2);
 
     let totalPercentage = percentage(casesData, deathsData);
-    let timeUpdated = props.Store.generalCountryCovidDataDate;
 
     let p = parseFloat(deathsData);
     let q = parseFloat(totalData.totalCases);
@@ -462,7 +461,7 @@ const CoronavirusData = inject("Store")(
             </Grid>
             <Grid item>
               <Typography className={classes.textContent}>
-                {timeUpdated}
+                {props.Store.updateDateObs}
               </Typography>
             </Grid>
           </Paper>
@@ -622,24 +621,24 @@ const CoronavirusData = inject("Store")(
                       </StyledTableRow>
                     ))}
                 </TableBody>
-                {dataData.length === 0 ? (
-                  <p>loading pages</p>
-                ) : (
-                  <TableFooter>
-                    <TableRow>
-                      <TablePagination
-                        rowsPerPageOptions={[10, 25, 50, 100, 200]}
-                        //component="div"
-                        count={dataData.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onChangePage={handleChangePage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                      />
-                    </TableRow>
-                  </TableFooter>
-                )}
               </Table>
+              {dataData.length === 0 ? (
+                <p>loading pages</p>
+              ) : (
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      rowsPerPageOptions={[10, 25, 50, 100, 200]}
+                      component="div"
+                      count={dataData.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onChangePage={handleChangePage}
+                      onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                  </TableRow>
+                </TableFooter>
+              )}
             </TableContainer>
           </Grid>
           <Grid container spacing={1}>
@@ -650,7 +649,7 @@ const CoronavirusData = inject("Store")(
                 </Typography>
 
                 <Typography className={classes.textContent}>
-                  {timeUpdated}
+                  {props.Store.updateDateObs}
                 </Typography>
               </Paper>
             </Grid>
@@ -677,13 +676,13 @@ const CoronavirusData = inject("Store")(
 export default CoronavirusData;
 
 CoronavirusData.propTypes = {
-  //classes: PropTypes.object.isRequired,
-  // numSelected: PropTypes.number.isRequired,
-  //onRequestSort: PropTypes.func.isRequired,
-  //onSelectAllClick: PropTypes.func.isRequired,
-  //order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  //orderBy: PropTypes.string.isRequired,
-  //rowCount: PropTypes.number.isRequired
+  classes: PropTypes.object.isRequired,
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired
 };
 //Table Stylling Material UI
 const StyledTableCell = withStyles(theme => ({

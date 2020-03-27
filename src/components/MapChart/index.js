@@ -1,135 +1,315 @@
-import React, { useState } from "react";
-import { observer, inject } from "mobx-react";
-import Tooltip from "@material-ui/core/Tooltip";
+import React from "react";
 
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  Marker,
-  ZoomableGroup
-} from "react-simple-maps";
+import { inject, observer } from "mobx-react";
+
+import { Marker, StaticMap, _MapContext as MapContext } from "react-map-gl";
+import DeckGL from "@deck.gl/react";
+import { HeatmapLayer } from "@deck.gl/aggregation-layers";
+import { TextLayer } from "@deck.gl/layers";
+import { Deck, FirstPersonView, MapView } from "@deck.gl/core";
+
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import totalCases from "../../functions/totalCases";
+// Set your mapbox token here
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoicGRhdmltIiwiYSI6ImNrODlhNGZ3MjA0YWgzbm8yYWI2aXdkZXQifQ.PRoLVYzMXBnW5NwpbJhZyg"; // eslint-disable-line
+const DATA_URL =
+  "https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/screen-grid/uber-pickup-locations.json"; // eslint-disable-line
+
+const INITIAL_VIEW_STATE = {
+  longitude: -9.13333,
+  latitude: 38.71667,
+  zoom: 2,
+  maxZoom: 16,
+  pitch: 0,
+  bearing: 0
+};
+
+const deck = new Deck({
+  views: [
+    new MapView({
+      id: "mini-map",
+      x: "80%",
+      y: "80%",
+      height: "15%",
+      width: "15%",
+      clear: true,
+      controller: true
+    })
+  ]
+});
 
 const useStyles = makeStyles(theme => ({
-  root: {},
-  geographicRoot: {
-    height: "100%",
-    maxWidth: "100%",
-    alignItems: "center"
+  root: {
+    display: "flex",
+    padding: 20
   },
-  paper: {
-    position: "absolute",
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
+  paperCard: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(255,255,255,0.1)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50,
+    width: 150
   },
-  typography: {
-    padding: theme.spacing(2)
+  paperCard2: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(255,25,25,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard3: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(243,186,45,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard4: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(125,11,159,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard5: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(25,25,255,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard6: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(50,204,100,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard7: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(25,255,25,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard8: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(204,102,102,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard9: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(255,0,150,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard10: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(150,150,150,0.3)",
+    marginLeft: 1,
+    marginRight: 1,
+    height: 50
+  },
+  paperCard11: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    background: "rgb(15,15,15,0.4)",
+    marginLeft: 1,
+    marginRight: 1
+    //height: 50
+  },
+  textCard: {
+    color: "white",
+    fontWeight: 400,
+    fontSize: 14
+  },
+  textContent: {
+    color: "white",
+    textAlign: "left",
+    fontWeight: 900,
+    fontSize: 18
+  },
+  title: {
+    color: "white",
+    fontWeight: 900,
+    fontSize: 18,
+    textAlign: "center"
+  },
+  titleChartOverWhite: {
+    color: "black",
+    textAlign: "left",
+    fontWeight: 700,
+    fontSize: 22,
+    padding: 20
+  },
+  TableFooterRegion: {
+    paddingTop: 14,
+    paddingBottom: 14
   }
 }));
 
-const geoUrl =
-  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
-
 const MapChart = inject("Store")(
   observer(props => {
-    // getModalStyle is not a pure function, we roll the style only on the first render
+    const mapData = [];
+    console.log("MapChart ", props.Store);
+    const { mapChartArrayData } = props.Store;
+    let lengthData = mapChartArrayData.length;
+    for (let i = 0; i < lengthData; i++) {
+      mapData.push(mapChartArrayData[i]);
+    }
 
-    /*  const handleClose = () => {
-      setOpen(false);
-    }; */
-    let citiesMarkers = props.Store.citiesDataArrayObs;
-    //let countriesArraylength = countriesArray.length;
-    let zoom = 1.5;
-    //console.log("citiesMarkers ", props);
+    let dataData =
+      props.Store.getAllCountryCornovirusDataObs.data.countries_stat;
+    let totalData = totalCases(dataData);
 
-    const handleZoomEnd = position => {
-      //setZoom(position.zoom);
-    };
+    let dataDataLength = dataData.length;
+    let casesData = totalData.totalCases;
+    let deathsData = totalData.totalDeaths;
+    let nTotalRecovers = totalData.tRecovers;
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const { mapStyle = "mapbox://styles/mapbox/dark-v9" } = props;
+    const {
+      data = mapData,
+      // dattaText = DATA_URLJosn,
+      // data = props.Store.mapChartArrayData[14],
+      intensity = 1,
+      threshold = 0.03,
+      radiusPixels = 30
+    } = props;
 
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget);
-    };
+    const deck = new Deck({
+      width: 0 //layers: [new ScatterplotLayer({data})]
+    });
+    const layer = [
+      new HeatmapLayer({
+        data,
+        //data,
+        id: "heatmp-layer",
+        pickable: false,
+        getPosition: d => [d[0], d[1]],
+        getWeight: d => d[2],
+        radiusPixels,
+        intensity,
+        threshold
+      })
+    ];
 
-    const open = Boolean(anchorEl);
-    const id = open ? "simple-popover" : undefined;
-
-    let classes = useStyles();
+    const classes = useStyles();
     return (
-      <div>
-        <ComposableMap
-          projection="geoEqualEarth"
-          className={classes.geographicRoot}
-        >
+      <Grid container>
+        <Grid item xs={12}>
+          <h1>Map</h1>
+        </Grid>
+        <Grid id="mapId" item xs={6} />
+        <Grid item xs={6}>
+          <DeckGL
+            width="100%"
+            height="88%"
+            marginTop="70px"
+            ContextProvider={MapContext.Provider}
+            initialViewState={INITIAL_VIEW_STATE}
+            controller={true}
+            layers={layer}
+            style={{ marginTop: 80 }}
           >
-          <ZoomableGroup zoom={zoom} onZoomEnd={handleZoomEnd}>
-            >
-            <Geographies geography={geoUrl} className={classes.geographicRoot}>
-              {({ geographies }) =>
-                geographies.map((geo, i) => (
-                  <Geography
-                    className={classes.geographicRoot}
-                    key={i}
-                    geography={geo}
-                    fill="#EAEAEC"
-                    stroke="#D6D6DA"
-                  />
-                ))
-              }
-            </Geographies>
-            {citiesMarkers.map(
-              ({
-                name,
-                coordinates,
-                markerOffset,
-                xmarkerOffset,
-                region,
-                capital,
-                population,
-                i
-              }) => (
-                <Marker
-                  key={i}
-                  coordinates={coordinates}
-                  //onClick={handleOpen}
-                  className={classes.geographicRoot}
-                >
-                  >
-                  <Tooltip title={name}>
-                    <circle
-                      r={16}
-                      fill="rgb(255,25,25,0.1)"
-                      stroke="rgb(255,25,25,0.3)"
-                      strokeWidth={2}
-                      onClick={handleClick}
-                      aria-describedby={id}
-                    />
-                  </Tooltip>
-                  <text
-                    textAnchor="middle"
-                    y={markerOffset}
-                    x={xmarkerOffset}
-                    style={{
-                      fontFamily: "system-ui",
-                      fill: "#5D5A6D",
-                      fontSize: "3px"
-                    }}
-                  >
-                    {name}
-                  </text>
-                </Marker>
-              )
-            )}
-          </ZoomableGroup>
-        </ComposableMap>
-      </div>
+            <StaticMap
+              reuseMaps
+              mapStyle={mapStyle}
+              container="mapId"
+              preventStyleDiffing={true}
+              mapboxApiAccessToken={MAPBOX_TOKEN}
+            />
+            <Grid container spacing={1} className={classes.root}>
+              <Grid item xs={3}>
+                <Paper className={classes.paperCard2}>
+                  <Typography className={classes.textCard}>
+                    Nº de Casos
+                  </Typography>
+                  <Typography className={classes.textContent}>
+                    {casesData}
+                  </Typography>{" "}
+                </Paper>
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paperCard3}>
+                  <Typography className={classes.textCard}>
+                    Nº de Mortos
+                  </Typography>
+                  <Typography className={classes.textContent}>
+                    {deathsData}
+                  </Typography>{" "}
+                </Paper>
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paperCard4}>
+                  <Typography className={classes.textCard}>
+                    Nº de Recuperados
+                  </Typography>
+                  <Typography className={classes.textContent}>
+                    {nTotalRecovers}
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={3}>
+                <Paper className={classes.paperCard5}>
+                  <Typography className={classes.textCard}>
+                    Nº de Paises
+                  </Typography>
+                  <Typography className={classes.textContent}>
+                    {dataDataLength}
+                  </Typography>
+                </Paper>
+              </Grid>
+            </Grid>
+          </DeckGL>
+        </Grid>
+      </Grid>
     );
   })
 );
 
 export default MapChart;
+
+/*export function renderToDOM(container) {
+  render(<MapChart />, container);
+} */

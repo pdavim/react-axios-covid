@@ -1,9 +1,9 @@
-import { observable, action, decorate, autorun } from "mobx";
+import { observable, action, decorate, computed } from "mobx";
 //import { action,observable } from "mobx-react";
-import { readString } from "react-papaparse";
+import { readString, CSVReader, readRemoteFile } from "react-papaparse";
 import axios from "axios";
 import CornovirusData from "../assets/data/coronaVirusData";
-import portugalCovidNatinalData from "../assets/data/portugalCovidNatinalData.js";
+import { isArray } from "util";
 
 class Store {
   fetchCity = {
@@ -41,21 +41,51 @@ class Store {
   locationSearchArrayRecoverd = [];
   headersArrayCountry = [];
   singleCountryDataStore = [];
-  getSingleCountryInfoSTORE = [];
+  getSingleCountryInfo = [];
   generalCountryCovidData = [];
   generalCountryCovidDataDate;
-  portugalCovidNationalDataInfo;
+  errorDataCountry = [];
   //for test porpuses
   test = "hello world";
+
+  //object with the code of active sattion - get data from fecthHistoricalData()
+  activeStation;
+
+  //Array object with all station - get data from getStation()
+  arrayPushDataStation;
 
   //Object with the searched city - get data from getWeatherData()
   activeCity;
 
+  //Object with the searched city timezone - get data from fetchTimezone()
+  activeCityTimezone;
+
+  //Object with the searched city historical data - get data from fecthHistoricalData()
+  historialWeatherData;
+
+  //Object with the searched city sunrise and sunnset data for the present day - get data from getSunRiseSunset()
+  sunriseSunsetData;
+
+  //City coord - get data from fetchCoordinates()
+  coordenatesLat;
+  coordenatesLon;
+
+  //Get current date
+  currentDateLocal;
+
+  //city name
+  cityName;
+
   //maxTempDataChart data chart
   maxTempDataChart;
+  raindaysChartData;
 
   //Loading
   isLoading;
+  isLoadingTopSection;
+
+  //dayOrNight
+  dayOrNightData;
 
   //Countries coord
   citiesDataArrayObs = [];
@@ -63,6 +93,8 @@ class Store {
   //CornovirusData
   getCoronaVirusDataArray;
 
+  //MoonPhase Object
+  moonPhaseData;
   //Object with the SET default city - localstorage
   defaultCity = JSON.parse(localStorage.getItem("defaultCity")) || null;
 
@@ -74,12 +106,9 @@ class Store {
 
   //("get all data")
   getData = async () => {
-    this.isLoading = true;
     this.extData();
     await this.getCityCoordinates();
     this.storeCounterData();
-    this.getNationaldata();
-
     this.isLoading = false;
   };
 
@@ -90,16 +119,108 @@ class Store {
     this.getData();
   };
 
-  //(get national data
-  getNationaldata = () => {
-    const autoRUnData = () => {
-      return (this.portugalCovidNationalDataInfo = portugalCovidNatinalData);
-    };
-    autorun(autoRUnData);
+  //getAllCountryCornovirusData
+  getAllCountryCornovirusData = async () => {
+    let get = await axios({
+      method: "GET",
+      url:
+        "https://coronavirus-monitor.p.rapidapi.com/coronavirus/cases_by_country.php",
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "coronavirus-monitor.p.rapidapi.com",
+        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
+      }
+    }).then(response => {
+      // console.log("Cornovirus response ", response);
+      // this.getCoronaVirusDataArray = response;
+      //console.log(
+      // "Cornovirus getCoronaVirusDataArray ",
+      //  this.getCoronaVirusDataArray
+      //  );
+      return response;
+    });
+    //console.log(get);
+    return get;
+  };
+
+  //get countryinfo - population, coord, capital, etc
+  getAllCountryGeneralData = async countryName => {
+    console.log("country_name", countryName);
+    let getCountryData = await axios({
+      method: "GET",
+      url: `https://restcountries-v1.p.rapidapi.com/name/${countryName}`,
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "restcountries-v1.p.rapidapi.com",
+        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
+      }
+    })
+      .catch(function(error) {
+        console.log(
+          "Error notification! get all general data, store getAllCountryGeneralData function",
+          countryName
+        );
+        //this.errorDataCountry.push(countryName);
+        return Promise.reject(error);
+      })
+      .then(rp => {
+        console.log("rp ", rp);
+
+        let population = rp.data[0].population;
+        let region = rp.data[0].region;
+        let lat = rp.data[0].latlng[1];
+        let lon = rp.data[0].latlng[0];
+        let capital = rp.data[0].capital;
+        let coord = [lat, lon];
+        this.citiesDataArrayObs.push({
+          markerOffset: -5,
+          xmarkerOffset: -5,
+          name: rp.data[0].name,
+          coordinates: coord,
+          region: region,
+          population: population,
+          capital: capital
+          // coordinates: rp.data[0].latlng
+        });
+        return this.citiesDataArrayObs;
+      });
+    // return getCountryData;
   };
 
   //("get cornovirus data")
   getCoronaVirusData = async () => {
+    await this.getAllCountryCornovirusData()
+      .then(response => {
+        let respArray = response.data.countries_stat;
+        console.log("respArray ", respArray);
+        let length = respArray.length;
+        for (let i = 0; i < length; i++) {
+          let country = respArray[i].country_name;
+          console.log("respArray[i]", country);
+
+          if (
+            country === "S. Korea" ||
+            country === "Diamond Princess" ||
+            country === "Czechia" ||
+            country === "Faeroe Islands" ||
+            country === "North Macedonia" ||
+            country === "Channel Islands" ||
+            country === "Vatican City" ||
+            country === "British Virgin Islands" ||
+            country === "Turks and Caicos Islands" ||
+            country === "St. Vincent Grenadines"
+          ) {
+            // console.log(country);
+            this.errorDataCountry.push(country);
+          } else {
+            this.getAllCountryGeneralData(country);
+          }
+          console.log("this.citiesDataArrayObs", this.citiesDataArrayObs);
+        }
+        //return this.citiesDataArrayObs;
+      })
+      .then(resp => console.log("res", resp));
+
     await axios({
       method: "GET",
       url:
@@ -111,10 +232,16 @@ class Store {
       }
     })
       .then(response => {
+        // console.log("Cornovirus response ", response);
+        // this.getCoronaVirusDataArray = response;
+        //console.log(
+        // "Cornovirus getCoronaVirusDataArray ",
+        //  this.getCoronaVirusDataArray
+        //  );
         return response;
       })
       .then(r => {
-        // console.log("r", r);
+        console.log("r", r);
         this.getCoronaVirusDataArray = r;
         this.generalCountryCovidData = this.getCoronaVirusDataArray.data.countries_stat;
         this.generalCountryCovidDataDate = r.data.statistic_taken_at;
@@ -132,6 +259,7 @@ class Store {
             dataCities[i].country_name === "North Macedonia" ||
             dataCities[i].country_name === "Channel Islands" ||
             dataCities[i].country_name === "Vatican City" ||
+            dataCities[i].country_name === "British Virgin Islands" ||
             dataCities[i].country_name === "St. Vincent Grenadines"
           ) {
             // console.log(country);
@@ -206,11 +334,15 @@ class Store {
       .then(response => {
         // console.log("Cornovirus response ", response);
         this.getCoronaVirusDataArray = response.data;
-        // console.log("response ", response);
+        //console.log("Cornovirus response ", this.getCoronaVirusDataArray);
+        //console.log(
+        // "Cornovirus getCoronaVirusDataArray ",
+        //  this.getCoronaVirusDataArray
+        //  );
         return this.getCoronaVirusDataArray;
       })
       .then(resp => {
-        // console.log("resp store ", resp.countries_stat);
+        //  console.log("resp store ", resp.countries_stat);
         let arrayData = [];
         let arrayRes = resp.countries_stat;
         let arrayResLength = arrayRes.length;
@@ -224,22 +356,22 @@ class Store {
       .then(res => {
         this.singleCountryDataStore = res;
         this.getSingleCountryInfoF();
-        // console.log("Country data ", res);
+        console.log("Country data ", res);
       });
   };
 
   //Get single contry info coord/population
-  getSingleCountryInfoF = async () => {
-    await this.getCoronaVirusData();
+  getSingleCountryInfoF = () => {
     let array = this.citiesDataArrayObs;
-
-    // console.log("array single ", array);
-    for (let i = 0; i < array.length; i++) {
+    let arraySingle = [];
+    let arrayResLengthInfo = array.length;
+    console.log("array single ", array);
+    for (let i = 0; i < arrayResLengthInfo; i++) {
       if (this.citiesDataArrayObs[i].name === "Portugal") {
-        this.getSingleCountryInfoSTORE.push(this.citiesDataArrayObs[i]);
+        arraySingle.push(this.citiesDataArrayObs[i]);
       }
     }
-    // this.getSingleCountryInfoSTORE = arraySingle;
+    this.getSingleCountryInfo = arraySingle;
     //return this.getSingleCountryInfo;
   };
 
@@ -422,7 +554,6 @@ class Store {
       await headersCountry;
       await createDataArray();
       await this.getSingluarCountryData();
-      this.userLanguage();
 
       this.loadingSingularPage = false;
       return;
@@ -451,9 +582,9 @@ class Store {
   };
 
   userLanguage = () => {
-    this.userLang = navigator.language || navigator.userLanguage;
+    let userLang = navigator.language || navigator.userLanguage;
 
-    // console.log("user-lang ", this.userLang);
+    console.log("coronavirus componet ", userLang);
   };
 }
 
@@ -462,9 +593,7 @@ decorate(Store, {
   userLanguage: action,
   getSingleCountryInfo: action,
   userLang: observable,
-
   storeCounterData: action,
-  getSingleCountryInfoF: action,
   calcTime: action,
   extData: action,
   isLoading: observable,
@@ -487,10 +616,9 @@ decorate(Store, {
   headersArrayCountry: observable,
   loadingSingularPage: observable,
   singleCountryDataStore: observable,
-  getSingleCountryInfoSTORE: observable,
+  getSingleCountryInfo: observable,
   generalCountryCovidData: observable,
   generalCountryCovidDataDate: observable,
-  portugalCovidNationalDataInfo: observable,
 
   activeStation: observable,
 

@@ -1,74 +1,94 @@
-import React from "react";
-import { inject, observer } from "mobx-react";
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  Marker,
-  Annotation
-} from "react-simple-maps";
-import { geoCentroid } from "d3-geo";
+import React, { PureComponent } from "react";
+import { render } from "react-dom";
+import { StaticMap } from "react-map-gl";
+import DeckGL from "@deck.gl/react";
+import { HeatmapLayer } from "@deck.gl/aggregation-layers";
+import { TextLayer } from "@deck.gl/layers";
 
-const geoUrl =
-  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
+// Set your mapbox token here
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoicGRhdmltIiwiYSI6ImNrODlhNGZ3MjA0YWgzbm8yYWI2aXdkZXQifQ.PRoLVYzMXBnW5NwpbJhZyg"; // eslint-disable-line
+const DATA_URL =
+  "https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/screen-grid/uber-pickup-locations.json"; // eslint-disable-line
 
-const markers = [
-  { markerOffset: -15, name: "lisboa", coordinates: [38.71667, -9.13333] },
-  { markerOffset: 25, name: "Coimbra", coordinates: [40.20564, -8.41955] },
-  { markerOffset: 25, name: "Évora", coordinates: [38.56667, -7.9] },
-  { markerOffset: 25, name: "Faro", coordinates: [37.01937, -7.93223] },
-  { markerOffset: 25, name: "Porto", coordinates: [41.14961, -8.61099] },
-  { markerOffset: -15, name: "Braga", coordinates: [41.55032, -8.42005] }
+const INITIAL_VIEW_STATE = {
+  longitude: -9.13333,
+  latitude: 38.71667,
+  zoom: 9,
+  maxZoom: 16,
+  pitch: 0,
+  bearing: 0
+};
+
+const mapData = [
+  [-9.13333, 38.71667, 45],
+  [-8.41955, 40.20564, 5],
+  [-7.9, 38.56667, 8]
 ];
 
-const SingularCountryMap = inject("Store")(
-  observer(props => {
-    return (
-      <ComposableMap
-        projection="geoAzimuthalEqualArea"
-        projectionConfig={{
-          rotate: [58.0, 20.0],
-          scale: 400
-        }}
-      >
-        <Geographies geography={geoUrl}>
-          {({ geographies }) => {
-            console.log("geographies ", geographies);
-            let region = "";
-            let geagraphiesArray = geographies.length;
-            for (let i = 0; i < geagraphiesArray; i++) {
-              if (geographies[i].properties.NAME === "Portugal") {
-                region = geographies[i].properties.REGION_UN;
-              }
-            }
-            console.log("region ", region);
-            geographies
-              .filter(d => d.properties.REGION_UN === region)
-              .map(geo => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill="#EAEAEC"
-                  stroke="#D6D6DA"
-                />
-              ));
-          }}
-        </Geographies>
-        {markers.map(({ name, coordinates, markerOffset }) => (
-          <Marker key={name} coordinates={coordinates}>
-            <circle r={10} fill="#F00" stroke="#fff" strokeWidth={2} />
-            <text
-              textAnchor="middle"
-              y={markerOffset}
-              style={{ fontFamily: "system-ui", fill: "#5D5A6D" }}
-            >
-              {name}
-            </text>
-          </Marker>
-        ))}
-      </ComposableMap>
-    );
-  })
-);
+export default class SingularCountryMap extends PureComponent {
+  _renderLayers() {
+    const {
+      //data = DATA_URL,
+      data = mapData,
+      intensity = 1,
+      threshold = 0.03,
+      radiusPixels = 30
+    } = this.props;
 
-export default SingularCountryMap;
+    return [
+      /*new HeatmapLayer({
+        data,
+        id: "heatmp-layer",
+        pickable: false,
+        getPosition: d => [d[0], d[1]],
+        getWeight: d => d[2],
+        radiusPixels,
+        intensity,
+        threshold
+      }),*/
+      new TextLayer({
+        id: "text-layer",
+        data,
+        pickable: true,
+        getPosition: d => d.coordinates,
+        getText: d => d.name,
+        getSize: 32,
+        getAngle: 0,
+        getTextAnchor: "middle",
+        getAlignmentBaseline: "center",
+        onHover: ({ object, x, y }) => {
+          const tooltip = `${object.name}\n${object.address}`;
+          /* Update tooltip
+             http://deck.gl/#/documentation/developer-guide/adding-interactivity?section=example-display-a-tooltip-for-hovered-object
+          */
+        }
+      })
+    ];
+  }
+
+  render() {
+    const { mapStyle = "mapbox://styles/mapbox/dark-v9" } = this.props;
+
+    return (
+      <div>
+        <DeckGL
+          initialViewState={INITIAL_VIEW_STATE}
+          controller={true}
+          layers={this._renderLayers()}
+        >
+          <StaticMap
+            reuseMaps
+            mapStyle={mapStyle}
+            preventStyleDiffing={true}
+            mapboxApiAccessToken={MAPBOX_TOKEN}
+          />
+        </DeckGL>
+      </div>
+    );
+  }
+}
+
+export function renderToDOM(container) {
+  render(<SingularCountryMap />, container);
+}
