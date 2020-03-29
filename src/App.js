@@ -1,6 +1,5 @@
 //IMPORT REACT AND OTHER LIBRARIES
-import React from "react";
-import { Provider } from "mobx-react";
+import React, { Component } from "react";
 import { observer, inject } from "mobx-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { YMInitializer } from "react-yandex-metrika";
@@ -10,11 +9,11 @@ import { YMInitializer } from "react-yandex-metrika";
 import Grid from "@material-ui/core/Grid";
 import Store from "./stores/Store";
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
-import { ThemeProvider, makeStyles } from "@material-ui/styles";
+import { ThemeProvider, makeStyles, withStyles } from "@material-ui/styles";
 
 //IMPORT CUSTOM COMPONENTS
 
-import Main from "./components/Main";
+import Main from "./pages/Main";
 
 //IMPORT FUNCTIONS
 
@@ -144,55 +143,41 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const App = inject()(
-  observer(props => {
-    //  console.log(stores);
+class App extends Component {
+  componentDidMount() {
+    console.log("App ", this.props);
+    this.props.Store.updateWeather();
+  }
 
-    const updateWeather = () => {
-      let appState = stores.Store;
+  // Accepts a Date object or date string that is recognized by the Date.parse() method
 
-      //console.log("isLoading", stores);
-      appState.getData(appState.cityName);
-      //setInterval(appState.storeCounterData(), 1000);
-    };
+  //console.log("this.props.isGeolocationAvailable ", this.props);
+  // console.log("props ", state);
+  // console.log("appState ", appState);
+  //let k = console.log("my k is = ", stores.Store.dieCalTimeStore);
 
-    // Accepts a Date object or date string that is recognized by the Date.parse() method
+  //setInterval(n, 5000);
+  // setInterval(stores.Store.storeCounterData, 5000);
 
-    //console.log("this.props.isGeolocationAvailable ", this.props);
-    // console.log("props ", state);
-    // console.log("appState ", appState);
-    updateWeather();
-    //let k = console.log("my k is = ", stores.Store.dieCalTimeStore);
-
-    //setInterval(n, 5000);
-    // setInterval(stores.Store.storeCounterData, 5000);
-
-    // console.log("appstate ", appState);
-    //console.log("Store", stores);
-    // console.log("props ", state);
-
+  // console.log("appstate ", appState);
+  //console.log("Store", stores);
+  // console.log("props ", state);
+  render() {
     let themeA = responsiveFontSizes(theme);
-    let classes = useStyles();
+    let classes = this.props;
     return (
-      <Provider {...stores}>
-        <ThemeProvider theme={themeA}>
-          <Router>
-            <Grid container spacing={2} className={classes.root}>
-              <Grid item xs={12} className={classes.rootItem}>
-                <YMInitializer accounts={[61101091]} />
-                <Main
-                  theme={themeA}
-                  props={stores.Store}
-                  // updateWeather={updateWeather}
-                  //die={stores.Store.dieCalTimeStore}
-                />
-              </Grid>
+      <ThemeProvider theme={themeA}>
+        <Router>
+          <Grid container spacing={2} className={classes.root}>
+            <Grid item xs={12} className={classes.rootItem}>
+              <YMInitializer accounts={[61101091]} />
+              <Main theme={themeA} props={stores.Store} />
             </Grid>
-          </Router>
-        </ThemeProvider>
-      </Provider>
+          </Grid>
+        </Router>
+      </ThemeProvider>
     );
-  })
-);
+  }
+}
 
-export default App;
+export default inject("Store")(observer(withStyles(useStyles)(App)));

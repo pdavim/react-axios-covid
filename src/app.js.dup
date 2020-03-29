@@ -3,21 +3,18 @@ import React from "react";
 import { Provider } from "mobx-react";
 import { observer, inject } from "mobx-react";
 import { BrowserRouter as Router } from "react-router-dom";
+import { YMInitializer } from "react-yandex-metrika";
 
 //IMPORT MATERIA UI COMPONENTS
 
 import Grid from "@material-ui/core/Grid";
 import Store from "./stores/Store";
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/styles";
-
-//IMPORT EXTERNAL STYLESHEETS
-//import "./App.css";
-import "./sass/app.scss";
+import { ThemeProvider, makeStyles } from "@material-ui/styles";
 
 //IMPORT CUSTOM COMPONENTS
-import BottomSection from "./components/bottomSection/bottomSection/index";
-import Charts from "./components/bottomSection/chartsSection/charts";
+
+import Main from "./components/Main";
 
 //IMPORT FUNCTIONS
 
@@ -73,8 +70,8 @@ const theme = createMuiTheme({
   },
   palette: {
     primary: {
-      light: "#a6d4fa",
-      main: "#90caf9",
+      light: "#0D2C54",
+      main: "#0D2C54",
       dark: "#aa647b",
       contrastText: "#fff",
       textLight: "white"
@@ -131,8 +128,24 @@ const theme = createMuiTheme({
   }
 });
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: "flex",
+    flexGrow: 1,
+    height: "100%",
+    background: "#0D2C54",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 30
+  },
+  rootItem: {
+    minHeight: "600px",
+    maxHeight: "100%"
+  }
+}));
+
 const App = inject()(
-  observer(() => {
+  observer(props => {
     //  console.log(stores);
 
     const updateWeather = () => {
@@ -140,7 +153,7 @@ const App = inject()(
 
       //console.log("isLoading", stores);
       appState.getData(appState.cityName);
-      setInterval(appState.storeCounterData(), 1000);
+      //setInterval(appState.storeCounterData(), 1000);
     };
 
     // Accepts a Date object or date string that is recognized by the Date.parse() method
@@ -150,53 +163,30 @@ const App = inject()(
     // console.log("appState ", appState);
     updateWeather();
     //let k = console.log("my k is = ", stores.Store.dieCalTimeStore);
-    let n = () => {
-      stores.Store.storeCounterData();
-      // console.log("my k is = ", stores.Store.dieCalTimeStore);
-    };
-    setInterval(n, 1000);
-    setInterval(stores.Store.storeCounterData, 1000);
+
+    //setInterval(n, 5000);
+    // setInterval(stores.Store.storeCounterData, 5000);
 
     // console.log("appstate ", appState);
     //console.log("Store", stores);
     // console.log("props ", state);
 
     let themeA = responsiveFontSizes(theme);
-
+    let classes = useStyles();
     return (
       <Provider {...stores}>
         <ThemeProvider theme={themeA}>
           <Router>
-            <Grid container spacing={2}>
-              {
-                (stores.Store.isLoading = false ? (
-                  <Grid item xs={12}>
-                    <h3>Loading Data...</h3>
-                  </Grid>
-                ) : (
-                  (stores.Store.isLoading = true ? (
-                    <Grid item xs={12}>
-                      <Charts
-                        theme={themeA}
-                        props={stores.Store}
-                       // updateWeather={updateWeather}
-                        //die={stores.Store.dieCalTimeStore}
-                      />
-                      <BottomSection
-                        theme={themeA}
-                        props={stores.Store}
-                        updateWeather={updateWeather}
-                        die={stores.Store.dieCalTimeStore}
-                        //eventEmitter={this.props.eventEmitter}
-                      />
-                    </Grid>
-                  ) : (
-                    <Grid item xs={12}>
-                      <h3>Waiting for data</h3>
-                    </Grid>
-                  ))
-                ))
-              }
+            <Grid container spacing={2} className={classes.root}>
+              <Grid item xs={12} className={classes.rootItem}>
+                <YMInitializer accounts={[61101091]} />
+                <Main
+                  theme={themeA}
+                  props={stores.Store}
+                  // updateWeather={updateWeather}
+                  //die={stores.Store.dieCalTimeStore}
+                />
+              </Grid>
             </Grid>
           </Router>
         </ThemeProvider>

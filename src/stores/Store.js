@@ -1,11 +1,13 @@
-import { observable, action, decorate, computed } from "mobx";
-//import { action,observable } from "mobx-react";
-import { readString, CSVReader, readRemoteFile } from "react-papaparse";
+import { observable, action, decorate, computed, runInAction } from "mobx";
+import { readString } from "react-papaparse";
 import axios from "axios";
 import CornovirusData from "../assets/data/coronaVirusData";
-import { isArray } from "util";
+
 import portugalCovidNatinalData from "../assets/data/portugalCovidNatinalData";
 class Store {
+  constructor() {
+    this.updateWeather();
+  }
   fetchCity = {
     error: "",
     status: "Pending",
@@ -81,8 +83,8 @@ class Store {
   raindaysChartData;
 
   //Loading
-  isLoading = true;
-  isLoadingTopSection;
+
+  isLoadingTopSection = true;
 
   //dayOrNight
   dayOrNightData;
@@ -111,18 +113,8 @@ class Store {
   userSeachLocation = "Portugal";
   portugalCovidNationalDataInfo = portugalCovidNatinalData;
   mapChartArrayData = [];
-  //("get all data")
-  getData = async () => {
-    //this.isLoading = true;
-    await this.getAllCountryCornovirusData();
-    await this.getCoronaVirusData();
-    await this.getLastUpdateDate();
-    this.isLoading = false;
-    await this.getSingluarCountryData();
-    await this.extData();
-    await this.mapchartData();
-    this.storeCounterData();
-  };
+  isLoading = true;
+  getAllCountryGeneralDataArray = [];
 
   //("user browser language")
   //("update weather data")
@@ -130,17 +122,54 @@ class Store {
     this.getData();
   };
 
+  //("get all data")
+  getData = async () => {
+    this.isLoading = true;
+    await this.getAllCountryCornovirusData();
+    await this.getCoronaVirusData();
+    await this.getCityDataObs();
+    //await this.getSingluarCountryData();
+    await this.getUserCountryData();
+    await this.getLastUpdateDate();
+    await this.extData();
+    await this.getMapData();
+    //this.storeCounterData();
+    this.isLoading = false;
+  };
+
+  getMapData = async () => {
+    await this.mapchartData();
+    this.getObjectMapChartData();
+  };
+
+  //get map dara
   mapchartData = async () => {
     let data = this.citiesDataArrayObs;
     let dataLength = data.length;
+    let dataArray = [];
+    let weight = 45;
 
     for (let i = 0; i < dataLength; i++) {
-      let a = await this.citiesDataArrayObs[i].coordinates;
-      let weight = 45;
-      let finalData = [a[0], a[1], weight];
-      this.mapChartArrayData.push(finalData);
+      // console.log(this.citiesDataArrayObs[i]);
+      dataArray.push([
+        this.citiesDataArrayObs[i].coordinates[0],
+        this.citiesDataArrayObs[i].coordinates[1],
+        weight
+      ]);
     }
-    console.log("mapChartArrayData", this.mapChartArrayData);
+
+    return dataArray;
+
+    console.log("citiesDataArrayObs map chart ", this.citiesDataArrayObs);
+    console.log("mapChartArrayData mapchart", this.mapChartArrayData);
+  };
+
+  getObjectMapChartData = async () => {
+    let dataArray = await this.mapchartData();
+    console.log("dataArray", dataArray);
+    runInAction(() => {
+      this.mapChartArrayData = dataArray;
+    });
   };
 
   //get update date
@@ -149,9 +178,9 @@ class Store {
       .statistic_taken_at;
   };
 
-  //getAllCountryCornovirusData
-  getAllCountryCornovirusData = () => {
-    let get = axios({
+  //getAllCountryCornovirusData 1º
+  getAllCountryCornovirusData = async () => {
+    const get = await axios({
       method: "GET",
       url:
         "https://coronavirus-monitor.p.rapidapi.com/coronavirus/cases_by_country.php",
@@ -160,18 +189,24 @@ class Store {
         "x-rapidapi-host": "coronavirus-monitor.p.rapidapi.com",
         "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
       }
-    }).then(response => {
-      this.getAllCountryCornovirusDataObs = response;
-
-      return response;
+    }).then(resp => {
+      const data = resp;
+      runInAction(() => {
+        this.getAllCountryCornovirusDataObs = data;
+        console.log(
+          "this.getAllCountryCornovirusDataObs ",
+          this.getAllCountryCornovirusDataObs
+        );
+      });
     });
-    //console.log(get);
-    return get;
   };
 
   //get countryinfo - population, coord, capital, etc
   getAllCountryGeneralData = async countryName => {
     //console.log("country_name", countryName);
+
+    // let getAllCountryGeneralDataArray = [];
+
     await axios({
       method: "GET",
       url: `https://restcountries-v1.p.rapidapi.com/name/${countryName}`,
@@ -181,27 +216,6 @@ class Store {
         "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
       }
     })
-      .then(rp => {
-        //console.log("rp ", rp);
-
-        let population = rp.data[0].population;
-        let region = rp.data[0].region;
-        let lat = rp.data[0].latlng[1];
-        let lon = rp.data[0].latlng[0];
-        let capital = rp.data[0].capital;
-        let coord = [lat, lon];
-        this.citiesDataArrayObs.push({
-          markerOffset: -5,
-          xmarkerOffset: -5,
-          name: rp.data[0].name,
-          coordinates: coord,
-          region: region,
-          population: population,
-          capital: capital
-        });
-
-        return rp;
-      })
       .catch(function(error) {
         console.log(
           "Error notification! get all general data, store getAllCountryGeneralData function",
@@ -209,8 +223,30 @@ class Store {
         );
         //this.errorDataCountry.push(countryName);
         return Promise.reject(error);
+      })
+      .then(rp => {
+        this.pushCountryData(rp);
       });
-    // return getCountryData;
+  };
+
+  pushCountryData(rp) {
+    this.getAllCountryGeneralDataArray.push({
+      markerOffset: -5,
+      xmarkerOffset: -5,
+      name: rp.data[0].name,
+      coordinates: [rp.data[0].latlng[1], rp.data[0].latlng[0]],
+      region: rp.data[0].region,
+      population: rp.data[0].population,
+      capital: rp.data[0].capital
+    });
+  }
+
+  getCityDataObs = async () => {
+    let data = this.getAllCountryGeneralDataArray;
+    console.log("getCityDataObs ", data);
+    runInAction(() => {
+      this.citiesDataArrayObs = this.getAllCountryGeneralDataArray;
+    });
   };
 
   //("get cornovirus data")
@@ -236,6 +272,7 @@ class Store {
         country === "Vatican City" ||
         country === "British Virgin Islands" ||
         country === "Turks and Caicos Islands" ||
+        country === "MS Zaandam" ||
         country === "St. Vincent Grenadines"
       ) {
         // console.log(country);
@@ -250,6 +287,10 @@ class Store {
     );
   };
 
+  getUserCountryData = async () => {
+    await this.getSingluarCountryData();
+    await this.getSingleCountryInfoF();
+  };
   getSingluarCountryData = async () => {
     await axios({
       method: "GET",
@@ -262,13 +303,7 @@ class Store {
       }
     })
       .then(response => {
-        // console.log("Cornovirus response ", response);
         this.getCoronaVirusDataArray = response.data;
-        //console.log("Cornovirus response ", this.getCoronaVirusDataArray);
-        //console.log(
-        // "Cornovirus getCoronaVirusDataArray ",
-        //  this.getCoronaVirusDataArray
-        //  );
         return this.getCoronaVirusDataArray;
       })
       .then(resp => {
@@ -285,20 +320,20 @@ class Store {
       })
       .then(res => {
         this.singleCountryDataStore = res;
-        this.getSingleCountryInfoF();
+        //this.getSingleCountryInfoF();
         console.log("Country data ", res);
       });
   };
 
   //Get single contry info coord/population
-  getSingleCountryInfoF = () => {
+  getSingleCountryInfoF = async () => {
     let array = this.citiesDataArrayObs;
     let arraySingle = [];
     let arrayResLengthInfo = array.length;
     //console.log("array single ", array);
     for (let i = 0; i < arrayResLengthInfo; i++) {
       if (this.citiesDataArrayObs[i].name === "Portugal") {
-        arraySingle.push(this.citiesDataArrayObs[i]);
+        arraySingle.push(await this.citiesDataArrayObs[i]);
       }
     }
     this.getSingleCountryInfo = arraySingle;
@@ -354,6 +389,7 @@ class Store {
 
     this.dieCalTimeStore = currentDeath / totalSeconds;
   };
+
   csvJSON = csv => {
     var lines = csv.split("\n");
 
@@ -436,7 +472,7 @@ class Store {
   };
 
   extData = async () => {
-    this.loadingSingularPage = true;
+    // this.loadingSingularPage = true;
     //all data from CSSE COVID-19 Dataset
     //https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
     //
@@ -470,8 +506,9 @@ decorate(Store, {
   //new Observables
   getAllCountryCornovirusDataObs: observable,
   countryNameWithCornovirus: observable,
+  getAllCountryGeneralDataArray: observable,
   //Old
-
+  pushCountryData: action,
   getSingluarCountryData: action,
   userLanguage: action,
   //getSingleCountryInfo: action,
