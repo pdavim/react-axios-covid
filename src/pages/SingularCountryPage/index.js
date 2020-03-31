@@ -227,40 +227,56 @@ const SingularCountryPage = inject("Store")(
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
-    const fg = () => {
-      console.log("fg props ", getData);
-      // props.Store.getData();
-      console.log("fg get ", props.Store.portugalCovidNationalDataInfo);
-      return;
-    };
-    if (props.Store.portugalCovidNationalDataInfo !== isArray) {
-      setTimeout(fg(), 2000);
-    }
+    console.log("fg props ", getData);
+    // props.Store.getData();
+    console.log("fg get ", props.Store.portugalCovidNationalDataInfo);
+
     console.log("SingularCountryPage info store data", props.Store);
+
     console.log(
       "SingularCountryPage Region Cases",
       props.Store.portugalCovidNationalDataInfo[0].casesLocationRegion
         .regionCases
     );
+
     console.log(
       "SingularCountryPage singleCountryDataStore",
-      props.Store.singleCountryDataStore
+      props.Store.getSingleCountryInfo
     );
 
-    let arraylengthAutorun = props.Store.singleCountryDataStore;
-    if (arraylengthAutorun.length === 0) {
-      console.log("await for data");
-      setTimeout(console.log("Now"), 2000);
-      return;
-    } else {
-      //console.log(typeof f);
-      //console.log("Singular page props ", props.Store.citiesDataArrayObs);
-      console.log("data has arrived");
-      console.log(arraylengthAutorun);
-    }
-    //console.log("single country  ", singleCountry);
-    //console.log("single country data ", singleDataCountry);
+    const filterItemsCountryInfo = (arr, query) => {
+      let queryLower = query.toLowerCase();
+      //console.log("queryLower", queryLower);
+      let dataCountry = arr.filter(item =>
+        item.name.toLowerCase().includes(queryLower)
+      );
+      return dataCountry;
+    };
+    let array = props.Store.getAllCountryGeneralDataArray;
 
+    // console.log("array", array);
+    let data = filterItemsCountryInfo(array, "Portugal");
+    console.log("data singular filterItemsCountryInfo filter ", data);
+
+    let arrayCovid =
+      props.Store.getAllCountryCornovirusDataObs.data.countries_stat;
+    const filterItemsCountryCovid = (arr, query) => {
+      let queryLower = query.toLowerCase();
+      //console.log("queryLower", queryLower);
+      let dataCountryCovid = arr.filter(item =>
+        item.country_name.toLowerCase().includes(queryLower)
+      );
+      return dataCountryCovid;
+    };
+
+    let dataCountryCovid = filterItemsCountryCovid(arrayCovid, "Portugal");
+    console.log(
+      "data singular page filterItemsCountryCovid data",
+      dataCountryCovid[0]
+    );
+
+    //Getting data from the national portugues de saude getting data
+    //from portugalCovidNationalDataInfo observable
     let ageChartsGender = [];
     let casesAgeMale = [];
     let casesAgeFemale = [];
@@ -334,19 +350,23 @@ const SingularCountryPage = inject("Store")(
     let recoveredArrayLength = recoveredArray.length;
     let recover = recoveredArray.slice(5, recoveredArrayLength);
 
-    let country_name = props.Store.singleCountryDataStore[0].country_name;
-    let new_deaths = props.Store.singleCountryDataStore[0].new_deaths;
-    let new_cases = props.Store.singleCountryDataStore[0].new_cases;
+    let country_name = dataCountryCovid[0].country_name;
+    let new_deaths = dataCountryCovid[0].new_deaths;
+    let new_cases = dataCountryCovid[0].new_cases;
     let total_cases_per_1m_population =
-      props.Store.singleCountryDataStore[0].total_cases_per_1m_population;
-    let active_cases = props.Store.singleCountryDataStore[0].active_cases;
-    let serious_critical =
-      props.Store.singleCountryDataStore[0].serious_critical;
-    let total_recovered = props.Store.singleCountryDataStore[0].total_recovered;
-    let deaths = props.Store.singleCountryDataStore[0].deaths;
-    let cases = props.Store.singleCountryDataStore[0].cases;
+      dataCountryCovid[0].total_cases_per_1m_population;
+    let active_cases = dataCountryCovid[0].active_cases;
+    let serious_critical = dataCountryCovid[0].serious_critical;
+    let total_recovered = dataCountryCovid[0].total_recovered;
+    let deaths = dataCountryCovid[0].deaths;
+    let cases = dataCountryCovid[0].cases;
     //let coordinates = props.Store.getSingleCountryInfoSTORE[0].coordinates;
-    let population = props.Store.getSingleCountryInfo[0].population;
+    console.log(
+      "props.Store.getSingleCountryInfo ",
+      props.Store.getSingleCountryInfo
+    );
+    let population = data[0].population;
+    console.log("population", population);
     //let region = props.Store.getSingleCountryInfoSTORE[0].region;
     //let capital = props.Store.getSingleCountryInfoSTORE[0].capital;
     let deathPercentage = percentage(cases, deaths);
@@ -361,6 +381,17 @@ const SingularCountryPage = inject("Store")(
     //console.log("Header are ", dates);
     //console.log("Confirm are ", confirm);
     //console.log("Died are ", died);
+
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = event => {
+      setRowsPerPage(+event.target.value);
+      setPage(0);
+    };
+
+    const classes = useStyles();
 
     let options = {
       chart: {
@@ -483,16 +514,6 @@ const SingularCountryPage = inject("Store")(
 
     // console.log("CoronavirusData props", props);
 
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = event => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
-
-    const classes = useStyles();
     return (
       <Grid container className={classes.root} spacing={1}>
         <Grid item xs={12}>

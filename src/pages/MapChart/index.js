@@ -175,8 +175,25 @@ const useStyles = makeStyles(theme => ({
 const MapChart = inject("Store")(
   observer(props => {
     console.log("MapChart", props);
-    const mapData = [];
     console.log("MapChart ", props.Store);
+
+    let dataGeneral = props.Store.getAllCountryGeneralDataArray;
+    let dataLength = dataGeneral.length;
+    let dataArray = [];
+    let weight = 45;
+    console.log("mapchartData ", dataGeneral);
+    for (let i = 0; i < dataLength; i++) {
+      // console.log(this.citiesDataArrayObs[i]);
+      dataArray.push([
+        props.Store.getAllCountryGeneralDataArray[i].coordinates[0],
+        props.Store.getAllCountryGeneralDataArray[i].coordinates[1],
+        weight
+      ]);
+    }
+
+    console.log("dataArray Map page", dataArray);
+
+    const mapData = [];
     const { mapChartArrayData } = props.Store;
     let lengthData = mapChartArrayData.length;
     for (let i = 0; i < lengthData; i++) {
@@ -189,7 +206,7 @@ const MapChart = inject("Store")(
 
     const { mapStyle = "mapbox://styles/mapbox/dark-v9" } = props;
     const {
-      data = mapData,
+      data = dataArray,
       // dattaText = DATA_URLJosn,
       // data = props.Store.mapChartArrayData[14],
       intensity = 1,

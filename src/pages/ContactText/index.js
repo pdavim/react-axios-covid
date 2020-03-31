@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 // data import
 import contactPageData from "../../assets/data/contactPageData";
+import Form from "../../components/Form";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,6 +20,10 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     fontSize: 24,
     fontWeight: 900
+  },
+  form: {
+    paddingLeft: 100,
+    paddingRight: 100
   }
 }));
 
@@ -31,49 +36,26 @@ const ContactText = () => {
           {contactPageData[0].title}
         </Typography>
       </Grid>
-      <Grid item xs={12}>
-        <Typography>
-          {contactPageData[1].textAuthor} {contactPageData[2].author}
-        </Typography>
+
+      <Grid item xs={4} className={classes.form}>
+        <Grid item xs={12}>
+          <Typography>
+            {contactPageData[1].textAuthor} {contactPageData[2].author}
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <Typography>{contactPageData[3].authorEmail}</Typography>
+      <Grid item xs={4} className={classes.form}>
+        <Form className={classes.form} />
       </Grid>
-      <Grid item xs={12}>
-        <a href={contactPageData[4].authorSite}>
-          {contactPageData[5].authorSiteText}
-        </a>
-      </Grid>
-      <Grid item xs={12}>
-        <form name="contact" method="POST" data-netlify="true">
-          <p>
-            <label>
-              Your Name: <input type="text" name="name" />
-            </label>
-          </p>
-          <p>
-            <label>
-              Your Email: <input type="email" name="email" />
-            </label>
-          </p>
-          <p>
-            <label>
-              Your Role:{" "}
-              <select name="role[]" multiple>
-                <option value="leader">Leader</option>
-                <option value="follower">Follower</option>
-              </select>
-            </label>
-          </p>
-          <p>
-            <label>
-              Message: <textarea name="message" />
-            </label>
-          </p>
-          <p>
-            <button type="submit">Send</button>
-          </p>
-        </form>
+      <Grid item xs={4} className={classes.form}>
+        <Grid item xs={12}>
+          <Typography>{contactPageData[3].authorEmail}</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <a href={contactPageData[4].authorSite}>
+            {contactPageData[5].authorSiteText}
+          </a>
+        </Grid>
       </Grid>
     </Grid>
   );

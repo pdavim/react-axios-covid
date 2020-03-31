@@ -21,8 +21,11 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 //import functions
 import percentage from "../../functions/percentage";
 import totalCases from "../../functions/totalCases";
+import filterItems from "../../functions/filterItems";
+
 import Card01 from "../../components/Card01";
 import DonutChart01 from "../../components/DonutChart01";
+import CityBackdrop from "../../components/CityBackdrop";
 
 const tableHeaderTtextTitle = [
   "nº",
@@ -269,6 +272,7 @@ const CoronavirusData = inject("Store")(
     console.log("CoronavirusData page", props);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
+    const [arrayData, setArrayData] = React.useState([]);
 
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -494,7 +498,15 @@ const CoronavirusData = inject("Store")(
                           {i + 1}
                         </TableCell>
                         <TableCell component="th" scope="row">
-                          {dt.country_name}
+                          <CityBackdrop
+                            value={dt.country_name}
+                            cases={dt.cases}
+                            deaths={dt.deaths}
+                            total_recovered={dt.total_recovered}
+                            new_deaths={dt.new_deaths}
+                            new_cases={dt.new_cases}
+                            serious_critical={dt.serious_critical}
+                          />
                         </TableCell>
 
                         <TableCell align="right">{dt.cases}</TableCell>

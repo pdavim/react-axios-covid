@@ -14,6 +14,7 @@ import { ThemeProvider, makeStyles, withStyles } from "@material-ui/styles";
 //IMPORT CUSTOM COMPONENTS
 
 import Main from "./pages/Main";
+import { autorun } from "mobx";
 
 //IMPORT FUNCTIONS
 
@@ -144,11 +145,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 class App extends Component {
-  componentDidMount() {
-    console.log("App ", this.props);
-    this.props.Store.updateWeather();
-  }
-
   // Accepts a Date object or date string that is recognized by the Date.parse() method
 
   //console.log("this.props.isGeolocationAvailable ", this.props);
@@ -162,7 +158,9 @@ class App extends Component {
   // console.log("appstate ", appState);
   //console.log("Store", stores);
   // console.log("props ", state);
+  getUpdate = () => this.props.Store.updateWeather();
   render() {
+    this.getUpdate();
     let themeA = responsiveFontSizes(theme);
     let classes = this.props;
     return (

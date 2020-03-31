@@ -26,11 +26,11 @@ const useStyles = makeStyles({
     color: "white",
     textAlign: "left",
     fontWeight: 900,
-    fontSize: 18
+    fontSize: props => props.textContentSize
   }
 });
 
-const Card01 = props => {
+const Card01Title = props => {
   //const { color } = props;
   //console.log("card01 props ", props);
   const classes = useStyles(props);
@@ -46,13 +46,14 @@ const Card01 = props => {
     </Paper>
   );
 };
-Card01.propTypes = {
+Card01Title.propTypes = {
   background: PropTypes.string,
   textContent: PropTypes.string,
   textContentdivider: PropTypes.string,
   textAfterContent: PropTypes.string,
   textAfterContentSymbol: PropTypes.string,
-  textCard: PropTypes.string
+  textCard: PropTypes.string,
+  textContentSize: PropTypes.string
 };
 
-export default Card01;
+export default Card01Title;
