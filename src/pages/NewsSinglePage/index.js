@@ -20,10 +20,10 @@ const useStyles = makeStyles(theme => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#000000",
-    height: "100%",
-    width: "100%",
-    paddingLeft: 80,
-    paddingRigth: 80
+    // height: "100%",
+    // width: "100%",
+    paddingLeft: 0,
+    paddingRigth: 0
   },
   imageGrid: {},
   image: {
@@ -49,17 +49,19 @@ const useStyles = makeStyles(theme => ({
   },
   paperBackdrop: {
     // padding: "120px",
+    marginRight: "120px",
+    marginLeft: "120px",
     paddingLeft: "120px",
     paddingRight: "120px",
     paddingTop: "80px",
     paddingBottom: "80px",
-    width: "100%",
+    //width: "100%",
     [theme.breakpoints.down("xs")]: {
       paddingLeft: "40px",
       paddingRight: "40px",
       paddingTop: "30px",
-      paddingBottom: "30px",
-      width: "100%"
+      paddingBottom: "30px"
+      // width: "100%"
     }
   },
   chipSpan: {
@@ -81,15 +83,15 @@ const NewsSinglePage = props => {
   const handleToggle = () => {
     setOpen(!open);
   };
-  console.log("newsSinglePage ", props);
+  //console.log("newsSinglePage ", props);
   let item = props;
 
   let keywordsObject = item.keywords;
   let kewordsArray = stringToArray(item.keywords);
-  console.log("keywordsObject ", keywordsObject);
+  /* console.log("keywordsObject ", keywordsObject);
   console.log("kewordsArray ", kewordsArray);
   console.log("kewordsArray Typeof ", typeof kewordsArray);
-  console.log("provider", item.provider);
+  console.log("provider", item.provider); */
   const classes = useStyles();
   return (
     <Grid>

@@ -19,9 +19,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NewsPage = props => {
-  console.log("newsPage ", typeof props.Store.latestNews);
+  console.log("newsPage ", props.Store.latestNews);
   let news = props.Store.latestNews.data.value;
-  console.log("newsPage ", news);
+  //console.log("newsPage ", news);
   const { latestNews } = props.Store;
   const classes = useStyles();
 

@@ -332,37 +332,39 @@ const Main = inject("Store")(
                       </NavLink>
                     </Button>
                   </Grid>
-                  {typeof props.Store.latestNews === !undefined ? (
-                    <Grid item xs={2}>
-                      <Button
-                        disableRipple={true}
-                        size="small"
-                        disableElevation={true}
-                        disableFocusRipple={true}
-                        //color={colorText}
-                        className={classes.buttomRouter}
-                        variant="text"
-                      >
-                        <NavLink
-                          to="/news"
-                          style={{
-                            color: "#fff",
-                            fontWeight: "500",
-                            fontSize: 16
-                          }}
-                          activeStyle={{
-                            fontWeight: "900",
-                            color: "#24A34E",
-                            fontSize: 16
-                          }}
+                  {
+                    (props.Store.latestNews = !undefined ? (
+                      <Grid item xs={2}>
+                        <Button
+                          disableRipple={true}
+                          size="small"
+                          disableElevation={true}
+                          disableFocusRipple={true}
+                          //color={colorText}
+                          className={classes.buttomRouter}
+                          variant="text"
                         >
-                          News
-                        </NavLink>
-                      </Button>
-                    </Grid>
-                  ) : (
-                    <></>
-                  )}
+                          <NavLink
+                            to="/news"
+                            style={{
+                              color: "#fff",
+                              fontWeight: "500",
+                              fontSize: 16
+                            }}
+                            activeStyle={{
+                              fontWeight: "900",
+                              color: "#24A34E",
+                              fontSize: 16
+                            }}
+                          >
+                            News
+                          </NavLink>
+                        </Button>
+                      </Grid>
+                    ) : (
+                      <></>
+                    ))
+                  }
                   <Grid item xs={2}>
                     <Button
                       disableRipple={true}
@@ -588,7 +590,7 @@ const News = inject("Store")(
     let classes = useStyles();
     return (
       <Grid item xs={12} className={classes.mapGridItem}>
-        {typeof props.Store.latestNews === !undefined ? (
+        {props.Store.latestNews.length !== 0 ? (
           <NewsPage />
         ) : (
           <>
