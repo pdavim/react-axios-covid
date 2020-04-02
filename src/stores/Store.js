@@ -119,6 +119,7 @@ class Store {
   AlldeathPerCountryArray;
   AllrecoverdPerCountry;
   AllconfirmedPerCountry;
+  latestNews;
 
   //getAllCountryCornovirusData 1º
   getAllCountryCornovirusData = async () => {
@@ -148,6 +149,28 @@ class Store {
     for (let i = 0; i < countryNameWithCornovirusLenth; i++) {
       let country = await this.getAllCountryCornovirusDataObs.data
         .countries_stat[i].country_name;
+      if (country === "S. Korea") {
+        country = "South Korea";
+      }
+
+      if (country === "Czechia") {
+        country = "Czech Republic";
+      }
+      if (country === "North Macedonia") {
+        country = "Republic of Macedonia";
+      }
+      if (country === "British Virgin Islands") {
+        country = "Virgin Islands (British)";
+      }
+      if (country === "Turks and Caicos Islands") {
+        country = "Turks and Caicos Islands";
+      }
+      if (country === "St. Vincent Grenadines") {
+        country = "Saint Vincent and the Grenadines";
+      }
+      if (country === "UK") {
+        country = "United Kingdom";
+      }
       //console.log(country);
       if (
         country === "S. Korea" ||
@@ -158,11 +181,12 @@ class Store {
         country === "Channel Islands" ||
         country === "Vatican City" ||
         country === "British Virgin Islands" ||
-        country === "Turks and Caicos Islands" ||
+        //country === "Turks and Caicos Islands" ||
         country === "MS Zaandam" ||
+        country === "Caribbean" ||
         country === "St. Vincent Grenadines"
       ) {
-        // console.log(country);
+        console.log(country);
       } else {
         //  console.log("good", country);
         this.getAllCountryGeneralData(country);
@@ -181,17 +205,22 @@ class Store {
         "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
       }
     })
-      .catch(function(error) {
-        console.log(
-          "Error notification! get all general data, store getAllCountryGeneralData function",
-
-          this.errorDataCountry.push(countryName)
-        );
-        //this.errorDataCountry.push(countryName);
-        return Promise.reject(error);
-      })
       .then(rp => {
         this.pushCountryData(rp);
+      })
+      .catch(function(error) {
+        console.log(
+          "Error notification!  Store getAllCountryGeneralData function, with country",
+          countryName
+          // this.errorDataCountry.push(countryName)
+        );
+        console.log(
+          "Error notification!  Store getAllCountryGeneralData function, with error",
+          error + " " + countryName
+          // this.errorDataCountry.push(countryName)
+        );
+        //this.errorDataCountry.push(countryName);
+        // return Promise.reject(error);
       });
   };
 
@@ -221,9 +250,9 @@ class Store {
     await this.getLastUpdateDate();
     //
     await this.extData();
-
-    //this.storeCounterData();
     this.isLoading = false;
+    this.getLatestNews();
+    //this.storeCounterData();
   };
 
   //get update date
@@ -365,7 +394,7 @@ class Store {
     //var csv is the CSV file with headers
 
     this.loadingSingularPage = false;
-    // console.log("data City ", this.locationSearchArrayDeath);
+    console.log("data City ", this.locationSearchArrayDeath);
     //console.log("data City ", this.locationSearchArrayRecoverd);
   };
 
@@ -373,6 +402,34 @@ class Store {
     let userLang = navigator.language || navigator.userLanguage;
 
     console.log("coronavirus componet ", userLang);
+  };
+
+  //get latest news
+  getLatestNews = () => {
+    axios({
+      method: "GET",
+      url:
+        "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/NewsSearchAPI",
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "contextualwebsearch-websearch-v1.p.rapidapi.com",
+        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
+      },
+      params: {
+        autoCorrect: "false",
+        pageNumber: "1",
+        pageSize: "20",
+        q: "covid",
+        safeSearch: "false"
+      }
+    })
+      .then(response => {
+        console.log("getLatestNews ", response);
+        this.latestNews = response;
+      })
+      .catch(error => {
+        console.log("getLatestNews error ", error);
+      });
   };
 }
 
@@ -385,6 +442,8 @@ decorate(Store, {
   AlldeathPerCountryArray: observable,
   AllrecoverdPerCountry: observable,
   AllconfirmedPerCountry: observable,
+  errorDataCountry: observable,
+  latestNews: observable,
   //Old
   getLastUpdateDate: action,
   getSingleCountryInfoF: action,

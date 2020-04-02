@@ -269,7 +269,7 @@ const useStyles = makeStyles(theme => ({
 
 const CoronavirusData = inject("Store")(
   observer(props => {
-    console.log("CoronavirusData page", props);
+    // console.log("CoronavirusData page", props);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
     const [arrayData, setArrayData] = React.useState([]);

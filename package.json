@@ -1,9 +1,14 @@
 {
   "name": "covid19",
   "version": "1.2.0",
+  "license": "UNLICENSED",
   "engines": {
     "node": "^6.11.1",
     "npm": "^3.10.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pdavim/react-axios-covid"
   },
   "description": "covid 19 app",
   "keywords": [
@@ -62,7 +67,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && echo '/* /index.html  200' | cat >build/_redirects ",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },

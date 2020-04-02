@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 
 import { inject, observer } from "mobx-react";
 
-import { Marker, StaticMap, _MapContext as MapContext } from "react-map-gl";
+import { StaticMap, _MapContext as MapContext } from "react-map-gl";
 import DeckGL from "@deck.gl/react";
 import { HeatmapLayer } from "@deck.gl/aggregation-layers";
 
@@ -174,14 +174,14 @@ const useStyles = makeStyles(theme => ({
 
 const MapChart = inject("Store")(
   observer(props => {
-    console.log("MapChart", props);
-    console.log("MapChart ", props.Store);
+    /*  console.log("MapChart", props);
+    console.log("MapChart ", props.Store); */
 
     let dataGeneral = props.Store.getAllCountryGeneralDataArray;
     let dataLength = dataGeneral.length;
     let dataArray = [];
     let weight = 45;
-    console.log("mapchartData ", dataGeneral);
+    // console.log("mapchartData ", dataGeneral);
     for (let i = 0; i < dataLength; i++) {
       // console.log(this.citiesDataArrayObs[i]);
       dataArray.push([
@@ -191,7 +191,7 @@ const MapChart = inject("Store")(
       ]);
     }
 
-    console.log("dataArray Map page", dataArray);
+    // console.log("dataArray Map page", dataArray);
 
     const mapData = [];
     const { mapChartArrayData } = props.Store;

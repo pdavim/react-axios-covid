@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
-import Chart from "react-apexcharts";
-import SwipeableViews from "react-swipeable-views";
+
 import PropTypes from "prop-types";
 
 //import Material UI
@@ -17,17 +16,12 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableFooter from "@material-ui/core/TableFooter";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import { display } from "@material-ui/system";
-import { isObject, isArray } from "util";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import AppBar from "@material-ui/core/AppBar";
+
 import Box from "@material-ui/core/Box";
 
 //import functions
 import percentage from "../../functions/percentage";
-import SingularCountryMap from "./SIngularCountryMap";
+
 import Card01 from "../../components/Card01";
 import LineChart01 from "../../components/LineChart01";
 import BarChart01 from "../../components/BarChart01";
@@ -227,7 +221,7 @@ const SingularCountryPage = inject("Store")(
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
-    console.log("fg props ", getData);
+    /* console.log("fg props ", getData);
     // props.Store.getData();
     console.log("fg get ", props.Store.portugalCovidNationalDataInfo);
 
@@ -242,7 +236,7 @@ const SingularCountryPage = inject("Store")(
     console.log(
       "SingularCountryPage singleCountryDataStore",
       props.Store.getSingleCountryInfo
-    );
+    ); */
 
     const filterItemsCountryInfo = (arr, query) => {
       let queryLower = query.toLowerCase();
@@ -256,7 +250,7 @@ const SingularCountryPage = inject("Store")(
 
     // console.log("array", array);
     let data = filterItemsCountryInfo(array, "Portugal");
-    console.log("data singular filterItemsCountryInfo filter ", data);
+    //  console.log("data singular filterItemsCountryInfo filter ", data);
 
     let arrayCovid =
       props.Store.getAllCountryCornovirusDataObs.data.countries_stat;
@@ -270,10 +264,10 @@ const SingularCountryPage = inject("Store")(
     };
 
     let dataCountryCovid = filterItemsCountryCovid(arrayCovid, "Portugal");
-    console.log(
+    /* console.log(
       "data singular page filterItemsCountryCovid data",
       dataCountryCovid[0]
-    );
+    ); */
 
     //Getting data from the national portugues de saude getting data
     //from portugalCovidNationalDataInfo observable
@@ -322,7 +316,7 @@ const SingularCountryPage = inject("Store")(
     //single data country
     let datesArray = props.headers[0];
     let confirmedArray = props.confirmed[0];
-    console.log("datesArray ", props);
+    //console.log("datesArray ", props);
     const { headers, confirmed, dead, recovered } = props;
     if (
       headers.length === 0 ||
@@ -334,11 +328,11 @@ const SingularCountryPage = inject("Store")(
       props.Store.getData();
       return;
     }
-    console.log("getData props ", props);
+    //console.log("getData props ", props);
     let datesArrayLength = datesArray.length;
     let dates = datesArray.slice(5, datesArrayLength);
 
-    console.log("getData confirmedArray ", confirmedArray);
+    // console.log("getData confirmedArray ", confirmedArray);
     let confirmedArrayLength = confirmedArray.length;
     let confirm = confirmedArray.slice(5, confirmedArrayLength);
 
@@ -361,12 +355,13 @@ const SingularCountryPage = inject("Store")(
     let deaths = dataCountryCovid[0].deaths;
     let cases = dataCountryCovid[0].cases;
     //let coordinates = props.Store.getSingleCountryInfoSTORE[0].coordinates;
-    console.log(
+    /*  console.log(
       "props.Store.getSingleCountryInfo ",
       props.Store.getSingleCountryInfo
     );
+    */
     let population = data[0].population;
-    console.log("population", population);
+    //console.log("population", population);
     //let region = props.Store.getSingleCountryInfoSTORE[0].region;
     //let capital = props.Store.getSingleCountryInfoSTORE[0].capital;
     let deathPercentage = percentage(cases, deaths);

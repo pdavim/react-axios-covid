@@ -14,7 +14,6 @@ import { ThemeProvider, makeStyles, withStyles } from "@material-ui/styles";
 //IMPORT CUSTOM COMPONENTS
 
 import Main from "./pages/Main";
-import { autorun } from "mobx";
 
 //IMPORT FUNCTIONS
 
@@ -136,7 +135,8 @@ const useStyles = makeStyles(theme => ({
     background: "#0D2C54",
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 30
+    paddingBottom: 30,
+    maxWidth: "100%"
   },
   rootItem: {
     minHeight: "600px",

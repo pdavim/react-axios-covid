@@ -12,7 +12,7 @@ class Main extends React.Component {
     //console.log("index ", this.props);
     return (
       <Provider {...stores}>
-        <App />
+        <App className="appRoot" />
       </Provider>
     );
   }

@@ -19,6 +19,7 @@ import Typography from "@material-ui/core/Typography";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 //Import Componets
 import MapChart from "../MapChart";
@@ -26,6 +27,7 @@ import CoronavirusData from "../CoronavirusData";
 import AboutC from "../AboutC";
 import ContactText from "../ContactText";
 import SingularCountryPage from "../SingularCountryPage";
+import NewsPage from "../NewsPage";
 //import "./style.scss";
 import covid19logo_grey from "../../assets/images/covid19logo_grey.png";
 
@@ -98,13 +100,29 @@ const useStyles = makeStyles(theme => ({
   },
   loadingGridItem: {
     //width: 200px;
-    paddingTop: 40,
+    paddingTop: 100,
     paddingBottom: 40,
     paddingLeft: 100,
     paddingRight: 100,
     alignItems: "center",
-    height: "600px",
-    maxHeight: "100%"
+    height: "100%",
+    maxHeight: "100%",
+    // padding: 120,
+    alignItems: "center",
+    alignContent: "center"
+  },
+  loadingGridItemText: {
+    //width: 200px;
+    paddingTop: 20,
+    paddingBottom: 40,
+    paddingLeft: 100,
+    paddingRight: 100,
+    alignItems: "center",
+    //height: "600px",
+    maxHeight: "100%",
+    // padding: 120,
+    alignItems: "center",
+    alignContent: "center"
   },
   cornovirusGridItem: {
     maxHeight: "100%",
@@ -171,6 +189,17 @@ const useStyles = makeStyles(theme => ({
   mapdiv: {
     marginTop: 50,
     paddingBottom: 100
+  },
+  loadingProgress: {
+    height: "100%",
+    padding: 120,
+    alignItems: "center",
+    alignContent: "center"
+  },
+  error: {
+    color: "red",
+    fontSize: "20px",
+    textAlign: "center"
   }
 }));
 
@@ -182,8 +211,8 @@ const Main = inject("Store")(
     console.log("Main Page ", props);
     const classes = useStyles();
     return (
-      <Router>
-        <Grid container className={classes.root} spacing={2}>
+      <Grid container>
+        <Router>
           <Grid item xs={12} md={12}>
             <AppBar position="static" className={classes.appBar}>
               <Toolbar>
@@ -303,6 +332,37 @@ const Main = inject("Store")(
                       </NavLink>
                     </Button>
                   </Grid>
+                  {typeof props.Store.latestNews === !undefined ? (
+                    <Grid item xs={2}>
+                      <Button
+                        disableRipple={true}
+                        size="small"
+                        disableElevation={true}
+                        disableFocusRipple={true}
+                        //color={colorText}
+                        className={classes.buttomRouter}
+                        variant="text"
+                      >
+                        <NavLink
+                          to="/news"
+                          style={{
+                            color: "#fff",
+                            fontWeight: "500",
+                            fontSize: 16
+                          }}
+                          activeStyle={{
+                            fontWeight: "900",
+                            color: "#24A34E",
+                            fontSize: 16
+                          }}
+                        >
+                          News
+                        </NavLink>
+                      </Button>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
                   <Grid item xs={2}>
                     <Button
                       disableRipple={true}
@@ -436,6 +496,19 @@ const Main = inject("Store")(
                               }}
                               onClick={popupState.close}
                             >
+                              <NavLink to="/news">News</NavLink>
+                            </MenuItem>
+                            <MenuItem
+                              style={{
+                                color: "#00905F",
+                                fontWeight: "bold"
+                              }}
+                              activeStyle={{
+                                fontWeight: "bold",
+                                color: "#0F2D53"
+                              }}
+                              onClick={popupState.close}
+                            >
                               <NavLink to="/contact">Contact</NavLink>
                             </MenuItem>
                             <MenuItem
@@ -467,6 +540,7 @@ const Main = inject("Store")(
 
                 <Route path="/map" component={Map} />
                 <Route path="/singularcountry" component={SingularCountry} />
+                <Route path="/news" component={News} />
                 <Route path="/about" component={About} />
 
                 <Route path="/contact" component={Contact} />
@@ -475,8 +549,8 @@ const Main = inject("Store")(
               </Switch>
             </Grid>
           </Grid>
-        </Grid>
-      </Router>
+        </Router>
+      </Grid>
     );
   })
 );
@@ -504,6 +578,44 @@ const About = inject("Store")(
     return (
       <Grid item xs={12} className={classes.mapGridItem}>
         <AboutC />
+      </Grid>
+    );
+  })
+);
+
+const News = inject("Store")(
+  observer(props => {
+    let classes = useStyles();
+    return (
+      <Grid item xs={12} className={classes.mapGridItem}>
+        {typeof props.Store.latestNews === !undefined ? (
+          <NewsPage />
+        ) : (
+          <>
+            <Grid
+              container
+              justify="center"
+              alignItems="center"
+              className="loadingGridRoot"
+            >
+              <Grid item className={classes.loadingGridItem} xs={12} md={12}>
+                <LinearProgress color="secondary" />
+              </Grid>
+              <Grid item xs={12} className={classes.loadingGridItem}>
+                <Typography className={classes.error}>
+                  Sorry, but there seems to be a problem.
+                </Typography>
+                <Typography className={classes.error}>
+                  It s Not our fault but there seems to be a problem with the
+                  news server.
+                </Typography>
+                <Typography className={classes.error}>
+                  Please try again later.
+                </Typography>
+              </Grid>
+            </Grid>
+          </>
+        )}
       </Grid>
     );
   })

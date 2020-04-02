@@ -24,6 +24,12 @@ const useStyles = makeStyles(theme => ({
   form: {
     paddingLeft: 100,
     paddingRight: 100
+  },
+  textLeft: {
+    textAlign: "left",
+    fontSize: 18,
+    fontWeight: 500,
+    padding: 20
   }
 }));
 
@@ -39,8 +45,18 @@ const ContactText = () => {
 
       <Grid item xs={4} className={classes.form}>
         <Grid item xs={12}>
-          <Typography>
-            {contactPageData[1].textAuthor} {contactPageData[2].author}
+          <Typography className={classes.textLeft}>
+            {contactPageData[1].textAuthor} <br /> {contactPageData[2].author}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} className={classes.textLeft}>
+          <a href={contactPageData[4].authorSite}>
+            {contactPageData[5].authorSiteText}
+          </a>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography className={classes.textLeft}>
+            {contactPageData[3].authorEmail}
           </Typography>
         </Grid>
       </Grid>
@@ -49,12 +65,14 @@ const ContactText = () => {
       </Grid>
       <Grid item xs={4} className={classes.form}>
         <Grid item xs={12}>
-          <Typography>{contactPageData[3].authorEmail}</Typography>
+          <Typography className={classes.textLeft}>
+            {contactPageData[6].contactText01}
+          </Typography>
         </Grid>
         <Grid item xs={12}>
-          <a href={contactPageData[4].authorSite}>
-            {contactPageData[5].authorSiteText}
-          </a>
+          <Typography className={classes.textLeft}>
+            {contactPageData[7].contactText02}
+          </Typography>
         </Grid>
       </Grid>
     </Grid>
