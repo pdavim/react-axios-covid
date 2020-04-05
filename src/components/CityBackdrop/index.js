@@ -5,37 +5,51 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { observer, inject } from "mobx-react";
 import { Grid, Paper } from "@material-ui/core";
+import Chart from "react-apexcharts";
 
 import Card01 from "../Card01";
 import Card01Title from "../Card01Title";
 import Map01 from "../Map01";
-import LineChart from "../LineChart01";
+import LineChart01 from "../LineChart01";
 
 import filterItems from "../../functions/filterItems";
 import percentage from "../../functions/percentage";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: "#fff"
+    color: "#fff",
   },
   gridContainerRoot: {
     padding: 20,
     height: "100%",
     display: "flex",
-    alignContent: "flex-start"
+    alignContent: "flex-start",
   },
   paper: {
     height: "100%",
-    background: "rgb(10,10,10,0.7)"
-  }
+    background: "rgb(10,10,10,0.7)",
+  },
+  chart: {
+    //backgroundColor: "rgb(255,255,255,0.1)",
+    color: "white",
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginLeft: 1,
+    marginRight: 1,
+    borderRadius: 8,
+  },
 }));
 
-const CityBackdrop = props => {
-  console.log(
+const CityBackdrop = (props) => {
+  /* console.log(
     "CityBackdrop props All dead",
     props.Store.AlldeathPerCountryArray
-  );
+  ); */
   /* console.log(
     "CityBackdrop props all recoverd",
     props.Store.AllrecoverdPerCountry
@@ -52,13 +66,13 @@ const CityBackdrop = props => {
   const [locationData, setLocation] = React.useState([]);
   const [
     recoveredHistoricalState,
-    setrecoveredHistoricalState
+    setrecoveredHistoricalState,
   ] = React.useState([]);
   const [deadHistoricalState, setdeadHistoricalState] = React.useState([]);
   const [headerHistoricalState, setheaderHistoricalState] = React.useState([]);
   const [
     confirmedHistoricalState,
-    setconfirmedHistoricalState
+    setconfirmedHistoricalState,
   ] = React.useState([]);
   //const [arraCountr, setArrayCountrt] = React.useState([]);
   const [open, setOpen] = React.useState(false);
@@ -79,7 +93,7 @@ const CityBackdrop = props => {
     ).toFixed(0);
   };
 
-  const getHistoricalData = async value => {
+  const getHistoricalData = async (value) => {
     let deadArray = await props.Store.AlldeathPerCountryArray;
     //let deadArrayLength = deadArray.length;
     //let died = deadArray.slice(5, deadArrayLength);
@@ -92,12 +106,16 @@ const CityBackdrop = props => {
     //   let confirm = confirmedArray.slice(5, confirmedArrayLength);
     //this.headersArrayCountry
     let arrayHeadersHistorical = await props.Store.headersArrayCountry;
+    console.log("arrayHeadersHistorical", arrayHeadersHistorical);
+    console.log("confirmedArray", confirmedArray);
 
     let arrayTest = ["oprtugal", "Portugal", "aveiro"];
     const filterItemsCountryHistorical = (arr, query) => {
       let queryLower = query.toLowerCase();
-      //console.log("queryLower", queryLower);
-      let dataCountryCovid = arr.filter(item => item[1] === query);
+      console.log("queryLower", queryLower);
+      let dataCountryCovid = arr.filter((item) => item[1] === query);
+      console.log("dataCountryCovids", dataCountryCovid);
+
       return dataCountryCovid;
     };
 
@@ -105,32 +123,37 @@ const CityBackdrop = props => {
       confirmedArray,
       value
     );
-    let confirmedHistorical = dataCountryHistoricalConfirmed.slice(
+    let confirmedHistorical = dataCountryHistoricalConfirmed[0].slice(
       5,
-      dataCountryHistoricalConfirmed.length
+      dataCountryHistoricalConfirmed[0].length
     );
+    console.log(
+      "dataCountryHistoricalConfirmed",
+      dataCountryHistoricalConfirmed[0]
+    );
+    console.log("confirmedHistorical", confirmedHistorical);
 
     let dataCountryHistoricalDead = filterItemsCountryHistorical(
       deadArray,
       value
     );
 
-    let deadHistorical = dataCountryHistoricalDead.slice(
+    let deadHistorical = dataCountryHistoricalDead[0].slice(
       5,
-      dataCountryHistoricalDead.length
+      dataCountryHistoricalDead[0].length
     );
 
     let dataCountryHistoricalRecoverd = filterItemsCountryHistorical(
       recoveredArray,
       value
     );
-    let recoveredHistorical = dataCountryHistoricalRecoverd.slice(
+    let recoveredHistorical = dataCountryHistoricalRecoverd[0].slice(
       5,
-      dataCountryHistoricalRecoverd.length
+      dataCountryHistoricalRecoverd[0].length
     );
-    let headerHistorical = arrayHeadersHistorical.slice(
+    let headerHistorical = arrayHeadersHistorical[0].slice(
       5,
-      arrayHeadersHistorical.length
+      arrayHeadersHistorical[0].length
     );
     setheaderHistoricalState(headerHistorical);
     setrecoveredHistoricalState(recoveredHistorical);
@@ -139,7 +162,7 @@ const CityBackdrop = props => {
 
     //let dataCountryCovid = confirmedArray.filter(item => item[1] === "Portugal");
 
-    console.log("dataCountryCovid", deadHistorical);
+    console.log("dataCountryCovid", headerHistorical);
   };
 
   /* 
@@ -178,7 +201,7 @@ const CityBackdrop = props => {
   };
   //console.log("cityBackdrop", props.Store.getAllCountryGeneralDataArray[0]);
 
-  const filterCountry = value => {
+  const filterCountry = (value) => {
     if (value === "USA") {
       value = "United States";
     }
@@ -213,33 +236,33 @@ const CityBackdrop = props => {
   const filterItemsCountry = (arr, query) => {
     let queryLower = query.toLowerCase();
     //console.log("queryLower", queryLower);
-    let dataCountry = arr.filter(item => item[1] === query);
+    let dataCountry = arr.filter((item) => item[1] === query);
 
     return dataCountry;
   };
 
-  const filterDeathCountry = value => {
+  const filterDeathCountry = (value) => {
     let country = value;
     let arrray = props.Store.AlldeathPerCountryArray;
     let dataCountry = filterItemsCountry(arrray, country);
     setDeathData(dataCountry);
   };
 
-  const filterConfirmedCountry = value => {
+  const filterConfirmedCountry = (value) => {
     let country = value;
     let arrray = props.Store.AllconfirmedPerCountry;
     let dataCountry = filterItemsCountry(arrray, country);
     setCasesData(dataCountry);
   };
 
-  const filterRecoverdCountry = async value => {
+  const filterRecoverdCountry = async (value) => {
     let country = value;
     let arrray = props.Store.AllrecoverdPerCountry;
     let dataCountry = filterItemsCountry(arrray, country);
     setRecoveryData(dataCountry);
   };
 
-  const setCoord = value => {
+  const setCoord = (value) => {
     let country = value;
     let arrray = props.Store.AllrecoverdPerCountry;
     let dataCountry = filterItemsCountry(arrray, country);
@@ -252,98 +275,103 @@ const CityBackdrop = props => {
     setLocation(location);
   };
 
-  /*  console.log("deathData ", deathData);
-  console.log("casesData ", casesData);
-  console.log("recoverdData ", recoveryData);
-  console.log("coordinatesData ", arrayData[0]);
-  console.log("coordinatesData locationData", locationData); */
+  console.log("confirmedHistoricalState ", confirmedHistoricalState);
+  console.log("headerHistoricalState ", headerHistoricalState);
+  console.log("deadHistoricalState ", deadHistoricalState);
+  console.log("recoveredHistoricalState ", recoveredHistoricalState);
+  //console.log("coordinatesData locationData", locationData); */
   let options = {
     chart: {
-      type: "line",
-      stacked: false
+      type: "bar",
+      stacked: false,
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     colors: ["#247BA0"],
     stroke: {
-      curve: "smooth"
+      curve: "smooth",
     },
     markers: {
-      size: 1
+      size: 1,
     },
     series: [
       {
-        type: "line",
+        type: "bar",
         name: "casos",
-        data: confirmedHistoricalState
-      }
+        data: confirmedHistoricalState,
+      },
     ],
 
     xaxis: {
-      categories: headerHistoricalState
-    }
+      categories: headerHistoricalState,
+    },
   };
 
   let optionsDead = {
     chart: {
       type: "line",
-      stacked: false
+      stacked: false,
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     colors: ["#FF1654"],
     stroke: {
-      curve: "smooth"
+      curve: "smooth",
     },
     markers: {
-      size: 1
+      size: 1,
     },
     series: [
       {
         type: "line",
         name: "Mortos",
-        data: deadHistoricalState[0]
-      }
+        data: deadHistoricalState,
+      },
     ],
 
     xaxis: {
-      categories: headerHistoricalState[0]
-    }
+      categories: headerHistoricalState,
+    },
   };
 
   let optionsRecovered = {
     chart: {
-      type: "line"
+      type: "line",
     },
     series: [
       {
         type: "line",
         name: "Recuperados",
-        data: recoveredHistoricalState
-      }
+        data: recoveredHistoricalState,
+      },
     ],
 
     xaxis: {
-      categories: headerHistoricalState
-    }
+      categories: headerHistoricalState,
+    },
   };
   let optionsConfirmed = {
     chart: {
-      type: "line"
+      type: "line",
     },
     series: [
       {
         type: "line",
         name: "Recuperados",
-        data: confirmedHistoricalState[0]
-      }
+        data: confirmedHistoricalState,
+      },
     ],
 
     xaxis: {
-      categories: headerHistoricalState[0]
-    }
+      categories: headerHistoricalState,
+    },
+  };
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (

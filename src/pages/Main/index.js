@@ -4,7 +4,7 @@ import {
   Route,
   Link,
   Switch,
-  NavLink
+  NavLink,
 } from "react-router-dom";
 import { observer, inject } from "mobx-react";
 
@@ -31,18 +31,18 @@ import NewsPage from "../NewsPage";
 //import "./style.scss";
 import covid19logo_grey from "../../assets/images/covid19logo_grey.png";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     //display: "flex",
-    flexGrow: 1
+    flexGrow: 1,
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
 
   menuButton: {
     marginRight: 0,
-    color: theme.palette.secondary.white
+    color: theme.palette.secondary.white,
   },
   title: {
     fontSize: 20,
@@ -52,23 +52,23 @@ const useStyles = makeStyles(theme => ({
     position: "relative",
     color: "white",
     [theme.breakpoints.down("xs")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   titleGrid: {
     //padding: theme.spacing(1, 3, 1, 2),
 
     [theme.breakpoints.down("xs")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   titleGridMobile: {
     display: "none",
     [theme.breakpoints.down("xs")]: {
       display: "flex",
       align: "right",
-      alignItems: "right"
-    }
+      alignItems: "right",
+    },
   },
 
   appBar: {
@@ -78,25 +78,25 @@ const useStyles = makeStyles(theme => ({
     margin: 0,
     //width: "100%",
     //position: "relative",
-    backgroundColor: "rgb(255,255,255,0.05)"
+    backgroundColor: "rgb(255,255,255,0.05)",
   },
 
   gridContainerSwitch: {
     paddingRight: 0,
-    paddingLeft: 0
+    paddingLeft: 0,
   },
   gridRoot: {},
   buttomRouterGrid: {
     display: "flex",
-    maxWidth: "500px"
+    maxWidth: "500px",
   },
   buttomRouter: {
     //display: "flex",
     //alignItens: "flex-end",
     maxWidth: "70px",
     [theme.breakpoints.down("xs")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   loadingGridItem: {
     //width: 200px;
@@ -109,7 +109,7 @@ const useStyles = makeStyles(theme => ({
     maxHeight: "100%",
     // padding: 120,
     alignItems: "center",
-    alignContent: "center"
+    alignContent: "center",
   },
   loadingGridItemText: {
     //width: 200px;
@@ -122,7 +122,7 @@ const useStyles = makeStyles(theme => ({
     maxHeight: "100%",
     // padding: 120,
     alignItems: "center",
-    alignContent: "center"
+    alignContent: "center",
   },
   cornovirusGridItem: {
     maxHeight: "100%",
@@ -131,7 +131,7 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 10,
     paddingRight: 10,
     alignItems: "center",
-    width: "100%"
+    width: "100%",
   },
   contactGridCntainer: {
     backgroundColor: theme.palette.secondary.dark,
@@ -139,10 +139,10 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     display: "flex",
     color: "white",
-    padding: 20
+    padding: 20,
   },
   mapGridItem: {
-    height: "10%"
+    height: "10%",
   },
   fragmentridmobile: {
     direction: "row",
@@ -151,23 +151,23 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     // paddingTop: 10,
     alignContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   palette: {
     primary: "white",
     secondary: "black",
     dark: "#0F2D53",
-    greenDark: "#25E298"
+    greenDark: "#25E298",
   },
   image: {
     maxWidth: 40,
-    maxHeight: 40
+    maxHeight: 40,
   },
   imageGrid: {
     //paddingRight: "20px"
     [theme.breakpoints.down("xs")]: {
-      display: "true"
-    }
+      display: "true",
+    },
   },
   imageGridMobile: {
     paddingRight: "20px",
@@ -178,33 +178,33 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("xs")]: {
       display: "flex",
       alignContent: "center",
-      alignItems: "center"
-    }
+      alignItems: "center",
+    },
   },
   buttonMenuMobile: {
     //paddingTop: 0,
     //paddingBottom: 0,
-    marging: 0
+    marging: 0,
   },
   mapdiv: {
     marginTop: 50,
-    paddingBottom: 100
+    paddingBottom: 100,
   },
   loadingProgress: {
     height: "100%",
     padding: 120,
     alignItems: "center",
-    alignContent: "center"
+    alignContent: "center",
   },
   error: {
     color: "red",
     fontSize: "20px",
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 }));
 
 const Main = inject("Store")(
-  observer(props => {
+  observer((props) => {
     // console.log("Charts props ", props.Store.historialWeatherData);
     //console.log("Charts props ", this.props.props.Store.historialWeatherData);
 
@@ -229,11 +229,11 @@ const Main = inject("Store")(
                   to="/"
                   style={{
                     color: "white",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
                   }}
                   activeStyle={{
                     fontWeight: "bold",
-                    color: "white"
+                    color: "white",
                   }}
                 >
                   <Grid item sm={2} md={2}>
@@ -266,12 +266,12 @@ const Main = inject("Store")(
                         style={{
                           color: "#fff",
                           fontWeight: "500",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                         activeStyle={{
                           fontWeight: "900",
                           color: "#24A34E",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                       >
                         Home
@@ -293,12 +293,12 @@ const Main = inject("Store")(
                         style={{
                           color: "#fff",
                           fontWeight: "500",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                         activeStyle={{
                           fontWeight: "900",
                           color: "#24A34E",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                       >
                         Map
@@ -320,12 +320,12 @@ const Main = inject("Store")(
                         style={{
                           color: "#fff",
                           fontWeight: "500",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                         activeStyle={{
                           fontWeight: "900",
                           color: "#24A34E",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                       >
                         Portugal
@@ -349,12 +349,12 @@ const Main = inject("Store")(
                             style={{
                               color: "#fff",
                               fontWeight: "500",
-                              fontSize: 16
+                              fontSize: 16,
                             }}
                             activeStyle={{
                               fontWeight: "900",
                               color: "#24A34E",
-                              fontSize: 16
+                              fontSize: 16,
                             }}
                           >
                             News
@@ -367,25 +367,21 @@ const Main = inject("Store")(
                   }
                   <Grid item xs={2}>
                     <Button
-                      disableRipple={true}
-                      size="small"
-                      disableElevation={true}
-                      disableFocusRipple={true}
-                      //color={colorText}
-                      className={classes.buttomRouter}
-                      variant="text"
+                      //className={classes.buttomRouter}
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
                     >
                       <NavLink
                         to="/about"
                         style={{
                           color: "#fff",
                           fontWeight: "500",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                         activeStyle={{
                           fontWeight: "900",
                           color: "#24A34E",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                       >
                         About
@@ -408,12 +404,12 @@ const Main = inject("Store")(
                         style={{
                           color: "#fff",
                           fontWeight: "500",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                         activeStyle={{
                           fontWeight: "900",
                           color: "#24A34E",
-                          fontSize: 16
+                          fontSize: 16,
                         }}
                       >
                         Contact
@@ -423,7 +419,7 @@ const Main = inject("Store")(
                 </Grid>
                 <Grid item xs={10} md={10} className={classes.titleGridMobile}>
                   <PopupState variant="popover" popupId="demo-popup-menu">
-                    {popupState => (
+                    {(popupState) => (
                       <Fragment>
                         <Grid
                           className={classes.fragmentridmobile}
@@ -446,11 +442,11 @@ const Main = inject("Store")(
                                 exact
                                 style={{
                                   color: "#00905F",
-                                  fontWeight: "bold"
+                                  fontWeight: "bold",
                                 }}
                                 activeStyle={{
                                   fontWeight: "bold",
-                                  color: "#0F2D53"
+                                  color: "#0F2D53",
                                 }}
                                 to="/"
                               >
@@ -461,11 +457,11 @@ const Main = inject("Store")(
                               <NavLink
                                 style={{
                                   color: "#00905F",
-                                  fontWeight: "bold"
+                                  fontWeight: "bold",
                                 }}
                                 activeStyle={{
                                   fontWeight: "bold",
-                                  color: "#0F2D53"
+                                  color: "#0F2D53",
                                 }}
                                 to="/map"
                               >
@@ -476,11 +472,11 @@ const Main = inject("Store")(
                               <NavLink
                                 style={{
                                   color: "#00905F",
-                                  fontWeight: "bold"
+                                  fontWeight: "bold",
                                 }}
                                 activeStyle={{
                                   fontWeight: "bold",
-                                  color: "#0F2D53"
+                                  color: "#0F2D53",
                                 }}
                                 to="/singularcountry"
                               >
@@ -490,11 +486,11 @@ const Main = inject("Store")(
                             <MenuItem
                               style={{
                                 color: "#00905F",
-                                fontWeight: "bold"
+                                fontWeight: "bold",
                               }}
                               activeStyle={{
                                 fontWeight: "bold",
-                                color: "#0F2D53"
+                                color: "#0F2D53",
                               }}
                               onClick={popupState.close}
                             >
@@ -503,11 +499,11 @@ const Main = inject("Store")(
                             <MenuItem
                               style={{
                                 color: "#00905F",
-                                fontWeight: "bold"
+                                fontWeight: "bold",
                               }}
                               activeStyle={{
                                 fontWeight: "bold",
-                                color: "#0F2D53"
+                                color: "#0F2D53",
                               }}
                               onClick={popupState.close}
                             >
@@ -516,11 +512,11 @@ const Main = inject("Store")(
                             <MenuItem
                               style={{
                                 color: "#00905F",
-                                fontWeight: "bold"
+                                fontWeight: "bold",
                               }}
                               activeStyle={{
                                 fontWeight: "bold",
-                                color: "#0F2D53"
+                                color: "#0F2D53",
                               }}
                               onClick={popupState.close}
                             >
@@ -561,7 +557,7 @@ export default Main;
 
 // About Page
 const Map = inject("Store")(
-  observer(props => {
+  observer((props) => {
     let classes = useStyles();
     return (
       <Grid item xs={12} className={classes.mapGridItem}>
@@ -575,7 +571,7 @@ const Map = inject("Store")(
 
 // About Page
 const About = inject("Store")(
-  observer(props => {
+  observer((props) => {
     let classes = useStyles();
     return (
       <Grid item xs={12} className={classes.mapGridItem}>
@@ -586,7 +582,7 @@ const About = inject("Store")(
 );
 
 const News = inject("Store")(
-  observer(props => {
+  observer((props) => {
     let classes = useStyles();
     return (
       <Grid item xs={12} className={classes.mapGridItem}>
@@ -631,7 +627,7 @@ const Contact = () => (
 );
 
 const SingularCountry = inject("Store")(
-  observer(props => {
+  observer((props) => {
     let arrayLoading = props.Store.headersArrayCountry;
     let isLoadingArray = arrayLoading.length;
     //console.log(props);
@@ -650,7 +646,7 @@ const SingularCountry = inject("Store")(
 );
 
 const Coronavirus = inject("Store")(
-  observer(props => {
+  observer((props) => {
     //console.log("menu cvid19 ", props);
     //props.Store.isLoading = false;
     /*  setInterval(function() {
@@ -659,7 +655,7 @@ const Coronavirus = inject("Store")(
     */
     let l = {
       prop: "spin",
-      name: "Loading"
+      name: "Loading",
     };
     let classes = useStyles();
     return (
