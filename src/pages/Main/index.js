@@ -33,8 +33,31 @@ import covid19logo_grey from "../../assets/images/covid19logo_grey.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    //display: "flex",
-    flexGrow: 1,
+    display: "flex",
+    // flexGrow: 1,
+    boxSizing: "border-box",
+    justifyContent: "space-between",
+    justify: "space-between",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 0,
+    padding: 0,
+    height: "50px",
+  },
+  rootToolbar: {
+    display: "flex",
+    justifyContent: "",
+    alignItems: "center",
+    padding: "0px 1%",
+    textDecoration: "none",
+  },
+  rootToolbarGrid: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "30px 10%",
+    maxWidth: "40%",
+    textDecoration: "none",
   },
   grow: {
     flexGrow: 1,
@@ -211,20 +234,19 @@ const Main = inject("Store")(
     console.log("Main Page ", props);
     const classes = useStyles();
     return (
-      <Grid container>
+      <Grid container className={classes.root}>
         <Router>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12} md={12} className={classes.root}>
             <AppBar position="static" className={classes.appBar}>
-              <Toolbar>
-                <Grid item xs={2} sm={1} md={1} className={classes.imageGrid}>
-                  <Link to="/">
-                    <img
-                      src={covid19logo_grey}
-                      alt=""
-                      className={classes.image}
-                    />
-                  </Link>
-                </Grid>
+              <Toolbar className={classes.rootToolbar}>
+                <Link to="/">
+                  <img
+                    src={covid19logo_grey}
+                    alt=""
+                    className={classes.image}
+                  />
+                </Link>
+
                 <NavLink
                   to="/"
                   style={{
@@ -242,180 +264,116 @@ const Main = inject("Store")(
                     </Typography>
                   </Grid>
                 </NavLink>
+                <Grid xs={12} className={classes.rootToolbarGrid}>
+                  <NavLink
+                    to="/"
+                    exact
+                    style={{
+                      color: "#fff",
+                      fontWeight: "500",
+                      fontSize: 16,
+                      textDecoration: "none",
+                    }}
+                    activeStyle={{
+                      fontWeight: "900",
+                      color: "#24A34E",
+                      fontSize: 16,
+                    }}
+                  >
+                    Home
+                  </NavLink>
 
-                <Grid
-                  container
-                  spacing={1}
-                  className={classes.buttomRouterGrid}
-                >
-                  <Grid item xs={2}>
-                    <Button
-                      //fullWidth={true}
-                      size="small"
-                      disableElevation={true}
-                      disableFocusRipple={true}
-                      disableRipple={true}
-                      //color={colorText}
-                      className={classes.buttomRouter}
-                      variant="text"
-                      //color="inherit"
-                    >
-                      <NavLink
-                        to="/"
-                        exact
-                        style={{
-                          color: "#fff",
-                          fontWeight: "500",
-                          fontSize: 16,
-                        }}
-                        activeStyle={{
-                          fontWeight: "900",
-                          color: "#24A34E",
-                          fontSize: 16,
-                        }}
-                      >
-                        Home
-                      </NavLink>
-                    </Button>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Button
-                      disableRipple={true}
-                      size="small"
-                      disableElevation={true}
-                      disableFocusRipple={true}
-                      //color={colorText}
-                      className={classes.buttomRouter}
-                      variant="text"
-                    >
-                      <NavLink
-                        to="/map"
-                        style={{
-                          color: "#fff",
-                          fontWeight: "500",
-                          fontSize: 16,
-                        }}
-                        activeStyle={{
-                          fontWeight: "900",
-                          color: "#24A34E",
-                          fontSize: 16,
-                        }}
-                      >
-                        Map
-                      </NavLink>
-                    </Button>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Button
-                      disableRipple={true}
-                      size="small"
-                      disableElevation={true}
-                      disableFocusRipple={true}
-                      //color={colorText}
-                      className={classes.buttomRouter}
-                      variant="text"
-                    >
-                      <NavLink
-                        to="/singularcountry"
-                        style={{
-                          color: "#fff",
-                          fontWeight: "500",
-                          fontSize: 16,
-                        }}
-                        activeStyle={{
-                          fontWeight: "900",
-                          color: "#24A34E",
-                          fontSize: 16,
-                        }}
-                      >
-                        Portugal
-                      </NavLink>
-                    </Button>
-                  </Grid>
+                  <NavLink
+                    to="/map"
+                    style={{
+                      color: "#fff",
+                      fontWeight: "500",
+                      fontSize: 16,
+                      textDecoration: "none",
+                    }}
+                    activeStyle={{
+                      fontWeight: "900",
+                      color: "#24A34E",
+                      fontSize: 16,
+                    }}
+                  >
+                    Map
+                  </NavLink>
+
+                  <NavLink
+                    to="/singularcountry"
+                    style={{
+                      color: "#fff",
+                      fontWeight: "500",
+                      fontSize: 16,
+                      textDecoration: "none",
+                    }}
+                    activeStyle={{
+                      fontWeight: "900",
+                      color: "#24A34E",
+                      fontSize: 16,
+                    }}
+                  >
+                    Portugal
+                  </NavLink>
+
                   {
                     (props.Store.latestNews = !undefined ? (
-                      <Grid item xs={2}>
-                        <Button
-                          disableRipple={true}
-                          size="small"
-                          disableElevation={true}
-                          disableFocusRipple={true}
-                          //color={colorText}
-                          className={classes.buttomRouter}
-                          variant="text"
-                        >
-                          <NavLink
-                            to="/news"
-                            style={{
-                              color: "#fff",
-                              fontWeight: "500",
-                              fontSize: 16,
-                            }}
-                            activeStyle={{
-                              fontWeight: "900",
-                              color: "#24A34E",
-                              fontSize: 16,
-                            }}
-                          >
-                            News
-                          </NavLink>
-                        </Button>
-                      </Grid>
+                      <NavLink
+                        to="/news"
+                        style={{
+                          color: "#fff",
+                          fontWeight: "500",
+                          fontSize: 16,
+                          textDecoration: "none",
+                        }}
+                        activeStyle={{
+                          fontWeight: "900",
+                          color: "#24A34E",
+                          fontSize: 16,
+                        }}
+                      >
+                        News
+                      </NavLink>
                     ) : (
                       <></>
                     ))
                   }
-                  <Grid item xs={2}>
-                    <Button
-                      //className={classes.buttomRouter}
-                      aria-controls="simple-menu"
-                      aria-haspopup="true"
-                    >
-                      <NavLink
-                        to="/about"
-                        style={{
-                          color: "#fff",
-                          fontWeight: "500",
-                          fontSize: 16,
-                        }}
-                        activeStyle={{
-                          fontWeight: "900",
-                          color: "#24A34E",
-                          fontSize: 16,
-                        }}
-                      >
-                        About
-                      </NavLink>
-                    </Button>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Button
-                      // fullWidth={true}
-                      size="small"
-                      disableElevation={true}
-                      disableFocusRipple={true}
-                      disableRipple={true}
-                      //color={colorText}
-                      className={classes.buttomRouter}
-                      variant="text"
-                    >
-                      <NavLink
-                        to="/contact"
-                        style={{
-                          color: "#fff",
-                          fontWeight: "500",
-                          fontSize: 16,
-                        }}
-                        activeStyle={{
-                          fontWeight: "900",
-                          color: "#24A34E",
-                          fontSize: 16,
-                        }}
-                      >
-                        Contact
-                      </NavLink>
-                    </Button>
-                  </Grid>
+
+                  <NavLink
+                    to="/about"
+                    style={{
+                      color: "#fff",
+                      fontWeight: "500",
+                      fontSize: 16,
+                      textDecoration: "none",
+                    }}
+                    activeStyle={{
+                      fontWeight: "900",
+                      color: "#24A34E",
+                      fontSize: 16,
+                    }}
+                  >
+                    About
+                  </NavLink>
+
+                  <NavLink
+                    className={classes.cta}
+                    to="/contact"
+                    style={{
+                      color: "#fff",
+                      fontWeight: "500",
+                      fontSize: 16,
+                      textDecoration: "none",
+                    }}
+                    activeStyle={{
+                      fontWeight: "900",
+                      color: "#24A34E",
+                      fontSize: 16,
+                    }}
+                  >
+                    Contact
+                  </NavLink>
                 </Grid>
                 <Grid item xs={10} md={10} className={classes.titleGridMobile}>
                   <PopupState variant="popover" popupId="demo-popup-menu">

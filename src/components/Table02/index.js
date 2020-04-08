@@ -111,7 +111,7 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-const parseNumber = (value, locale = navigator.language) => {
+const parseNumber = (value, locale = "us-US") => {
   const example = Intl.NumberFormat(locale).format("1.1");
   const cleanPattern = new RegExp(`[^-+0-9${example.charAt(1)}]`, "g");
   const cleaned = value.replace(cleanPattern, "");
@@ -649,6 +649,14 @@ const EnhancedTable = inject("Store")(
       "1,123": {
         expected: 1123,
         locale: "en-US",
+      },
+      "1.123": {
+        expected: 1.123,
+        locale: "pt-PT",
+      },
+      "1,123": {
+        expected: 1123,
+        locale: "pt-PT",
       },
     };
 
