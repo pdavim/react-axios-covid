@@ -3,3 +3,36 @@
   to = "/index.html"
   status = 200
   force = false
+
+
+  [[redirects]]
+  from = "/map"
+  to = "/"
+  status = 301
+  force = false
+  query = {path = ":path"}
+
+
+  [[redirects]]
+  from = "/singularcountry"
+  to = "/"
+  status = 301
+  force = false
+  query = {path = ":path"}
+
+  [[redirects]]
+  from = "/news"
+  to = "/"
+  status = 301
+  force = false
+  query = {path = ":path"}
+  
+  
+  
+  [[redirects]]
+  from = "/contact"
+  to = "/"
+  status = 301
+  force = false
+  query = {path = ":path"}
+  

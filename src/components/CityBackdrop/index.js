@@ -95,28 +95,34 @@ const CityBackdrop = (props) => {
     ).toFixed(0);
   };
 
-  const getHistoricalData = async (value) => {
-    let deadArray = await props.Store.AlldeathPerCountryArray;
+  const getHistoricalData = (value) => {
+    let deadArray = props.Store.AlldeathPerCountryArray;
     //let deadArrayLength = deadArray.length;
     //let died = deadArray.slice(5, deadArrayLength);
 
-    let recoveredArray = await props.Store.AllrecoverdPerCountry;
+    let recoveredArray = props.Store.AllrecoverdPerCountry;
     //let recoveredArrayLength = recoveredArray.length;
     //let recover = recoveredArray.slice(5, recoveredArrayLength);
-    let confirmedArray = await props.Store.AllconfirmedPerCountry;
+    let confirmedArray = props.Store.AllconfirmedPerCountry;
     //let confirmedArrayLength = confirmedArray.length;
     //   let confirm = confirmedArray.slice(5, confirmedArrayLength);
     //this.headersArrayCountry
-    let arrayHeadersHistorical = await props.Store.headersArrayCountry;
-    console.log("arrayHeadersHistorical", arrayHeadersHistorical);
-    console.log("confirmedArray", confirmedArray);
+    let arrayHeadersHistorical = props.Store.headersArrayCountry;
+    // console.log("arrayHeadersHistorical", arrayHeadersHistorical);
+    // console.log("confirmedArray", confirmedArray);
 
     let arrayTest = ["oprtugal", "Portugal", "aveiro"];
     const filterItemsCountryHistorical = (arr, query) => {
       let queryLower = query.toLowerCase();
       console.log("queryLower", queryLower);
-      let dataCountryCovid = arr.filter((item) => item[1] === query);
-      console.log("dataCountryCovids", dataCountryCovid);
+      let dataCountryCovid = arr.filter((item) => {
+        console.log("query", query);
+        if (query === "USA" || query === "United States") {
+          query = "US";
+        }
+        return item[1] === query;
+      });
+      // console.log("dataCountryCovids", dataCountryCovid);
 
       return dataCountryCovid;
     };
@@ -129,11 +135,11 @@ const CityBackdrop = (props) => {
       5,
       dataCountryHistoricalConfirmed[0].length
     );
-    console.log(
+    /* console.log(
       "dataCountryHistoricalConfirmed",
       dataCountryHistoricalConfirmed
-    );
-    console.log("confirmedHistorical", confirmedHistorical);
+    ); */
+    //console.log("confirmedHistorical", confirmedHistorical);
 
     let dataCountryHistoricalDead = filterItemsCountryHistorical(
       deadArray,
@@ -164,7 +170,7 @@ const CityBackdrop = (props) => {
 
     //let dataCountryCovid = confirmedArray.filter(item => item[1] === "Portugal");
 
-    console.log("dataCountryCovid", headerHistorical);
+    // console.log("dataCountryCovid", headerHistorical);
   };
 
   /* 
@@ -189,7 +195,7 @@ const CityBackdrop = (props) => {
     setOpen(false);
     setisLoading(true);
   };
-  const handleToggle = async () => {
+  const handleToggle = () => {
     // console.log("value", props.value);
     // console.log("value props", props);
     setOpen(!open);
@@ -197,7 +203,7 @@ const CityBackdrop = (props) => {
     filterConfirmedCountry(props.value);
     filterDeathCountry(props.value);
     filterRecoverdCountry(props.value);
-    await getHistoricalData(props.value);
+    getHistoricalData(props.value);
     //setCoord(props.value);
     setisLoading(false);
   };
@@ -244,6 +250,9 @@ const CityBackdrop = (props) => {
   };
 
   const filterDeathCountry = (value) => {
+    if (value === "usa" || value === "United States") {
+      value = "US";
+    }
     let country = value;
     let arrray = props.Store.AlldeathPerCountryArray;
     let dataCountry = filterItemsCountry(arrray, country);
@@ -251,6 +260,9 @@ const CityBackdrop = (props) => {
   };
 
   const filterConfirmedCountry = (value) => {
+    if (value === "usa" || value === "United States") {
+      value = "US";
+    }
     let country = value;
     let arrray = props.Store.AllconfirmedPerCountry;
     let dataCountry = filterItemsCountry(arrray, country);
@@ -258,6 +270,9 @@ const CityBackdrop = (props) => {
   };
 
   const filterRecoverdCountry = async (value) => {
+    if (value === "usa" || value === "United States") {
+      value = "US";
+    }
     let country = value;
     let arrray = props.Store.AllrecoverdPerCountry;
     let dataCountry = filterItemsCountry(arrray, country);
@@ -277,10 +292,10 @@ const CityBackdrop = (props) => {
     setLocation(location);
   };
 
-  console.log("confirmedHistoricalState ", confirmedHistoricalState);
-  console.log("headerHistoricalState ", headerHistoricalState);
-  console.log("deadHistoricalState ", deadHistoricalState);
-  console.log("recoveredHistoricalState ", recoveredHistoricalState);
+  //console.log("confirmedHistoricalState ", confirmedHistoricalState);
+  //console.log("headerHistoricalState ", headerHistoricalState);
+  //console.log("deadHistoricalState ", deadHistoricalState);
+  //console.log("recoveredHistoricalState ", recoveredHistoricalState);
   //console.log("coordinatesData locationData", locationData); */
   let options = {
     chart: {
@@ -372,6 +387,8 @@ const CityBackdrop = (props) => {
     setValue(newValue);
   };
 
+  let coordLoading = arrayData[0];
+
   return (
     <>
       <Button
@@ -383,14 +400,21 @@ const CityBackdrop = (props) => {
         {props.value}
       </Button>
       <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
-        {arrayData.length === 0 ? (
-          <CircularProgress color="inherit" />
+        {isLoading !== false ? (
+          <div>
+            <CircularProgress color="inherit" />
+            <h1>Loading</h1>
+          </div>
         ) : (
           <>
             <Paper className={classes.paper}>
               <Grid container spacing={1} className={classes.gridContainerRoot}>
                 <Grid item xs={12} sm={6} md={6}>
-                  <Map01 coord={arrayData[0].coordinates} />
+                  {isLoading !== false ? (
+                    <h1>Loading</h1>
+                  ) : (
+                    <Map01 coord={arrayData[0].coordinates} />
+                  )}
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={6}>
@@ -500,23 +524,35 @@ const CityBackdrop = (props) => {
                 <Grid container className={classes.chart} spacing={2}>
                   <Grid item xs={4}>
                     <Paper>
-                      <Chart options={options} series={options.series} />
+                      {isLoading !== false ? (
+                        <h3>Loading</h3>
+                      ) : (
+                        <Chart options={options} series={options.series} />
+                      )}
                     </Paper>
                   </Grid>
                   <Grid item xs={4}>
                     <Paper>
-                      <Chart
-                        options={optionsDead}
-                        series={optionsDead.series}
-                      />
+                      {isLoading !== false ? (
+                        <h3>Loading</h3>
+                      ) : (
+                        <Chart
+                          options={optionsDead}
+                          series={optionsDead.series}
+                        />
+                      )}
                     </Paper>
                   </Grid>
                   <Grid item xs={4}>
                     <Paper>
-                      <Chart
-                        options={optionsRecovered}
-                        series={optionsRecovered.series}
-                      />
+                      {isLoading !== false ? (
+                        <h3>Loading</h3>
+                      ) : (
+                        <Chart
+                          options={optionsRecovered}
+                          series={optionsRecovered.series}
+                        />
+                      )}
                     </Paper>
                   </Grid>
                 </Grid>
