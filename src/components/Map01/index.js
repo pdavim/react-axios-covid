@@ -15,19 +15,19 @@ import Paper from "@material-ui/core/Paper";
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoicGRhdmltIiwiYSI6ImNrODlhNGZ3MjA0YWgzbm8yYWI2aXdkZXQifQ.PRoLVYzMXBnW5NwpbJhZyg"; // eslint-disable-line
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    padding: 20
+    padding: 20,
   },
   deckGl: {
     width: "450px",
-    height: "400px"
-  }
+    height: "350px",
+  },
 }));
 
 const Map01 = inject("Store")(
-  observer(props => {
+  observer((props) => {
     console.log("map01 props", parseFloat(props.coord[0]));
     const INITIAL_VIEW_STATE = {
       longitude: parseFloat(props.coord[0]),
@@ -35,12 +35,12 @@ const Map01 = inject("Store")(
       zoom: 4,
       maxZoom: 16,
       pitch: 0,
-      bearing: 0
+      bearing: 0,
     };
 
     //console.log("Map01", props.coord);
     const mapData = [
-      { 0: parseFloat(props.coord[0]), 1: parseFloat(props.coord[1]), 2: 45 }
+      { 0: parseFloat(props.coord[0]), 1: parseFloat(props.coord[1]), 2: 45 },
     ];
     //console.log("Map01 ", props.Store);
 
@@ -56,7 +56,7 @@ const Map01 = inject("Store")(
       // data = props.Store.mapChartArrayData[14],
       intensity = 1,
       threshold = 0.03,
-      radiusPixels = 30
+      radiusPixels = 30,
     } = props;
 
     const layer = [
@@ -65,12 +65,12 @@ const Map01 = inject("Store")(
         //data,
         id: "heatmp-layer",
         pickable: false,
-        getPosition: d => [d[0], d[1]],
-        getWeight: d => d[2],
+        getPosition: (d) => [d[0], d[1]],
+        getWeight: (d) => d[2],
         radiusPixels,
         intensity,
-        threshold
-      })
+        threshold,
+      }),
     ];
 
     const classes = useStyles();
@@ -91,7 +91,7 @@ const Map01 = inject("Store")(
                 marginLeft: "20px",
                 marginRight: "5px",
                 width: "47%",
-                height: "483px"
+                height: "385px",
               }}
             >
               <StaticMap

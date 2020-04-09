@@ -33,14 +33,16 @@ const useStyles = makeStyles((theme) => ({
     background: "rgb(10,10,10,0.7)",
   },
   chart: {
-    //backgroundColor: "rgb(255,255,255,0.1)",
-    color: "white",
+    background: "rgb(10,10,10,0.7)",
+    backgroundColor: "rgb(10,10,10,0.7)",
+    color: "rgb(10,10,10,0.7)",
     paddingTop: 20,
     paddingBottom: 20,
     paddingLeft: 10,
     paddingRight: 10,
     marginLeft: 1,
-    marginRight: 1,
+    marginTop: 1,
+    marginBottom: 1,
     borderRadius: 8,
   },
 }));
@@ -129,7 +131,7 @@ const CityBackdrop = (props) => {
     );
     console.log(
       "dataCountryHistoricalConfirmed",
-      dataCountryHistoricalConfirmed[0]
+      dataCountryHistoricalConfirmed
     );
     console.log("confirmedHistorical", confirmedHistorical);
 
@@ -282,7 +284,7 @@ const CityBackdrop = (props) => {
   //console.log("coordinatesData locationData", locationData); */
   let options = {
     chart: {
-      type: "bar",
+      type: "line",
       stacked: false,
     },
     dataLabels: {
@@ -292,12 +294,10 @@ const CityBackdrop = (props) => {
     stroke: {
       curve: "smooth",
     },
-    markers: {
-      size: 1,
-    },
+
     series: [
       {
-        type: "bar",
+        type: "line",
         name: "casos",
         data: confirmedHistoricalState,
       },
@@ -320,9 +320,7 @@ const CityBackdrop = (props) => {
     stroke: {
       curve: "smooth",
     },
-    markers: {
-      size: 1,
-    },
+
     series: [
       {
         type: "line",
@@ -397,7 +395,7 @@ const CityBackdrop = (props) => {
 
                 <Grid item xs={12} sm={6} md={6}>
                   <Grid container spacing={1}>
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01Title
                         background="rgb(255,255,255,0.3)"
                         textContent={props.value}
@@ -408,7 +406,7 @@ const CityBackdrop = (props) => {
                         textContentSize="22px"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01
                         background="rgb(25,255,25,0.4)"
                         textContentdivider={arrayData[0].capital}
@@ -417,7 +415,7 @@ const CityBackdrop = (props) => {
                         textCard="Capital / Capital"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01
                         background="rgb(50,50,50,0.4)"
                         textContent={props.cases}
@@ -427,7 +425,7 @@ const CityBackdrop = (props) => {
                         textCard="Cases / Casos"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01
                         background="rgb(145,25,25,0.4)"
                         textContent={props.deaths}
@@ -438,17 +436,17 @@ const CityBackdrop = (props) => {
                       />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01
                         background="rgb(243,186,45,0.4)"
                         textContent={props.total_recovered}
                         textContentdivider=""
                         textAfterContent=""
                         textAfterContentSymbol=""
-                        textCard="Tota Recoverd / Total Recuperados"
+                        textCard="Recoverd / Recuperados"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01
                         background="rgb(125,11,159,0.4)"
                         textContentdivider={props.new_deaths}
@@ -458,7 +456,7 @@ const CityBackdrop = (props) => {
                       />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01
                         background="rgb(25,125,255,0.4)"
                         textContentdivider={props.new_cases}
@@ -467,7 +465,7 @@ const CityBackdrop = (props) => {
                         textCard="New Cases / Novos Casos"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01
                         background="rgb(25,25,255,0.4)"
                         textContentdivider={props.serious_critical}
@@ -476,7 +474,7 @@ const CityBackdrop = (props) => {
                         textCard="Critical / Criticos"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={6}>
+                    <Grid item xs={12} sm={4} md={4}>
                       <Card01
                         background="rgb(255,25,25,0.4)"
                         textContentdivider={arrayData[0].population}
@@ -485,6 +483,41 @@ const CityBackdrop = (props) => {
                         textCard="Population / População"
                       />
                     </Grid>
+                    <Grid item xs={12} sm={4} md={4}>
+                      <Card01
+                        background="rgb(255,15,75,0.4)"
+                        textContentdivider={percentage(
+                          props.cases,
+                          props.deaths
+                        )}
+                        textAfterContent=""
+                        textAfterContentSymbol="%"
+                        textCard="Taxa de Mortalidade %"
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid container className={classes.chart} spacing={2}>
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Chart options={options} series={options.series} />
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Chart
+                        options={optionsDead}
+                        series={optionsDead.series}
+                      />
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Paper>
+                      <Chart
+                        options={optionsRecovered}
+                        series={optionsRecovered.series}
+                      />
+                    </Paper>
                   </Grid>
                 </Grid>
               </Grid>

@@ -120,6 +120,11 @@ const parseNumber = (value, locale = "us-US") => {
   return parseInt(normalized);
 };
 
+const parseFloatNumber = (value) => {
+  let a = parseFloat(value.replace(/,/g, ""));
+  return a;
+};
+
 const stableSort = (array, comparator) => {
   //const stabilizedThis = array.map((el, index) => [el, index]);
   const stabilizedThis = array.map((el, index) => {
@@ -128,14 +133,14 @@ const stableSort = (array, comparator) => {
     let data = [
       {
         country_name: el.country_name,
-        cases: parseNumber(el.cases),
-        deaths: parseNumber(el.deaths),
+        cases: parseFloatNumber(el.cases),
+        deaths: parseFloatNumber(el.deaths),
         region: el.region,
-        total_recovered: parseNumber(el.total_recovered),
-        new_deaths: parseNumber(el.new_deaths),
-        new_cases: parseNumber(el.new_cases),
-        serious_critical: parseNumber(el.serious_critical),
-        active_cases: parseNumber(el.active_cases),
+        total_recovered: parseFloatNumber(el.total_recovered),
+        new_deaths: parseFloatNumber(el.new_deaths),
+        new_cases: parseFloatNumber(el.new_cases),
+        serious_critical: parseFloatNumber(el.serious_critical),
+        active_cases: parseFloatNumber(el.active_cases),
       },
     ];
 
