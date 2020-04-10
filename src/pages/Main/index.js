@@ -54,10 +54,14 @@ const useStyles = makeStyles((theme) => ({
   rootToolbarGrid: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "right",
     padding: "30px 10%",
-    maxWidth: "40%",
+    maxWidth: "400px",
     textDecoration: "none",
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+      alignItems: "right",
+    },
   },
   grow: {
     flexGrow: 1,
@@ -91,6 +95,9 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       align: "right",
       alignItems: "right",
+
+      padding: "30px 10%",
+      maxWidth: "400px",
     },
   },
 

@@ -32,40 +32,40 @@ const theme = createMuiTheme({
       "sans-serif",
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"'
+      '"Segoe UI Symbol"',
     ].join(","),
     subtitle1: {
-      fontSize: 12
+      fontSize: 12,
     },
     body1: {
-      fontWeight: 300
+      fontWeight: 300,
     },
     button: {
-      fontStyle: "regular"
+      fontStyle: "regular",
     },
     h3: {
-      fontSize: "1.2rem"
+      fontSize: "1.2rem",
     },
     h2: {
-      fontSize: "1.4rem"
+      fontSize: "1.4rem",
     },
     h1: {
-      fontSize: "1.6rem"
+      fontSize: "1.6rem",
     },
     h4: {
-      fontSize: "1.0rem"
-    }
+      fontSize: "1.0rem",
+    },
   },
 
   background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
   boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
   title: {
     primary: {
-      weigth: 900
+      weigth: 900,
     },
     secondary: {
-      weigth: 900
-    }
+      weigth: 900,
+    },
   },
   palette: {
     primary: {
@@ -73,7 +73,7 @@ const theme = createMuiTheme({
       main: "#0D2C54",
       dark: "#aa647b",
       contrastText: "#fff",
-      textLight: "white"
+      textLight: "white",
     },
     secondary: {
       headerBackground: "#336699",
@@ -90,32 +90,32 @@ const theme = createMuiTheme({
       contrastText: "#7FB800",
       other: "#0D2C54",
       white: "#ffffff",
-      greyLight: "#BFBFBF"
+      greyLight: "#BFBFBF",
     },
     error: {
       light: "#e57373",
       main: "#f44336",
       dark: "#d32f2f",
-      contrastText: "#ffcc00"
+      contrastText: "#ffcc00",
     },
 
     warning: {
       light: "#ffb74d",
       main: "#ff9800",
       dark: "#f57c00",
-      contrastText: "#ffcc00"
+      contrastText: "#ffcc00",
     },
     info: {
       light: "#64b5f6",
       main: "#2196f3",
       dark: "#1976d2",
-      contrastText: "#ffcc00"
+      contrastText: "#ffcc00",
     },
     sucess: {
       light: "#81c784",
       main: "#4caf50",
       dark: "#388e3c",
-      contrastText: "#ffcc00"
+      contrastText: "#ffcc00",
     },
     // Used by `getContrastText()` to maximize the contrast between
     // the background and the text.
@@ -123,11 +123,11 @@ const theme = createMuiTheme({
     // Used by the functions below to shift a color's luminance by approximately
     // two indexes within its tonal palette.
     // E.g., shift from Red 500 to Red 300 or Red 700.
-    tonalOffset: 0.2
-  }
+    tonalOffset: 0.2,
+  },
 });
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexGrow: 1,
@@ -136,12 +136,12 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 30,
-    maxWidth: "100%"
+    maxWidth: "100%",
   },
   rootItem: {
     minHeight: "600px",
-    maxHeight: "100%"
-  }
+    maxHeight: "100%",
+  },
 }));
 
 class App extends Component {

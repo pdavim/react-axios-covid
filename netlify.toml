@@ -9,7 +9,7 @@
   from = "/map"
   to = "/"
   status = 301
-  force = false
+  force = true
   query = {path = ":path"}
 
 

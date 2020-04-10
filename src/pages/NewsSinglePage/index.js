@@ -12,10 +12,10 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import stringToArray from "../../functions/stringToArray";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   rootGrid: {
     display: "flex",
-    padding: 20
+    padding: 20,
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -23,29 +23,36 @@ const useStyles = makeStyles(theme => ({
     // height: "100%",
     // width: "100%",
     paddingLeft: 0,
-    paddingRigth: 0
+    paddingRigth: 0,
   },
   imageGrid: {},
   image: {
-    maxWidth: "100%",
-    minWidth: "200px"
+    maxWidth: "150px",
+    width: "100px",
   },
   imgThumb: {
-    maxWidth: "200px"
+    width: "100px",
+    heigth: "150px",
   },
   chip: {
     fontWeight: 900,
-    fontSize: 10
+    fontSize: 10,
     //padding: 5
   },
   newsThumbnail: {
     //width: "100%",
-    height: "300px",
-    padding: 20,
+    height: "200px",
+    padding: 5,
+    margin: 5,
+    alignContent: "center",
+    width: "100%",
+
     [theme.breakpoints.down("xs")]: {
       padding: 5,
-      height: "350px"
-    }
+      margin: 5,
+      height: "100px",
+      //height: "100px",
+    },
   },
   paperBackdrop: {
     // padding: "120px",
@@ -60,22 +67,30 @@ const useStyles = makeStyles(theme => ({
       paddingLeft: "40px",
       paddingRight: "40px",
       paddingTop: "30px",
-      paddingBottom: "30px"
+      paddingBottom: "30px",
       // width: "100%"
-    }
+    },
   },
   chipSpan: {
     padding: 5,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   title: {
     fontWeight: 900,
     fontSize: "24px",
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
+  paper: {
+    background: "rgb(10,10,10,0.5)",
+    color: "white",
+  },
+  button: {
+    color: "white",
+    fontSize: "14px",
+  },
 }));
 
-const NewsSinglePage = props => {
+const NewsSinglePage = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -93,25 +108,30 @@ const NewsSinglePage = props => {
   console.log("kewordsArray Typeof ", typeof kewordsArray);
   console.log("provider", item.provider); */
   const classes = useStyles();
+  const getUpdate = () => props.Store.fetchLatestNews();
+  // getUpdate();
   return (
-    <Grid>
-      <Paper>
-        <Grid container className={classes.newsThumbnail} spacing={1}>
-          <Grid item xs={12}>
-            {item.title}
-          </Grid>
-          <Grid item xs={12}>
+    <>
+      <Paper className={classes.paper}>
+        <Grid container className={classes.newsThumbnail} spacing={2}>
+          {props.Store.isgetLatestNews === true ? (
+            <h1>loading</h1>
+          ) : (
+            <Grid item xs={8}>
+              <Typography>{item.title}</Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleToggle}
+                value={item.title}
+                className={classes.button}
+              >
+                Read More
+              </Button>
+            </Grid>
+          )}
+          <Grid item xs={4}>
             <img src={item.image} className={classes.imgThumb} />
-          </Grid>
-          <Grid xs={12}>
-            <Button
-              variant="outlined"
-              //color="primary"
-              onClick={handleToggle}
-              value={item.title}
-            >
-              Read More
-            </Button>
           </Grid>
         </Grid>
       </Paper>
@@ -130,7 +150,7 @@ const NewsSinglePage = props => {
             </Grid>
             <Grid xs={4}>
               <Grid container className={classes.imageGrid} spacing={2}>
-                {kewordsArray.map(word => (
+                {kewordsArray.map((word) => (
                   <Grid item className={classes.chipSpan}>
                     <Chip label={word} className={classes.chip} />
                   </Grid>
@@ -150,7 +170,7 @@ const NewsSinglePage = props => {
           </Grid>
         </Paper>
       </Backdrop>
-    </Grid>
+    </>
   );
 };
 

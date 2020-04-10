@@ -12,13 +12,13 @@ class Store {
   fetchCity = {
     error: "",
     status: "Pending",
-    loading: true
+    loading: true,
   };
 
   updateDefaultCity = {
     error: "",
     status: "Pending",
-    loading: true
+    loading: true,
   };
 
   loadingSingularPage;
@@ -120,6 +120,7 @@ class Store {
   AllrecoverdPerCountry;
   AllconfirmedPerCountry;
   latestNews;
+  isgetLatestNews = true;
 
   //getAllCountryCornovirusData 1º
   getAllCountryCornovirusData = async () => {
@@ -130,9 +131,9 @@ class Store {
       headers: {
         "content-type": "application/octet-stream",
         "x-rapidapi-host": "coronavirus-monitor.p.rapidapi.com",
-        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
-      }
-    }).then(resp => {
+        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df",
+      },
+    }).then((resp) => {
       this.getAllCountryCornovirusDataObs = resp;
       console.log(
         "this.getAllCountryCornovirusDataObs ",
@@ -195,20 +196,20 @@ class Store {
   };
 
   //get countryinfo - population, coord, capital, etc
-  getAllCountryGeneralData = async countryName => {
+  getAllCountryGeneralData = async (countryName) => {
     await axios({
       method: "GET",
       url: `https://restcountries-v1.p.rapidapi.com/name/${countryName}`,
       headers: {
         "content-type": "application/octet-stream",
         "x-rapidapi-host": "restcountries-v1.p.rapidapi.com",
-        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
-      }
+        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df",
+      },
     })
-      .then(rp => {
+      .then((rp) => {
         this.pushCountryData(rp);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(
           "Error notification!  Store getAllCountryGeneralData function, with country",
           countryName
@@ -224,7 +225,7 @@ class Store {
       });
   };
 
-  pushCountryData = async rp => {
+  pushCountryData = async (rp) => {
     this.getAllCountryGeneralDataArray.push({
       markerOffset: -5,
       xmarkerOffset: -5,
@@ -232,7 +233,7 @@ class Store {
       coordinates: [rp.data[0].latlng[1], rp.data[0].latlng[0]],
       region: rp.data[0].region,
       population: rp.data[0].population,
-      capital: rp.data[0].capital
+      capital: rp.data[0].capital,
     });
   };
 
@@ -252,7 +253,14 @@ class Store {
     await this.extData();
     this.isLoading = false;
     this.getLatestNews();
+    this.isgetLatestNews = false;
     //this.storeCounterData();
+  };
+
+  fetchLatestNews = () => {
+    this.isgetLatestNews = true;
+    this.getLatestNews();
+    this.isgetLatestNews = false;
   };
 
   //get update date
@@ -266,7 +274,7 @@ class Store {
       setInterval(this.calcTime, 1000);
       // console.log();
       let obj = this.dieStore;
-      const isEmpty = obj => {
+      const isEmpty = (obj) => {
         for (var prop in obj) {
           if (obj.hasOwnProperty(prop)) {
             return false;
@@ -312,8 +320,8 @@ class Store {
   };
 
   //headers from arrays
-  headersCountry = csvurlConfirmed => {
-    axios.get(csvurlConfirmed).then(res => {
+  headersCountry = (csvurlConfirmed) => {
+    axios.get(csvurlConfirmed).then((res) => {
       let data = res.data;
       let papaCsv = readString(data, {});
       let array = papaCsv.data;
@@ -324,8 +332,8 @@ class Store {
     });
   };
 
-  confirmedPerCountry = csvurlConfirmed => {
-    axios.get(csvurlConfirmed).then(res => {
+  confirmedPerCountry = (csvurlConfirmed) => {
+    axios.get(csvurlConfirmed).then((res) => {
       let data = res.data;
       let papaCsv = readString(data, {});
       let array = papaCsv.data;
@@ -340,8 +348,8 @@ class Store {
     });
   };
 
-  deathPerCountry = csvurlDeaths => {
-    axios.get(csvurlDeaths).then(res => {
+  deathPerCountry = (csvurlDeaths) => {
+    axios.get(csvurlDeaths).then((res) => {
       let data = res.data;
       let papaCsv = readString(data, {});
 
@@ -358,8 +366,8 @@ class Store {
     });
   };
 
-  recoverdPerCountry = csvurlRecoverd => {
-    axios.get(csvurlRecoverd).then(res => {
+  recoverdPerCountry = (csvurlRecoverd) => {
+    axios.get(csvurlRecoverd).then((res) => {
       let data = res.data;
       let papaCsv = readString(data, {});
       let array = papaCsv.data;
@@ -413,21 +421,21 @@ class Store {
       headers: {
         "content-type": "application/octet-stream",
         "x-rapidapi-host": "contextualwebsearch-websearch-v1.p.rapidapi.com",
-        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df"
+        "x-rapidapi-key": "a611b00886msh77f2d1161d08a19p1d5678jsn0fa1490821df",
       },
       params: {
         autoCorrect: "false",
         pageNumber: "1",
         pageSize: "20",
         q: "covid",
-        safeSearch: "false"
-      }
+        safeSearch: "false",
+      },
     })
-      .then(response => {
+      .then((response) => {
         console.log("getLatestNews ", response);
         this.latestNews = response;
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("getLatestNews error ", error);
       });
   };
@@ -444,6 +452,7 @@ decorate(Store, {
   AllconfirmedPerCountry: observable,
   errorDataCountry: observable,
   latestNews: observable,
+  isgetLatestNews: observable,
   //Old
   getLastUpdateDate: action,
   getSingleCountryInfoF: action,
@@ -534,7 +543,7 @@ decorate(Store, {
   defaultStation: observable,
 
   //Object with the SET list of added cities - localstorage
-  citiesList: observable
+  citiesList: observable,
 });
 
 export default new Store();
