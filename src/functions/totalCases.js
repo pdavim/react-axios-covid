@@ -1,6 +1,6 @@
 import checkIfNumber from "./checkIfNumber";
 
-const totalCases = data => {
+const totalCases = (data) => {
   let totalCases = 0;
   let totalDeaths = 0;
   let totalCritical = 0;
@@ -10,6 +10,9 @@ const totalCases = data => {
   let tRecovers = 0;
   let tActiveCases = 0;
   let tTotalCasesPer1mPopulation = 0;
+  let tdeaths_per_1m_population = 0;
+  let ttests_per_1m_population = 0;
+  let ttotal_tests = 0;
 
   let i = 0;
 
@@ -28,8 +31,17 @@ const totalCases = data => {
 
     //Total recovered
     //let w = checkIfNumber(data[i].total_recovered);
-    let totalRecover = checkIfNumber(data[i].total_recovered);
-    tRecovers = tRecovers + totalRecover;
+    if (data[i].total_recovered === "N/A") {
+      console.log("not availabre", data[i].total_recovered);
+      console.log("not availabre", data[i]);
+      //data[i].total_recovered = 0;
+      let x = 0;
+      let totalRecover = checkIfNumber(x);
+      tRecovers = tRecovers + totalRecover;
+    } else {
+      let totalRecover = checkIfNumber(data[i].total_recovered);
+      tRecovers = tRecovers + totalRecover;
+    }
 
     //new deaths
     let newDeaths = checkIfNumber(data[i].new_deaths);
@@ -43,6 +55,17 @@ const totalCases = data => {
     let activeCases = checkIfNumber(data[i].active_cases);
     tActiveCases = tActiveCases + activeCases;
 
+    //deaths_per_1m_population
+    let deathPerMilion = checkIfNumber(data[i].deaths_per_1m_population);
+    tdeaths_per_1m_population = tdeaths_per_1m_population + deathPerMilion;
+    //test per million
+    let testsPerMiliion = checkIfNumber(data[i].tests_per_1m_population);
+    ttests_per_1m_population = ttests_per_1m_population + testsPerMiliion;
+
+    //total_tests
+    let totalTest = checkIfNumber(data[i].total_tests);
+    ttotal_tests = ttotal_tests + totalTest;
+
     // total total_cases_per_1m_population
     let totalCasesPer1mPopulation = checkIfNumber(
       data[i].total_cases_per_1m_population
@@ -50,6 +73,21 @@ const totalCases = data => {
     tTotalCasesPer1mPopulation =
       tTotalCasesPer1mPopulation + totalCasesPer1mPopulation;
   }
+
+  let arrayHead = [
+    "totalCases",
+    "total deaths",
+    "total critical",
+    "new deaths",
+    "new cases",
+    "recovers",
+    "ative cases",
+    "total cases per 1m",
+    "death per 1m",
+    "tests per 1m",
+    "total tests",
+  ];
+
   return {
     totalCases,
     totalDeaths,
@@ -58,7 +96,11 @@ const totalCases = data => {
     tNewCases,
     tRecovers,
     tActiveCases,
-    tTotalCasesPer1mPopulation
+    tTotalCasesPer1mPopulation,
+    tdeaths_per_1m_population,
+    ttests_per_1m_population,
+    ttotal_tests,
+    arrayHead,
   };
 };
 

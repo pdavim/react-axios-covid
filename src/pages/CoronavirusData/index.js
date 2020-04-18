@@ -263,6 +263,13 @@ const CoronavirusData = inject("Store")(
     let nCases = totalData.tNewCases;
     let nTotalRecovers = totalData.tRecovers;
     let nActiveCases = totalData.tActiveCases;
+    let ntdeaths_per_1m_population = (
+      totalData.tdeaths_per_1m_population / dataDataLength
+    ).toFixed(2);
+    let nttests_per_1m_population = (
+      totalData.ttests_per_1m_population / dataDataLength
+    ).toFixed(2);
+    let nttotal_tests = totalData.ttotal_tests;
     let nTotalCountries = dataData.length;
     let nTotalCasesPer1mPopulation = (
       totalData.tTotalCasesPer1mPopulation / dataDataLength
@@ -343,6 +350,28 @@ const CoronavirusData = inject("Store")(
             textCard="Critical Cases / Casos Criticos:"
             textContent={criticalData}
             background="rgb(50,204,100,0.3)"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Card01
+            textCard="Deaths per 1M / Mortes por Milhão"
+            textContent={ntdeaths_per_1m_population}
+            background="rgb(243,204,13,0.5)"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Card01
+            textCard="Tests per 1M / Testes por Milhão"
+            textContent={nttests_per_1m_population}
+            background="rgb(223,5,5,0.6)"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
+          <Card01
+            textCard="Total Tests / Total de Testes"
+            textContent={nttotal_tests}
+            background="rgb(213,84,100,0.6)"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4} className={classes.paperGrid}>
