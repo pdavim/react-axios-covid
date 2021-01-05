@@ -30,7 +30,7 @@
     "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^4.0.0-alpha.43",
     "apexcharts": "3.16.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "country-list": "^2.2.0",
     "deck.gl": "^8.1.1",
     "emailjs-com": "^2.4.1",
